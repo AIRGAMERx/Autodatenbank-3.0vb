@@ -3,10 +3,10 @@ name: Build and Test VB.NET Project
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   build-and-test:
@@ -25,7 +25,7 @@ jobs:
 
     # 3. Abhängigkeiten wiederherstellen
     - name: Restore dependencies
-      run: dotnet restore YourVBProject.sln
+      run: dotnet restore Autodatenbank 3.0.sln
 
     # 4. Projekt bauen
     - name: Build VB.NET Project
