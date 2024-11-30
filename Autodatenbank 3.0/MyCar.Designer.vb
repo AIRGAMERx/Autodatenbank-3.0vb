@@ -27,7 +27,8 @@ Partial Class MyCar
         Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MyCar))
         Me.priceChart = New System.Windows.Forms.DataVisualization.Charting.Chart()
-        Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
+        Me.FLP_Refill = New System.Windows.Forms.FlowLayoutPanel()
+        Me.FLP_CarData = New System.Windows.Forms.FlowLayoutPanel()
         CType(Me.priceChart, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -40,7 +41,7 @@ Partial Class MyCar
         Me.priceChart.ChartAreas.Add(ChartArea1)
         Legend1.Name = "Legend1"
         Me.priceChart.Legends.Add(Legend1)
-        Me.priceChart.Location = New System.Drawing.Point(463, 46)
+        Me.priceChart.Location = New System.Drawing.Point(390, 300)
         Me.priceChart.Name = "priceChart"
         Series1.ChartArea = "ChartArea1"
         Series1.Legend = "Legend1"
@@ -50,21 +51,29 @@ Partial Class MyCar
         Me.priceChart.TabIndex = 0
         Me.priceChart.Text = "Chart1"
         '
-        'FlowLayoutPanel1
+        'FLP_Refill
         '
-        Me.FlowLayoutPanel1.AutoScroll = True
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(12, 46)
-        Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(372, 896)
-        Me.FlowLayoutPanel1.TabIndex = 3
-        Me.FlowLayoutPanel1.WrapContents = False
+        Me.FLP_Refill.AutoScroll = True
+        Me.FLP_Refill.Location = New System.Drawing.Point(12, 300)
+        Me.FLP_Refill.Name = "FLP_Refill"
+        Me.FLP_Refill.Size = New System.Drawing.Size(372, 642)
+        Me.FLP_Refill.TabIndex = 3
+        Me.FLP_Refill.WrapContents = False
+        '
+        'FLP_CarData
+        '
+        Me.FLP_CarData.Location = New System.Drawing.Point(12, 12)
+        Me.FLP_CarData.Name = "FLP_CarData"
+        Me.FLP_CarData.Size = New System.Drawing.Size(936, 282)
+        Me.FLP_CarData.TabIndex = 4
         '
         'MyCar
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(973, 954)
-        Me.Controls.Add(Me.FlowLayoutPanel1)
+        Me.Controls.Add(Me.FLP_CarData)
+        Me.Controls.Add(Me.FLP_Refill)
         Me.Controls.Add(Me.priceChart)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "MyCar"
@@ -75,5 +84,6 @@ Partial Class MyCar
     End Sub
 
     Friend WithEvents priceChart As DataVisualization.Charting.Chart
-    Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
+    Friend WithEvents FLP_Refill As FlowLayoutPanel
+    Friend WithEvents FLP_CarData As FlowLayoutPanel
 End Class

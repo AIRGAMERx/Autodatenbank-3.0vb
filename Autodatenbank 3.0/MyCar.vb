@@ -9,11 +9,12 @@ Public Class MyCar
     Dim growthTimer As Timer
     Dim currentValues As List(Of Decimal)
     Dim targetValues As List(Of Decimal)
-    Dim growthSpeed As Decimal = 50 ' Geschwindigkeit des Wachstums
+    Dim growthSpeed As Decimal = 50
 
     Private Sub MyCar_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        LoadOverallSettings() ' Diese Methode existiert nicht im ursprünglichen Code; ggf. entfernen oder definieren
+        LoadOverallSettings()
         GetMyCar()
+        ShowCarData()
         GetRefillData()
     End Sub
 
@@ -220,7 +221,7 @@ Public Class MyCar
 
 
     Private Async Sub GetRefillData()
-        FlowLayoutPanel1.FlowDirection = FlowDirection.TopDown
+        FLP_Refill.FlowDirection = FlowDirection.TopDown
 
         ' Textstyle for TableLayoutPanel
         Dim textFont As New Font(Font.FontFamily, 12, FontStyle.Regular)
@@ -253,7 +254,7 @@ Public Class MyCar
 
         DescriptionPanel.Controls.Add(Description, 0, 0)
         DescriptionPanel.Controls.Add(CB_OpenGoogleMaps, 0, 1)
-        FlowLayoutPanel1.Controls.Add(DescriptionPanel)
+        FLP_Refill.Controls.Add(DescriptionPanel)
 
         Dim query As String = "SELECT * FROM Verbrauch WHERE Kennzeichen = @Kennzeichen"
 
@@ -391,7 +392,7 @@ Public Class MyCar
                             RegisterClickHandler(RefillPanel, AddressOf Panel_Click)
 
                             ' Panel zum FlowLayoutPanel hinzufügen
-                            FlowLayoutPanel1.Controls.Add(RefillPanel)
+                            FLP_Refill.Controls.Add(RefillPanel)
                         End While
                     Else
                         MessageBox.Show("Keine Daten gefunden.")
@@ -401,7 +402,7 @@ Public Class MyCar
         End Using
     End Sub
 
-    ' Methode zur Registrierung von Click-Events für ein Panel und alle enthaltenen Steuerelemente
+
     Private Sub RegisterClickHandler(control As Control, handler As EventHandler)
         AddHandler control.Click, handler
         For Each child As Control In control.Controls
@@ -409,17 +410,16 @@ Public Class MyCar
         Next
     End Sub
 
-    ' Panel-Click-Handler
+
     Private Sub Panel_Click(sender As Object, e As EventArgs)
-        ' Überprüfen, ob die CheckBox aktiviert ist
-        Dim descriptionPanel As TableLayoutPanel = CType(FlowLayoutPanel1.Controls(0), TableLayoutPanel)
+
+        Dim descriptionPanel As TableLayoutPanel = CType(FLP_Refill.Controls(0), TableLayoutPanel)
         Dim openGoogleMapsCheckbox As CheckBox = CType(descriptionPanel.Controls.OfType(Of CheckBox).FirstOrDefault(), CheckBox)
 
         If openGoogleMapsCheckbox Is Nothing OrElse Not openGoogleMapsCheckbox.Checked Then
             Return
         End If
 
-        ' Das übergeordnete TableLayoutPanel des angeklickten Steuerelements finden
         Dim clickedControl As Control = CType(sender, Control)
         Dim clickedPanel As TableLayoutPanel = Nothing
 
@@ -431,9 +431,8 @@ Public Class MyCar
             clickedControl = clickedControl.Parent
         End While
 
-        ' Sicherstellen, dass ein TableLayoutPanel gefunden wurde
         If clickedPanel IsNot Nothing AndAlso clickedPanel.Tag IsNot Nothing Then
-            ' Tag auslesen (z. B. "Adresse!latitude!longitude")
+
             Dim tagData As String = clickedPanel.Tag.ToString()
             Dim tagParts As String() = tagData.Split("!"c)
 
@@ -442,7 +441,7 @@ Public Class MyCar
                 Dim longitudeFormatted As String = tagParts(2).Replace(",", ".")
                 Dim googleMapsUrl As String = $"https://www.google.com/maps?q={latitudeFormatted},{longitudeFormatted}"
 
-                ' URL im Standardbrowser öffnen
+
                 Try
                     Process.Start(New ProcessStartInfo With {
                         .FileName = googleMapsUrl,
@@ -457,6 +456,115 @@ Public Class MyCar
         End If
     End Sub
 
+    Private Sub ShowCarData()
+        Dim query As String = "SELECT * FROM Autos WHERE Kennzeichen = @Kennzeichen"
+
+        Dim Brand As String = ""
+        Dim Model As String = ""
+        Dim Motorcode As String = ""
+        Dim Displacement As String = ""
+        Dim Power As String = ""
+        Dim VIN As String = ""
+        Dim ConstructionYear As String = ""
+        Dim KeyNumber As String = ""
+        Dim Owner As String = ""
+        Dim BuyDate As String = ""
+        Dim Price As String = ""
+        Dim Info As String = ""
+        Dim CMI As String = Date.Now.ToString("MMMM dd yyyy")
+        Dim PR As String = ""
+
+
+        Using con As New MySqlConnection(My.Settings.connectionstring)
+            con.Open()
+            Using cmd As New MySqlCommand(query, con)
+                cmd.Parameters.AddWithValue("@Kennzeichen", Kennzeichen)
+                Using reader As MySqlDataReader = cmd.ExecuteReader
+                    If reader.HasRows Then
+                        While reader.Read
+                            Brand = If(reader.IsDBNull(reader.GetOrdinal("Marke")), "N/A", reader.GetString(reader.GetOrdinal("Marke")))
+                            Model = If(reader.IsDBNull(reader.GetOrdinal("Model")), "N/A", reader.GetString(reader.GetOrdinal("Model")))
+                            Motorcode = If(reader.IsDBNull(reader.GetOrdinal("MKB")), "N/A", reader.GetString(reader.GetOrdinal("MKB")))
+                            Displacement = If(reader.IsDBNull(reader.GetOrdinal("Hubraum")), "N/A", reader.GetString(reader.GetOrdinal("Hubraum")))
+                            Power = If(reader.IsDBNull(reader.GetOrdinal("PS")), "N/A", reader.GetString(reader.GetOrdinal("PS")))
+                            VIN = If(reader.IsDBNull(reader.GetOrdinal("FIN")), "N/A", reader.GetString(reader.GetOrdinal("FIN")))
+                            ConstructionYear = If(reader.IsDBNull(reader.GetOrdinal("Baujahr")), "N/A", reader.GetString(reader.GetOrdinal("Baujahr")))
+                            KeyNumber = If(reader.IsDBNull(reader.GetOrdinal("HSN")), "N/A", reader.GetString(reader.GetOrdinal("HSN")))
+                            Owner = If(reader.IsDBNull(reader.GetOrdinal("Besitzer")), "N/A", reader.GetString(reader.GetOrdinal("Besitzer")))
+                            BuyDate = If(reader.IsDBNull(reader.GetOrdinal("Gekauft")), "N/A", reader.GetString(reader.GetOrdinal("Gekauft")))
+                            Price = If(reader.IsDBNull(reader.GetOrdinal("Preis")), "N/A", reader.GetString(reader.GetOrdinal("Preis")))
+                            Info = If(reader.IsDBNull(reader.GetOrdinal("Info")), "N/A", reader.GetString(reader.GetOrdinal("Info")))
+                            CMI = If(reader.IsDBNull(reader.GetOrdinal("tuev")), "N/A", reader.GetDateTime(reader.GetOrdinal("tuev")).ToString("MM.yyyy"))
+                            PR = If(reader.IsDBNull(reader.GetOrdinal("PR")), "N/A", reader.GetString(reader.GetOrdinal("PR"))).TrimEnd
+                        End While
+                    End If
+                End Using
+            End Using
+        End Using
+
+
+        Dim textFont As New Font("Arial", 10, FontStyle.Regular)
+        Dim boldFont As New Font("Arial", 10, FontStyle.Bold)
+
+        Dim headerPanel As New Panel With {
+            .Width = FLP_CarData.Width - 20,
+            .Height = 50,
+            .BackColor = Color.FromArgb(240, 240, 240),
+            .Padding = New Padding(1),
+            .Margin = New Padding(10, 10, 10, 0)
+        }
+
+        Dim headerLabel As New Label With {
+            .Text = $"Fahrzeugdaten für {Kennzeichen}",
+            .Font = New Font("Arial", 12, FontStyle.Bold),
+            .AutoSize = True,
+            .ForeColor = Color.DarkSlateGray
+        }
+        headerPanel.Controls.Add(headerLabel)
+        FLP_CarData.Controls.Add(headerPanel)
+
+        Dim dataPanel As New TableLayoutPanel With {
+            .ColumnCount = 2,
+            .RowCount = 12,
+            .AutoSize = True,
+            .Padding = New Padding(1),
+             .BackColor = Color.Transparent,
+            .CellBorderStyle = TableLayoutPanelCellBorderStyle.Single,
+            .Margin = New Padding(1),
+            .AutoScroll = True
+        }
+
+
+        dataPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 40))
+        dataPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 60))
+
+
+        Dim labels As String() = {"Marke", "Model", "Motorcode", "Hubraum", "Leistung", "FIN", "Baujahr", "HSN", "Besitzer", "Kaufdatum", "Preis", "Info", "TÜV", "PR"}
+        Dim values As String() = {Brand, Model, Motorcode, Displacement, Power, VIN, ConstructionYear, KeyNumber, Owner, BuyDate, Price, Info, CMI, PR}
+
+        For i As Integer = 0 To labels.Length - 1
+
+            Dim labelKey As New Label With {
+                .Text = labels(i) & ":",
+                .Font = boldFont,
+                .AutoSize = True,
+                .ForeColor = Color.DarkSlateGray
+            }
+            dataPanel.Controls.Add(labelKey, 0, i)
+
+
+            Dim labelValue As New Label With {
+                .Text = values(i),
+                .Font = textFont,
+                .AutoSize = True,
+                .ForeColor = Color.DarkSlateGray
+            }
+            dataPanel.Controls.Add(labelValue, 1, i)
+        Next
+
+        FLP_CarData.Controls.Add(dataPanel)
+    End Sub
+
 
 
 
@@ -465,6 +573,7 @@ Public Class MyCar
 
 
 End Class
+
 
 Public Class Geocoder
   
