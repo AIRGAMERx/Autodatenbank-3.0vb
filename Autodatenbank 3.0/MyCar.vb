@@ -154,12 +154,12 @@ Public Class MyCar
 
         ' Neue Serie für das Kreisdiagramm erstellen
         Dim pieSeries As New Series("Kosten") With {
-            .ChartType = SeriesChartType.Pie,
-            .Font = New Font("Arial", 10, FontStyle.Bold),
-            .IsValueShownAsLabel = True,
-            .LabelFormat = "C", ' Format für Währungswerte
-            .LabelForeColor = Color.Black
-        }
+        .ChartType = SeriesChartType.Pie,
+        .Font = New Font("Arial", 10, FontStyle.Bold),
+        .IsValueShownAsLabel = True,
+        .LabelFormat = "C", ' Format für Währungswerte
+        .LabelForeColor = Color.Black
+    }
 
         ' Datenpunkte hinzufügen
         pieSeries.Points.AddXY("Reparaturen", values(0))
@@ -182,20 +182,79 @@ Public Class MyCar
             With chartArea
                 .Area3DStyle.Enable3D = True ' Aktiviert 3D-Effekt für das Kreisdiagramm
                 .Position = New ElementPosition(10, 10, 80, 80)
+                .BackColor = Color.Transparent ' Hintergrund des Diagrammbereichs transparent machen
             End With
             priceChart.ChartAreas.Add(chartArea)
+        Else
+            ' Hintergrund des vorhandenen ChartArea transparent machen
+            priceChart.ChartAreas(0).BackColor = Color.Transparent
         End If
 
         ' Diagrammtitel hinzufügen (falls nicht vorhanden)
         If priceChart.Titles.Count = 0 Then
-            priceChart.Titles.Add("Kostenübersicht")
-            priceChart.Titles(0).Font = New Font("Arial", 14, FontStyle.Bold)
-            priceChart.Titles(0).ForeColor = Color.DarkBlue
+            priceChart.Titles.Add("Kosten")
+            With priceChart.Titles(0)
+                .Font = New Font("Arial", 14, FontStyle.Bold)
+                .ForeColor = Color.DarkBlue
+                .BackColor = Color.Transparent ' Hintergrund des Titels transparent machen
+            End With
+        Else
+            ' Hintergrund des vorhandenen Titels transparent machen
+            priceChart.Titles(0).BackColor = Color.Transparent
         End If
+
+        ' Legendenhintergrund transparent machen
+        If priceChart.Legends.Count = 0 Then
+            priceChart.Legends.Add(New Legend("Legend") With {
+            .BackColor = Color.Transparent, ' Legendenhintergrund transparent machen
+            .Font = New Font("Arial", 10, FontStyle.Regular)
+        })
+        Else
+            priceChart.Legends(0).BackColor = Color.Transparent
+        End If
+
+        ' Hintergrund des gesamten Diagramms transparent machen
+        priceChart.BackColor = Color.Transparent
     End Sub
 
 
+
     Private Async Sub GetRefillData()
+        FlowLayoutPanel1.FlowDirection = FlowDirection.TopDown
+
+        ' Textstyle for TableLayoutPanel
+        Dim textFont As New Font(Font.FontFamily, 12, FontStyle.Regular)
+        Dim boldFont As New Font(Font.FontFamily, 12, FontStyle.Bold)
+
+        ' Beschreibungspanel
+        Dim DescriptionPanel As New TableLayoutPanel With {
+            .BorderStyle = BorderStyle.FixedSingle,
+            .Width = 350,
+            .Height = 60,
+            .Margin = New Padding(10),
+            .BackColor = Color.FromArgb(220, Color.LightGray),
+            .Padding = New Padding(5),
+            .RowCount = 2,
+            .ColumnCount = 1
+        }
+
+        Dim Description As New Label With {
+            .Text = "Tankdaten für " & Kennzeichen,
+            .Font = boldFont,
+            .ForeColor = Color.Black,
+            .TextAlign = ContentAlignment.MiddleLeft,
+            .AutoSize = True
+        }
+        Dim CB_OpenGoogleMaps As New CheckBox With {
+            .Text = "Standort beim Klick auf das Panel öffnen",
+            .Checked = False,
+            .AutoSize = True
+        }
+
+        DescriptionPanel.Controls.Add(Description, 0, 0)
+        DescriptionPanel.Controls.Add(CB_OpenGoogleMaps, 0, 1)
+        FlowLayoutPanel1.Controls.Add(DescriptionPanel)
+
         Dim query As String = "SELECT * FROM Verbrauch WHERE Kennzeichen = @Kennzeichen"
 
         Using con As New MySqlConnection(My.Settings.connectionstring)
@@ -206,10 +265,6 @@ Public Class MyCar
                 Using reader As MySqlDataReader = cmd.ExecuteReader
                     If reader.HasRows Then
                         While reader.Read()
-                            ' Schriftarten definieren
-                            Dim textFont As New Font(Font.FontFamily, 12, FontStyle.Regular)
-                            Dim boldFont As New Font(Font.FontFamily, 12, FontStyle.Bold)
-
                             ' TableLayoutPanel für die Anzeige erstellen
                             Dim RefillPanel As New TableLayoutPanel With {
                                 .BorderStyle = BorderStyle.FixedSingle,
@@ -217,7 +272,7 @@ Public Class MyCar
                                 .Height = 250,
                                 .Margin = New Padding(10),
                                 .BackColor = Color.FromArgb(220, Color.LightGray),
-                                .Padding = New Padding(10),
+                                .Padding = New Padding(5),
                                 .RowCount = 7,
                                 .ColumnCount = 2
                             }
@@ -309,38 +364,31 @@ Public Class MyCar
                             Dim lon As Nullable(Of Double) = If(Not reader.IsDBNull(reader.GetOrdinal("longitude")), reader.GetDouble(reader.GetOrdinal("longitude")), CType(Nothing, Nullable(Of Double)))
 
                             If lat.HasValue AndAlso lon.HasValue Then
-                                Console.WriteLine($"Latitude: {lat}, Longitude: {lon}")
-                                Dim geocoder As New Geocoder
-                                Try
-                                    Dim adress As String = Await geocoder.GetAddress(lat.Value, lon.Value)
-                                    Console.WriteLine($"Adresse: {adress}")
+                                Dim adress As String = Await New Geocoder().GetAddress(lat.Value, lon.Value)
 
-                                    ' Tag für das gesamte Panel setzen
-                                    RefillPanel.Tag = $"{adress}!{lat.Value}!{lon.Value}"
+                                ' Tag für das gesamte Panel setzen
+                                RefillPanel.Tag = $"{adress}!{lat.Value}!{lon.Value}"
 
-                                    Dim StandortLabel As New Label With {
-                                        .Text = "Standort:",
-                                        .Font = boldFont,
-                                        .ForeColor = Color.Orange,
-                                        .TextAlign = ContentAlignment.MiddleLeft
-                                    }
-                                    Dim StandortValue As New Label With {
-                                        .Text = adress,
-                                        .Font = textFont,
-                                        .ForeColor = Color.Orange,
-                                        .TextAlign = ContentAlignment.TopLeft,
-                                        .AutoSize = True
-                                    }
+                                Dim StandortLabel As New Label With {
+                                    .Text = "Standort:",
+                                    .Font = boldFont,
+                                    .ForeColor = Color.Orange,
+                                    .TextAlign = ContentAlignment.MiddleLeft
+                                }
+                                Dim StandortValue As New Label With {
+                                    .Text = adress,
+                                    .Font = textFont,
+                                    .ForeColor = Color.Orange,
+                                    .TextAlign = ContentAlignment.TopLeft,
+                                    .AutoSize = True
+                                }
 
-                                    RefillPanel.Controls.Add(StandortLabel, 0, 5)
-                                    RefillPanel.Controls.Add(StandortValue, 1, 5)
-                                Catch ex As Exception
-                                    Console.WriteLine($"Fehler beim Geocoding: {ex.Message}")
-                                End Try
+                                RefillPanel.Controls.Add(StandortLabel, 0, 5)
+                                RefillPanel.Controls.Add(StandortValue, 1, 5)
                             End If
 
-                            ' Click-Event registrieren
-                            AddHandler RefillPanel.Click, AddressOf Panel_Click
+                            ' Click-Event für alle Controls im Panel registrieren
+                            RegisterClickHandler(RefillPanel, AddressOf Panel_Click)
 
                             ' Panel zum FlowLayoutPanel hinzufügen
                             FlowLayoutPanel1.Controls.Add(RefillPanel)
@@ -353,46 +401,64 @@ Public Class MyCar
         End Using
     End Sub
 
+    ' Methode zur Registrierung von Click-Events für ein Panel und alle enthaltenen Steuerelemente
+    Private Sub RegisterClickHandler(control As Control, handler As EventHandler)
+        AddHandler control.Click, handler
+        For Each child As Control In control.Controls
+            RegisterClickHandler(child, handler)
+        Next
+    End Sub
+
     ' Panel-Click-Handler
     Private Sub Panel_Click(sender As Object, e As EventArgs)
-        Dim clickedPanel As TableLayoutPanel = CType(sender, TableLayoutPanel)
+        ' Überprüfen, ob die CheckBox aktiviert ist
+        Dim descriptionPanel As TableLayoutPanel = CType(FlowLayoutPanel1.Controls(0), TableLayoutPanel)
+        Dim openGoogleMapsCheckbox As CheckBox = CType(descriptionPanel.Controls.OfType(Of CheckBox).FirstOrDefault(), CheckBox)
 
-        ' Prüfen, ob ein Tag gesetzt ist
-        If clickedPanel.Tag IsNot Nothing Then
+        If openGoogleMapsCheckbox Is Nothing OrElse Not openGoogleMapsCheckbox.Checked Then
+            Return
+        End If
+
+        ' Das übergeordnete TableLayoutPanel des angeklickten Steuerelements finden
+        Dim clickedControl As Control = CType(sender, Control)
+        Dim clickedPanel As TableLayoutPanel = Nothing
+
+        While clickedControl IsNot Nothing
+            If TypeOf clickedControl Is TableLayoutPanel Then
+                clickedPanel = CType(clickedControl, TableLayoutPanel)
+                Exit While
+            End If
+            clickedControl = clickedControl.Parent
+        End While
+
+        ' Sicherstellen, dass ein TableLayoutPanel gefunden wurde
+        If clickedPanel IsNot Nothing AndAlso clickedPanel.Tag IsNot Nothing Then
             ' Tag auslesen (z. B. "Adresse!latitude!longitude")
             Dim tagData As String = clickedPanel.Tag.ToString()
             Dim tagParts As String() = tagData.Split("!"c)
 
             If tagParts.Length >= 3 Then
-                ' Rohdaten aus dem Tag lesen
-                Dim rawLatitude As String = tagParts(1)
-                Dim rawLongitude As String = tagParts(2)
-
-                Console.WriteLine($"Rohdaten Latitude: {rawLatitude}, Longitude: {rawLongitude}")
-
-                ' Punkt hinter der zweiten Stelle einfügen
-                Dim latitudeFormatted As String = rawLatitude.Replace(",", ".")
-                Dim longitudeFormatted As String = rawLongitude.Replace(",", ".")
-
-                ' URL für Google Maps erstellen
+                Dim latitudeFormatted As String = tagParts(1).Replace(",", ".")
+                Dim longitudeFormatted As String = tagParts(2).Replace(",", ".")
                 Dim googleMapsUrl As String = $"https://www.google.com/maps?q={latitudeFormatted},{longitudeFormatted}"
 
                 ' URL im Standardbrowser öffnen
                 Try
                     Process.Start(New ProcessStartInfo With {
                         .FileName = googleMapsUrl,
-                        .UseShellExecute = True ' Erzwingt das Öffnen im Standardbrowser
+                        .UseShellExecute = True
                     })
                 Catch ex As Exception
                     MsgBox($"Fehler beim Öffnen von Google Maps: {ex.Message}")
                 End Try
-            Else
-                MsgBox("Ungültige Tag-Daten für das Panel.")
             End If
         Else
-            MsgBox("Kein Tag gesetzt!")
+            MsgBox("Kein gültiges Panel gefunden oder kein Tag gesetzt.")
         End If
     End Sub
+
+
+
 
 
 

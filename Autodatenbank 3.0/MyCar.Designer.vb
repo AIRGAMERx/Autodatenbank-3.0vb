@@ -27,18 +27,20 @@ Partial Class MyCar
         Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New System.Windows.Forms.DataVisualization.Charting.Series()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MyCar))
         Me.priceChart = New System.Windows.Forms.DataVisualization.Charting.Chart()
-        Me.Label1 = New System.Windows.Forms.Label()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
         CType(Me.priceChart, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'priceChart
         '
+        Me.priceChart.BackColor = System.Drawing.Color.Transparent
+        Me.priceChart.BackImageTransparentColor = System.Drawing.Color.Transparent
+        Me.priceChart.BorderlineColor = System.Drawing.Color.Transparent
         ChartArea1.Name = "ChartArea1"
         Me.priceChart.ChartAreas.Add(ChartArea1)
         Legend1.Name = "Legend1"
         Me.priceChart.Legends.Add(Legend1)
-        Me.priceChart.Location = New System.Drawing.Point(405, 46)
+        Me.priceChart.Location = New System.Drawing.Point(463, 46)
         Me.priceChart.Name = "priceChart"
         Series1.ChartArea = "ChartArea1"
         Series1.Legend = "Legend1"
@@ -47,16 +49,6 @@ Partial Class MyCar
         Me.priceChart.Size = New System.Drawing.Size(476, 355)
         Me.priceChart.TabIndex = 0
         Me.priceChart.Text = "Chart1"
-        '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 20.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(6, 12)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(105, 31)
-        Me.Label1.TabIndex = 2
-        Me.Label1.Text = "Tanken"
         '
         'FlowLayoutPanel1
         '
@@ -73,18 +65,15 @@ Partial Class MyCar
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(973, 954)
         Me.Controls.Add(Me.FlowLayoutPanel1)
-        Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.priceChart)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "MyCar"
         Me.Text = "Mein Auto"
         CType(Me.priceChart, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
 
     Friend WithEvents priceChart As DataVisualization.Charting.Chart
-    Friend WithEvents Label1 As Label
     Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
 End Class
