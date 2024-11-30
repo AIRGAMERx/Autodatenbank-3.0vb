@@ -19,21 +19,8 @@ jobs:
 
     # 2. MSBuild verwenden, um das Projekt zu bauen
     - name: Build Project
-      run: msbuild Autodatenbank3.sln /p:Configuration=Release
+      run: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\MSBuild\\Current\\Bin\\MSBuild.exe Autodatenbank3.sln /p:Configuration=Release"
 
     # 3. Optional: Tests ausführen, falls vorhanden
     - name: Run Unit Tests
       run: vstest.console.exe Autodatenbank.Tests.dll /Platform:x64
-
-    # 4. Erstellte .exe finden und signieren
-    - name: Sign EXE File
-      run: |
-        echo "${{ secrets.CERTIFICATE_PFX }}" | base64 -d > cert.pfx
-        "C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" sign /f cert.pfx /p "${{ secrets.CERTIFICATE_PASSWORD }}" /t http://timestamp.digicert.com bin\Release\Autodatenbank.exe
-
-    # 5. Optional: Artefakt hochladen
-    - name: Upload EXE Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: signed-exe
-        path: bin\Release\Autodatenbank.exe
