@@ -29,8 +29,8 @@ jobs:
 
     # 4. Projekt bauen
     - name: Build VB.NET Project
-      run: dotnet build YourVBProject.sln --configuration Release
+      run: dotnet build Autodatenbank 3.0.sln --configuration Release
 
     # 5. Tests ausführen
     - name: Run VB.NET Tests
-      run: dotnet test YourVBProject.sln --no-build --verbosity normal
+      run: dotnet test Autodatenbank 3.0.sln --no-build --verbosity normal
