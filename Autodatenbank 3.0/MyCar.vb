@@ -281,11 +281,6 @@ Public Class MyCar
                             End If
 
 
-                            ' Labels hinzufügen
-
-
-
-                            ' Panel zum FlowLayoutPanel hinzufügen
                             FlowLayoutPanel1.Controls.Add(RefillPanel)
 
 
