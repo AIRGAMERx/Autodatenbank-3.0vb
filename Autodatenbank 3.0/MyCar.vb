@@ -202,122 +202,231 @@ Public Class MyCar
             con.Open()
             Using cmd As New MySqlCommand(query, con)
                 cmd.Parameters.AddWithValue("@Kennzeichen", Kennzeichen)
+
                 Using reader As MySqlDataReader = cmd.ExecuteReader
                     If reader.HasRows Then
                         While reader.Read()
+                            ' Schriftarten definieren
                             Dim textFont As New Font(Font.FontFamily, 12, FontStyle.Regular)
                             Dim boldFont As New Font(Font.FontFamily, 12, FontStyle.Bold)
+
+                            ' TableLayoutPanel für die Anzeige erstellen
                             Dim RefillPanel As New TableLayoutPanel With {
                                 .BorderStyle = BorderStyle.FixedSingle,
                                 .Width = 350,
-                                .Height = 150,
+                                .Height = 250,
                                 .Margin = New Padding(10),
-                                .BackColor = Color.FromArgb(150, Color.LightGray),
-                                .Padding = New Padding(10)
+                                .BackColor = Color.FromArgb(220, Color.LightGray),
+                                .Padding = New Padding(10),
+                                .RowCount = 7,
+                                .ColumnCount = 2
                             }
 
-                            ' Labels erstellen
-                            Dim Datum As New Label With {
-                                .Text = "Datum: " & If(reader.IsDBNull(reader.GetOrdinal("Datum")), "", reader.GetDateTime(reader.GetOrdinal("Datum")).ToString("dd.MM.yyyy")),
-                                .AutoSize = True,
+                            ' Spaltenbreite festlegen
+                            RefillPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 40)) ' Beschriftungen
+                            RefillPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 60)) ' Werte
+
+                            ' Daten aus der Datenbank lesen und Labels erstellen
+                            Dim DatumLabel As New Label With {
+                                .Text = "Datum:",
                                 .Font = boldFont,
-                                .ForeColor = Color.DarkBlue
+                                .ForeColor = Color.DarkBlue,
+                                .TextAlign = ContentAlignment.MiddleLeft
                             }
-                            Dim Menge As New Label With {
-                                .Text = "Liter: " & If(reader.IsDBNull(reader.GetOrdinal("Kraftstoffmenge")), "", reader.GetDouble(reader.GetOrdinal("Kraftstoffmenge")).ToString("F2")) & "l",
-                                .AutoSize = True,
-                                .Font = boldFont,
-                                .ForeColor = Color.Green
-                            }
-                            Dim Preis As New Label With {
-                                .Text = "Preis: " & If(reader.IsDBNull(reader.GetOrdinal("PPT")), "", reader.GetDouble(reader.GetOrdinal("PPT")).ToString("C2")),
-                                .AutoSize = True,
-                                .Font = boldFont,
-                                .ForeColor = Color.Red
-                            }
-                            Dim Strecke As New Label With {
-                                .Text = "Wegstrecke: " & If(reader.IsDBNull(reader.GetOrdinal("Wegstrecke")), "", reader.GetString(reader.GetOrdinal("Wegstrecke")).ToString),
-                                .AutoSize = True,
-                                .Font = boldFont,
-                                .ForeColor = Color.Red
+                            Dim DatumValue As New Label With {
+                                .Text = If(reader.IsDBNull(reader.GetOrdinal("Datum")), "N/A", reader.GetDateTime(reader.GetOrdinal("Datum")).ToString("dd.MM.yyyy")),
+                                .Font = textFont,
+                                .ForeColor = Color.DarkBlue,
+                                .TextAlign = ContentAlignment.MiddleRight
                             }
 
-                            Dim Verbrauch As New Label With {
-                                .Text = "Verbrauch/100km: " & If(reader.IsDBNull(reader.GetOrdinal("VerbrauchPro100km")), "", reader.GetDouble(reader.GetOrdinal("VerbrauchPro100km")).ToString("C2")),
-                                .AutoSize = True,
+                            Dim MengeLabel As New Label With {
+                                .Text = "Liter:",
                                 .Font = boldFont,
-                                .ForeColor = Color.Red
+                                .ForeColor = Color.Green,
+                                .TextAlign = ContentAlignment.MiddleLeft
                             }
-                            RefillPanel.Controls.Add(Datum)
-                            RefillPanel.Controls.Add(Menge)
-                            RefillPanel.Controls.Add(Preis)
-                            RefillPanel.Controls.Add(Strecke)
-                            RefillPanel.Controls.Add(Verbrauch)
+                            Dim MengeValue As New Label With {
+                                .Text = If(reader.IsDBNull(reader.GetOrdinal("Kraftstoffmenge")), "N/A", reader.GetDouble(reader.GetOrdinal("Kraftstoffmenge")).ToString("F2") & " l"),
+                                .Font = textFont,
+                                .ForeColor = Color.Green,
+                                .TextAlign = ContentAlignment.MiddleRight
+                            }
 
+                            Dim PreisLabel As New Label With {
+                                .Text = "Preis:",
+                                .Font = boldFont,
+                                .ForeColor = Color.Red,
+                                .TextAlign = ContentAlignment.MiddleLeft
+                            }
+                            Dim PreisValue As New Label With {
+                                .Text = If(reader.IsDBNull(reader.GetOrdinal("PPT")), "N/A", reader.GetDouble(reader.GetOrdinal("PPT")).ToString("C2")),
+                                .Font = textFont,
+                                .ForeColor = Color.Red,
+                                .TextAlign = ContentAlignment.MiddleRight
+                            }
 
+                            Dim StreckeLabel As New Label With {
+                                .Text = "Wegstrecke:",
+                                .Font = boldFont,
+                                .ForeColor = Color.Black,
+                                .TextAlign = ContentAlignment.MiddleLeft
+                            }
+                            Dim StreckeValue As New Label With {
+                                .Text = If(reader.IsDBNull(reader.GetOrdinal("Wegstrecke")), "N/A", reader.GetString(reader.GetOrdinal("Wegstrecke")) & " km"),
+                                .Font = textFont,
+                                .ForeColor = Color.Black,
+                                .TextAlign = ContentAlignment.MiddleRight
+                            }
+
+                            Dim VerbrauchLabel As New Label With {
+                                .Text = "Verbrauch/100km:",
+                                .Font = boldFont,
+                                .ForeColor = Color.Purple,
+                                .TextAlign = ContentAlignment.MiddleLeft
+                            }
+                            Dim VerbrauchValue As New Label With {
+                                .Text = If(reader.IsDBNull(reader.GetOrdinal("VerbrauchPro100km")), "N/A", reader.GetDouble(reader.GetOrdinal("VerbrauchPro100km")).ToString("F2") & " l/100km"),
+                                .Font = textFont,
+                                .ForeColor = Color.Purple,
+                                .TextAlign = ContentAlignment.MiddleRight
+                            }
+
+                            ' Labels dem Panel hinzufügen
+                            RefillPanel.Controls.Add(DatumLabel, 0, 0)
+                            RefillPanel.Controls.Add(DatumValue, 1, 0)
+                            RefillPanel.Controls.Add(MengeLabel, 0, 1)
+                            RefillPanel.Controls.Add(MengeValue, 1, 1)
+                            RefillPanel.Controls.Add(PreisLabel, 0, 2)
+                            RefillPanel.Controls.Add(PreisValue, 1, 2)
+                            RefillPanel.Controls.Add(StreckeLabel, 0, 3)
+                            RefillPanel.Controls.Add(StreckeValue, 1, 3)
+                            RefillPanel.Controls.Add(VerbrauchLabel, 0, 4)
+                            RefillPanel.Controls.Add(VerbrauchValue, 1, 4)
+
+                            ' Geocoding-Daten
                             Dim lat As Nullable(Of Double) = If(Not reader.IsDBNull(reader.GetOrdinal("latitude")), reader.GetDouble(reader.GetOrdinal("latitude")), CType(Nothing, Nullable(Of Double)))
                             Dim lon As Nullable(Of Double) = If(Not reader.IsDBNull(reader.GetOrdinal("longitude")), reader.GetDouble(reader.GetOrdinal("longitude")), CType(Nothing, Nullable(Of Double)))
 
-                            If CBool(lat.HasValue & lon.HasValue) Then
-
-
+                            If lat.HasValue AndAlso lon.HasValue Then
+                                Console.WriteLine($"Latitude: {lat}, Longitude: {lon}")
                                 Dim geocoder As New Geocoder
                                 Try
-                                    Dim adress As String = Await geocoder.GetAddress(CDbl(lat), CDbl(lon))
-                                    Dim Standort As New Label With {
-                                    .Text = "Standort: " & adress,
-                                    .AutoSize = True,
-                                    .Font = boldFont,
-                                    .ForeColor = Color.Red
-                                }
+                                    Dim adress As String = Await geocoder.GetAddress(lat.Value, lon.Value)
+                                    Console.WriteLine($"Adresse: {adress}")
 
-                                    RefillPanel.Controls.Add(Standort)
+                                    ' Tag für das gesamte Panel setzen
+                                    RefillPanel.Tag = $"{adress}!{lat.Value}!{lon.Value}"
+
+                                    Dim StandortLabel As New Label With {
+                                        .Text = "Standort:",
+                                        .Font = boldFont,
+                                        .ForeColor = Color.Orange,
+                                        .TextAlign = ContentAlignment.MiddleLeft
+                                    }
+                                    Dim StandortValue As New Label With {
+                                        .Text = adress,
+                                        .Font = textFont,
+                                        .ForeColor = Color.Orange,
+                                        .TextAlign = ContentAlignment.TopLeft,
+                                        .AutoSize = True
+                                    }
+
+                                    RefillPanel.Controls.Add(StandortLabel, 0, 5)
+                                    RefillPanel.Controls.Add(StandortValue, 1, 5)
                                 Catch ex As Exception
-
+                                    Console.WriteLine($"Fehler beim Geocoding: {ex.Message}")
                                 End Try
-
-
-
                             End If
 
+                            ' Click-Event registrieren
+                            AddHandler RefillPanel.Click, AddressOf Panel_Click
 
+                            ' Panel zum FlowLayoutPanel hinzufügen
                             FlowLayoutPanel1.Controls.Add(RefillPanel)
-
-
                         End While
+                    Else
+                        MessageBox.Show("Keine Daten gefunden.")
                     End If
-
-
-
-
-
-
                 End Using
-
-
             End Using
-
         End Using
-
     End Sub
+
+    ' Panel-Click-Handler
+    Private Sub Panel_Click(sender As Object, e As EventArgs)
+        Dim clickedPanel As TableLayoutPanel = CType(sender, TableLayoutPanel)
+
+        ' Prüfen, ob ein Tag gesetzt ist
+        If clickedPanel.Tag IsNot Nothing Then
+            ' Tag auslesen (z. B. "Adresse!latitude!longitude")
+            Dim tagData As String = clickedPanel.Tag.ToString()
+            Dim tagParts As String() = tagData.Split("!"c)
+
+            If tagParts.Length >= 3 Then
+                ' Rohdaten aus dem Tag lesen
+                Dim rawLatitude As String = tagParts(1)
+                Dim rawLongitude As String = tagParts(2)
+
+                Console.WriteLine($"Rohdaten Latitude: {rawLatitude}, Longitude: {rawLongitude}")
+
+                ' Punkt hinter der zweiten Stelle einfügen
+                Dim latitudeFormatted As String = rawLatitude.Replace(",", ".")
+                Dim longitudeFormatted As String = rawLongitude.Replace(",", ".")
+
+                ' URL für Google Maps erstellen
+                Dim googleMapsUrl As String = $"https://www.google.com/maps?q={latitudeFormatted},{longitudeFormatted}"
+
+                ' URL im Standardbrowser öffnen
+                Try
+                    Process.Start(New ProcessStartInfo With {
+                        .FileName = googleMapsUrl,
+                        .UseShellExecute = True ' Erzwingt das Öffnen im Standardbrowser
+                    })
+                Catch ex As Exception
+                    MsgBox($"Fehler beim Öffnen von Google Maps: {ex.Message}")
+                End Try
+            Else
+                MsgBox("Ungültige Tag-Daten für das Panel.")
+            End If
+        Else
+            MsgBox("Kein Tag gesetzt!")
+        End If
+    End Sub
+
+
+
 
 
 End Class
 
 Public Class Geocoder
-    Private Const BaseUrl As String = "https://nominatim.openstreetmap.org/reverse"
+  
 
     Public Async Function GetAddress(latitude As Double, longitude As Double) As Task(Of String)
         Dim client As New HttpClient()
-        Dim url As String = $"{BaseUrl}?lat={latitude}&lon={longitude}&format=json"
+        Dim email As String = My.Settings.LicenseEmail
+        ' Setzen des User-Agent-Headers
+        client.DefaultRequestHeaders.UserAgent.ParseAdd($"Autodatenbank/3.0 ({email})")
 
-        Dim response = Await client.GetStringAsync(url)
-        Dim json = JObject.Parse(response)
+        Dim url As String = $"https://nominatim.openstreetmap.org/reverse?lat={latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}&lon={longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}&format=json"
 
-        If json.ContainsKey("display_name") Then
-            Return json("display_name").ToString()
+
+        Dim response = Await client.GetAsync(url)
+
+        ' Überprüfen, ob die Anfrage erfolgreich war
+        If response.IsSuccessStatusCode Then
+            Dim responseBody = Await response.Content.ReadAsStringAsync()
+            Dim json = JObject.Parse(responseBody)
+
+            If json.ContainsKey("display_name") Then
+                Return json("display_name").ToString()
+            Else
+                Throw New Exception("Keine Adresse gefunden.")
+            End If
         Else
-            Throw New Exception("Keine Adresse gefunden.")
+            ' Fehler werfen, wenn der Statuscode nicht erfolgreich ist
+            Throw New HttpRequestException($"Fehler beim Geocoding: Der Antwortstatuscode gibt keinen Erfolg an: {CInt(response.StatusCode)} ({response.ReasonPhrase}).")
         End If
     End Function
 End Class
