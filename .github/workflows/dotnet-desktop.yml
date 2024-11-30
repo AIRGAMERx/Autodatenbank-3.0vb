@@ -1,4 +1,4 @@
-name: Build and Test VB.NET Project
+name: Build and Test VB.NET Framework Project
 
 on:
   push:
@@ -14,23 +14,26 @@ jobs:
 
     steps:
     # 1. Repository auschecken
-    - name: Checkout repository
+    - name: Checkout Repository
       uses: actions/checkout@v3
 
-    # 2. .NET SDK einrichten
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+    # 2. MSBuild verwenden, um das Projekt zu bauen
+    - name: Build Project
+      run: msbuild Autodatenbank3.sln /p:Configuration=Release
+
+    # 3. Optional: Tests ausführen, falls vorhanden
+    - name: Run Unit Tests
+      run: vstest.console.exe Autodatenbank.Tests.dll /Platform:x64
+
+    # 4. Erstellte .exe finden und signieren
+    - name: Sign EXE File
+      run: |
+        echo "${{ secrets.CERTIFICATE_PFX }}" | base64 -d > cert.pfx
+        "C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe" sign /f cert.pfx /p "${{ secrets.CERTIFICATE_PASSWORD }}" /t http://timestamp.digicert.com bin\Release\Autodatenbank.exe
+
+    # 5. Optional: Artefakt hochladen
+    - name: Upload EXE Artifact
+      uses: actions/upload-artifact@v3
       with:
-        dotnet-version: 4.8 
-
-    # 3. Abhängigkeiten wiederherstellen
-    - name: Restore dependencies
-      run: dotnet restore Autodatenbank 3.0.sln
-
-    # 4. Projekt bauen
-    - name: Build VB.NET Project
-      run: dotnet build Autodatenbank 3.0.sln --configuration Release
-
-    # 5. Tests ausführen
-    - name: Run VB.NET Tests
-      run: dotnet test Autodatenbank 3.0.sln --no-build --verbosity normal
+        name: signed-exe
+        path: bin\Release\Autodatenbank.exe
