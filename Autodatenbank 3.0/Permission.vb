@@ -14,7 +14,7 @@
 Module Permission
 
     Public Sub LoadPermissionTable()
-        SigninSettings.FlowLayoutPanel1.Controls.Clear()
+        AdminSettings.FlowLayoutPanel1.Controls.Clear()
         Dim connection As New MySqlConnection(My.Settings.connectionstring)
 
         Try
@@ -33,7 +33,7 @@ Module Permission
                             .Key = reader.GetString("Key")
                         }
 
-                            SigninSettings.FillFlowLayoutPanel(Role.RoleName, Role.Key)
+                            AdminSettings.FillFlowLayoutPanel(Role.RoleName, Role.Key)
                         End While
                     End If
 

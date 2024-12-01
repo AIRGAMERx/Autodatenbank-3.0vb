@@ -159,11 +159,13 @@ Public Class Autodatenbank
         ' Einträge
         If GetPermission(p, 4) = False Then
             LBL_NewEntry.Visible = False
+            TSMI_Checklistedit.Visible = False
         End If
 
         If GetPermission(p, 5) = False Then
             TSMI_Eintrag_Bearbeiten.Visible = False
             BTN_SaveCarData.Visible = False
+            TSMI_ChecklistOpen.Visible = False
         End If
 
         If GetPermission(p, 6) = False Then
@@ -1121,7 +1123,7 @@ Public Class Autodatenbank
     Private Sub AnmeldungToolStripMenuItem1_Click_1(sender As Object, e As EventArgs) Handles TSMI_Admin.Click
         If LoginSetting = True Then
             If GetPermission(My.Settings.PermissionKey, 1) OrElse GetPermission(My.Settings.PermissionKey, 2) OrElse GetPermission(My.Settings.PermissionKey, 3) Then
-                SigninSettings.Show()
+                AdminSettings.Show()
                 EditData = True
             Else
                 Select Case True
@@ -1132,7 +1134,7 @@ Public Class Autodatenbank
                 End Select
             End If
         Else
-            SigninSettings.Show()
+            AdminSettings.Show()
             EditData = True
         End If
     End Sub
@@ -1364,6 +1366,14 @@ Public Class Autodatenbank
 
     Private Sub TSMI_MyCar_Click(sender As Object, e As EventArgs) Handles TSMI_MyCar.Click
         MyCar.Show()
+    End Sub
+
+    Private Sub TSMI_Checklistedit_Click(sender As Object, e As EventArgs) Handles TSMI_Checklistedit.Click
+        ChecklistEdit.Show()
+    End Sub
+
+    Private Sub TSMI_ChecklistOpen_Click(sender As Object, e As EventArgs) Handles TSMI_ChecklistOpen.Click
+        WorkWithChecklist.Show()
     End Sub
 End Class
 

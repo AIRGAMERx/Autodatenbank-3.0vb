@@ -22,7 +22,8 @@
       "PR",
       "LISTPR",
       "ShowCompleteEntry",
-      "MyCar"
+      "MyCar",
+      "Checklist"
   }
 
 End Module

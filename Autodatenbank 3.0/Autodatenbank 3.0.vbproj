@@ -223,6 +223,12 @@
     <Compile Include="Autodatenbank.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ChecklistEdit.Designer.vb">
+      <DependentUpon>ChecklistEdit.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ChecklistEdit.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="CreateReportForm.Designer.vb">
       <DependentUpon>CreateReportForm.vb</DependentUpon>
     </Compile>
@@ -371,10 +377,10 @@
     <Compile Include="ShowCompleteEntry.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SignInSettings.Designer.vb">
-      <DependentUpon>SignInSettings.vb</DependentUpon>
+    <Compile Include="AdminSettings.Designer.vb">
+      <DependentUpon>AdminSettings.vb</DependentUpon>
     </Compile>
-    <Compile Include="SignInSettings.vb">
+    <Compile Include="AdminSettings.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Smartphone_verification.Designer.vb">
@@ -408,10 +414,22 @@
     <Compile Include="Welcome.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="WorkWithChecklist.Designer.vb">
+      <DependentUpon>WorkWithChecklist.vb</DependentUpon>
+    </Compile>
+    <Compile Include="WorkWithChecklist.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Autodatenbank.resx">
       <DependentUpon>Autodatenbank.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ChecklistEdit.ku-Arab-IQ.resx">
+      <DependentUpon>ChecklistEdit.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ChecklistEdit.resx">
+      <DependentUpon>ChecklistEdit.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CreateReportForm.resx">
       <DependentUpon>CreateReportForm.vb</DependentUpon>
@@ -479,8 +497,8 @@
     <EmbeddedResource Include="ShowCompleteEntry.resx">
       <DependentUpon>ShowCompleteEntry.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SignInSettings.resx">
-      <DependentUpon>SignInSettings.vb</DependentUpon>
+    <EmbeddedResource Include="AdminSettings.resx">
+      <DependentUpon>AdminSettings.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Smartphone_verification.resx">
       <DependentUpon>Smartphone_verification.vb</DependentUpon>
@@ -496,6 +514,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Welcome.resx">
       <DependentUpon>Welcome.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WorkWithChecklist.resx">
+      <DependentUpon>WorkWithChecklist.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

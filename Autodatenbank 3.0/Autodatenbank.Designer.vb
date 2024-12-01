@@ -47,32 +47,14 @@ Partial Class Autodatenbank
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.LBL_NewEntry = New System.Windows.Forms.ToolStripLabel()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
-        Me.TSB_UploadFile = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripDropDownButton2 = New System.Windows.Forms.ToolStripDropDownButton()
-        Me.EinträgeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TeilenummernToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.InfoZuSchlüsselnummerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.PRNummerEntschlüsselnToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator9 = New System.Windows.Forms.ToolStripSeparator()
-        Me.LBL_EditCustomer = New System.Windows.Forms.ToolStripButton()
+        Me.TSMI_MyCar = New System.Windows.Forms.ToolStripLabel()
         Me.LBL_Logout = New System.Windows.Forms.ToolStripLabel()
         Me.LBL_Login = New System.Windows.Forms.ToolStripLabel()
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripDropDownButton1 = New System.Windows.Forms.ToolStripDropDownButton()
-        Me.TSMI_Server_Verbindungen = New System.Windows.Forms.ToolStripMenuItem()
-        Me.NachUpdateToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TSMI_Admin = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TSMI_Bericht_Einstellungen = New System.Windows.Forms.ToolStripMenuItem()
-        Me.AnsichtToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TSMI_LogFile_Oeffnen = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TSM_Benutzer = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TSM_Benutzer_Erstellen = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TSM_Benutzer_Bearbeiten = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
-        Me.TSB_Issue = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
-        Me.TSMI_MyCar = New System.Windows.Forms.ToolStripLabel()
         Me.BTN_CreateReport = New System.Windows.Forms.Button()
         Me.lbl_CreateReport = New System.Windows.Forms.Label()
         Me.FLP_Main = New System.Windows.Forms.FlowLayoutPanel()
@@ -98,7 +80,6 @@ Partial Class Autodatenbank
         Me.TXB_KeyNumber = New System.Windows.Forms.TextBox()
         Me.TLP_Main1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Label12 = New System.Windows.Forms.Label()
-        Me.PB_Adressbook = New System.Windows.Forms.PictureBox()
         Me.TXB_Owner = New System.Windows.Forms.TextBox()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.TXB_BuyDate = New System.Windows.Forms.TextBox()
@@ -116,6 +97,28 @@ Partial Class Autodatenbank
         Me.NI_InspectionDate = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.NI_Successful = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.NI_Error = New System.Windows.Forms.NotifyIcon(Me.components)
+        Me.PB_Adressbook = New System.Windows.Forms.PictureBox()
+        Me.TSB_UploadFile = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripDropDownButton2 = New System.Windows.Forms.ToolStripDropDownButton()
+        Me.EinträgeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TeilenummernToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.InfoZuSchlüsselnummerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PRNummerEntschlüsselnToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LBL_EditCustomer = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripDropDownButton1 = New System.Windows.Forms.ToolStripDropDownButton()
+        Me.TSMI_Server_Verbindungen = New System.Windows.Forms.ToolStripMenuItem()
+        Me.NachUpdateToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TSMI_Admin = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TSMI_Bericht_Einstellungen = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AnsichtToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TSMI_LogFile_Oeffnen = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TSM_Benutzer = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TSM_Benutzer_Erstellen = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TSM_Benutzer_Bearbeiten = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TSB_Issue = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripDropDownButton3 = New System.Windows.Forms.ToolStripDropDownButton()
+        Me.TSMI_Checklistedit = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TSMI_ChecklistOpen = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.dgv, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.DatabaseMenuStrip.SuspendLayout()
         CType(Me.dgv2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -123,8 +126,8 @@ Partial Class Autodatenbank
         Me.ToolStrip1.SuspendLayout()
         Me.FLP_Main.SuspendLayout()
         Me.TLP_Main1.SuspendLayout()
-        CType(Me.PB_Adressbook, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TableLayoutPanel1.SuspendLayout()
+        CType(Me.PB_Adressbook, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'dgv
@@ -245,7 +248,7 @@ Partial Class Autodatenbank
         '
         'ToolStrip1
         '
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSL_Neues_Auto, Me.ToolStripSeparator2, Me.LBL_NewCustomer, Me.ToolStripSeparator5, Me.LBL_NewEntry, Me.ToolStripSeparator1, Me.TSB_UploadFile, Me.ToolStripSeparator3, Me.ToolStripDropDownButton2, Me.ToolStripSeparator9, Me.LBL_EditCustomer, Me.TSMI_MyCar, Me.LBL_Logout, Me.LBL_Login, Me.ToolStripSeparator6, Me.ToolStripDropDownButton1, Me.ToolStripSeparator7, Me.TSB_Issue, Me.ToolStripSeparator8})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSL_Neues_Auto, Me.ToolStripSeparator2, Me.LBL_NewCustomer, Me.ToolStripSeparator5, Me.LBL_NewEntry, Me.ToolStripSeparator1, Me.TSB_UploadFile, Me.ToolStripSeparator3, Me.ToolStripDropDownButton2, Me.ToolStripSeparator9, Me.LBL_EditCustomer, Me.TSMI_MyCar, Me.LBL_Logout, Me.LBL_Login, Me.ToolStripSeparator6, Me.ToolStripDropDownButton1, Me.ToolStripSeparator7, Me.TSB_Issue, Me.ToolStripSeparator8, Me.ToolStripDropDownButton3})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(1584, 25)
@@ -286,67 +289,23 @@ Partial Class Autodatenbank
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
         Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 25)
         '
-        'TSB_UploadFile
-        '
-        Me.TSB_UploadFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.TSB_UploadFile.Image = CType(resources.GetObject("TSB_UploadFile.Image"), System.Drawing.Image)
-        Me.TSB_UploadFile.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.TSB_UploadFile.Name = "TSB_UploadFile"
-        Me.TSB_UploadFile.Size = New System.Drawing.Size(23, 22)
-        Me.TSB_UploadFile.Text = "Datei Hochladen"
-        '
         'ToolStripSeparator3
         '
         Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
         Me.ToolStripSeparator3.Size = New System.Drawing.Size(6, 25)
-        '
-        'ToolStripDropDownButton2
-        '
-        Me.ToolStripDropDownButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripDropDownButton2.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EinträgeToolStripMenuItem, Me.TeilenummernToolStripMenuItem, Me.InfoZuSchlüsselnummerToolStripMenuItem, Me.PRNummerEntschlüsselnToolStripMenuItem})
-        Me.ToolStripDropDownButton2.Image = CType(resources.GetObject("ToolStripDropDownButton2.Image"), System.Drawing.Image)
-        Me.ToolStripDropDownButton2.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ToolStripDropDownButton2.Name = "ToolStripDropDownButton2"
-        Me.ToolStripDropDownButton2.Size = New System.Drawing.Size(29, 22)
-        Me.ToolStripDropDownButton2.Text = "Suche"
-        '
-        'EinträgeToolStripMenuItem
-        '
-        Me.EinträgeToolStripMenuItem.Name = "EinträgeToolStripMenuItem"
-        Me.EinträgeToolStripMenuItem.Size = New System.Drawing.Size(281, 22)
-        Me.EinträgeToolStripMenuItem.Text = "Einträge"
-        '
-        'TeilenummernToolStripMenuItem
-        '
-        Me.TeilenummernToolStripMenuItem.Name = "TeilenummernToolStripMenuItem"
-        Me.TeilenummernToolStripMenuItem.Size = New System.Drawing.Size(281, 22)
-        Me.TeilenummernToolStripMenuItem.Text = "Teilenummern"
-        '
-        'InfoZuSchlüsselnummerToolStripMenuItem
-        '
-        Me.InfoZuSchlüsselnummerToolStripMenuItem.Name = "InfoZuSchlüsselnummerToolStripMenuItem"
-        Me.InfoZuSchlüsselnummerToolStripMenuItem.Size = New System.Drawing.Size(281, 22)
-        Me.InfoZuSchlüsselnummerToolStripMenuItem.Text = "Info zu Schlüsselnummer"
-        '
-        'PRNummerEntschlüsselnToolStripMenuItem
-        '
-        Me.PRNummerEntschlüsselnToolStripMenuItem.Name = "PRNummerEntschlüsselnToolStripMenuItem"
-        Me.PRNummerEntschlüsselnToolStripMenuItem.Size = New System.Drawing.Size(281, 22)
-        Me.PRNummerEntschlüsselnToolStripMenuItem.Text = "PR-Nummer entschlüsseln (VAG ONLY)"
         '
         'ToolStripSeparator9
         '
         Me.ToolStripSeparator9.Name = "ToolStripSeparator9"
         Me.ToolStripSeparator9.Size = New System.Drawing.Size(6, 25)
         '
-        'LBL_EditCustomer
+        'TSMI_MyCar
         '
-        Me.LBL_EditCustomer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.LBL_EditCustomer.Image = Global.Autodatenbank_3._0.My.Resources.Resources.adressbook
-        Me.LBL_EditCustomer.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.LBL_EditCustomer.Name = "LBL_EditCustomer"
-        Me.LBL_EditCustomer.Size = New System.Drawing.Size(23, 22)
-        Me.LBL_EditCustomer.Text = "Kunden bearbeiten"
+        Me.TSMI_MyCar.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+        Me.TSMI_MyCar.Name = "TSMI_MyCar"
+        Me.TSMI_MyCar.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.TSMI_MyCar.Size = New System.Drawing.Size(63, 22)
+        Me.TSMI_MyCar.Text = "Mein Auto"
         '
         'LBL_Logout
         '
@@ -370,97 +329,15 @@ Partial Class Autodatenbank
         Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
         Me.ToolStripSeparator6.Size = New System.Drawing.Size(6, 25)
         '
-        'ToolStripDropDownButton1
-        '
-        Me.ToolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripDropDownButton1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSMI_Server_Verbindungen, Me.NachUpdateToolStripMenuItem, Me.TSMI_Admin, Me.TSMI_Bericht_Einstellungen, Me.AnsichtToolStripMenuItem1, Me.TSMI_LogFile_Oeffnen, Me.TSM_Benutzer})
-        Me.ToolStripDropDownButton1.Image = CType(resources.GetObject("ToolStripDropDownButton1.Image"), System.Drawing.Image)
-        Me.ToolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ToolStripDropDownButton1.Name = "ToolStripDropDownButton1"
-        Me.ToolStripDropDownButton1.Size = New System.Drawing.Size(29, 22)
-        Me.ToolStripDropDownButton1.Text = "Einstellungen"
-        '
-        'TSMI_Server_Verbindungen
-        '
-        Me.TSMI_Server_Verbindungen.Name = "TSMI_Server_Verbindungen"
-        Me.TSMI_Server_Verbindungen.Size = New System.Drawing.Size(225, 22)
-        Me.TSMI_Server_Verbindungen.Text = "Server Verbindungen"
-        '
-        'NachUpdateToolStripMenuItem
-        '
-        Me.NachUpdateToolStripMenuItem.Name = "NachUpdateToolStripMenuItem"
-        Me.NachUpdateToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
-        Me.NachUpdateToolStripMenuItem.Text = "Nach Updates suchen"
-        '
-        'TSMI_Admin
-        '
-        Me.TSMI_Admin.Name = "TSMI_Admin"
-        Me.TSMI_Admin.Size = New System.Drawing.Size(225, 22)
-        Me.TSMI_Admin.Text = "Administrative Einstellungen"
-        '
-        'TSMI_Bericht_Einstellungen
-        '
-        Me.TSMI_Bericht_Einstellungen.Name = "TSMI_Bericht_Einstellungen"
-        Me.TSMI_Bericht_Einstellungen.Size = New System.Drawing.Size(225, 22)
-        Me.TSMI_Bericht_Einstellungen.Text = "Bericht"
-        '
-        'AnsichtToolStripMenuItem1
-        '
-        Me.AnsichtToolStripMenuItem1.Name = "AnsichtToolStripMenuItem1"
-        Me.AnsichtToolStripMenuItem1.Size = New System.Drawing.Size(225, 22)
-        Me.AnsichtToolStripMenuItem1.Text = "Ansicht"
-        '
-        'TSMI_LogFile_Oeffnen
-        '
-        Me.TSMI_LogFile_Oeffnen.Name = "TSMI_LogFile_Oeffnen"
-        Me.TSMI_LogFile_Oeffnen.Size = New System.Drawing.Size(225, 22)
-        Me.TSMI_LogFile_Oeffnen.Text = "LogFile öffnen"
-        '
-        'TSM_Benutzer
-        '
-        Me.TSM_Benutzer.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSM_Benutzer_Erstellen, Me.TSM_Benutzer_Bearbeiten})
-        Me.TSM_Benutzer.Name = "TSM_Benutzer"
-        Me.TSM_Benutzer.Size = New System.Drawing.Size(225, 22)
-        Me.TSM_Benutzer.Text = "Benutzer"
-        '
-        'TSM_Benutzer_Erstellen
-        '
-        Me.TSM_Benutzer_Erstellen.Name = "TSM_Benutzer_Erstellen"
-        Me.TSM_Benutzer_Erstellen.Size = New System.Drawing.Size(130, 22)
-        Me.TSM_Benutzer_Erstellen.Text = "Erstellen"
-        '
-        'TSM_Benutzer_Bearbeiten
-        '
-        Me.TSM_Benutzer_Bearbeiten.Name = "TSM_Benutzer_Bearbeiten"
-        Me.TSM_Benutzer_Bearbeiten.Size = New System.Drawing.Size(130, 22)
-        Me.TSM_Benutzer_Bearbeiten.Text = "Bearbeiten"
-        '
         'ToolStripSeparator7
         '
         Me.ToolStripSeparator7.Name = "ToolStripSeparator7"
         Me.ToolStripSeparator7.Size = New System.Drawing.Size(6, 25)
         '
-        'TSB_Issue
-        '
-        Me.TSB_Issue.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.TSB_Issue.Image = CType(resources.GetObject("TSB_Issue.Image"), System.Drawing.Image)
-        Me.TSB_Issue.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.TSB_Issue.Name = "TSB_Issue"
-        Me.TSB_Issue.Size = New System.Drawing.Size(23, 22)
-        Me.TSB_Issue.Text = "Fehler Melden"
-        '
         'ToolStripSeparator8
         '
         Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
         Me.ToolStripSeparator8.Size = New System.Drawing.Size(6, 25)
-        '
-        'TSMI_MyCar
-        '
-        Me.TSMI_MyCar.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
-        Me.TSMI_MyCar.Name = "TSMI_MyCar"
-        Me.TSMI_MyCar.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.TSMI_MyCar.Size = New System.Drawing.Size(63, 22)
-        Me.TSMI_MyCar.Text = "Mein Auto"
         '
         'BTN_CreateReport
         '
@@ -732,17 +609,6 @@ Partial Class Autodatenbank
         Me.Label12.TabIndex = 48
         Me.Label12.Text = "Kunde"
         '
-        'PB_Adressbook
-        '
-        Me.PB_Adressbook.Anchor = System.Windows.Forms.AnchorStyles.Right
-        Me.PB_Adressbook.BackgroundImage = Global.Autodatenbank_3._0.My.Resources.Resources.adressbook
-        Me.PB_Adressbook.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.PB_Adressbook.Location = New System.Drawing.Point(228, 3)
-        Me.PB_Adressbook.Name = "PB_Adressbook"
-        Me.PB_Adressbook.Size = New System.Drawing.Size(23, 20)
-        Me.PB_Adressbook.TabIndex = 11
-        Me.PB_Adressbook.TabStop = False
-        '
         'TXB_Owner
         '
         Me.TXB_Owner.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -888,6 +754,165 @@ Partial Class Autodatenbank
         Me.NI_Error.Text = "NotifyIcon1"
         Me.NI_Error.Visible = True
         '
+        'PB_Adressbook
+        '
+        Me.PB_Adressbook.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.PB_Adressbook.BackgroundImage = Global.Autodatenbank_3._0.My.Resources.Resources.adressbook
+        Me.PB_Adressbook.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.PB_Adressbook.Location = New System.Drawing.Point(228, 3)
+        Me.PB_Adressbook.Name = "PB_Adressbook"
+        Me.PB_Adressbook.Size = New System.Drawing.Size(23, 20)
+        Me.PB_Adressbook.TabIndex = 11
+        Me.PB_Adressbook.TabStop = False
+        '
+        'TSB_UploadFile
+        '
+        Me.TSB_UploadFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.TSB_UploadFile.Image = CType(resources.GetObject("TSB_UploadFile.Image"), System.Drawing.Image)
+        Me.TSB_UploadFile.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.TSB_UploadFile.Name = "TSB_UploadFile"
+        Me.TSB_UploadFile.Size = New System.Drawing.Size(23, 22)
+        Me.TSB_UploadFile.Text = "Datei Hochladen"
+        '
+        'ToolStripDropDownButton2
+        '
+        Me.ToolStripDropDownButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.ToolStripDropDownButton2.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EinträgeToolStripMenuItem, Me.TeilenummernToolStripMenuItem, Me.InfoZuSchlüsselnummerToolStripMenuItem, Me.PRNummerEntschlüsselnToolStripMenuItem})
+        Me.ToolStripDropDownButton2.Image = CType(resources.GetObject("ToolStripDropDownButton2.Image"), System.Drawing.Image)
+        Me.ToolStripDropDownButton2.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.ToolStripDropDownButton2.Name = "ToolStripDropDownButton2"
+        Me.ToolStripDropDownButton2.Size = New System.Drawing.Size(29, 22)
+        Me.ToolStripDropDownButton2.Text = "Suche"
+        '
+        'EinträgeToolStripMenuItem
+        '
+        Me.EinträgeToolStripMenuItem.Name = "EinträgeToolStripMenuItem"
+        Me.EinträgeToolStripMenuItem.Size = New System.Drawing.Size(281, 22)
+        Me.EinträgeToolStripMenuItem.Text = "Einträge"
+        '
+        'TeilenummernToolStripMenuItem
+        '
+        Me.TeilenummernToolStripMenuItem.Name = "TeilenummernToolStripMenuItem"
+        Me.TeilenummernToolStripMenuItem.Size = New System.Drawing.Size(281, 22)
+        Me.TeilenummernToolStripMenuItem.Text = "Teilenummern"
+        '
+        'InfoZuSchlüsselnummerToolStripMenuItem
+        '
+        Me.InfoZuSchlüsselnummerToolStripMenuItem.Name = "InfoZuSchlüsselnummerToolStripMenuItem"
+        Me.InfoZuSchlüsselnummerToolStripMenuItem.Size = New System.Drawing.Size(281, 22)
+        Me.InfoZuSchlüsselnummerToolStripMenuItem.Text = "Info zu Schlüsselnummer"
+        '
+        'PRNummerEntschlüsselnToolStripMenuItem
+        '
+        Me.PRNummerEntschlüsselnToolStripMenuItem.Name = "PRNummerEntschlüsselnToolStripMenuItem"
+        Me.PRNummerEntschlüsselnToolStripMenuItem.Size = New System.Drawing.Size(281, 22)
+        Me.PRNummerEntschlüsselnToolStripMenuItem.Text = "PR-Nummer entschlüsseln (VAG ONLY)"
+        '
+        'LBL_EditCustomer
+        '
+        Me.LBL_EditCustomer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.LBL_EditCustomer.Image = Global.Autodatenbank_3._0.My.Resources.Resources.adressbook
+        Me.LBL_EditCustomer.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.LBL_EditCustomer.Name = "LBL_EditCustomer"
+        Me.LBL_EditCustomer.Size = New System.Drawing.Size(23, 22)
+        Me.LBL_EditCustomer.Text = "Kunden bearbeiten"
+        '
+        'ToolStripDropDownButton1
+        '
+        Me.ToolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.ToolStripDropDownButton1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSMI_Server_Verbindungen, Me.NachUpdateToolStripMenuItem, Me.TSMI_Admin, Me.TSMI_Bericht_Einstellungen, Me.AnsichtToolStripMenuItem1, Me.TSMI_LogFile_Oeffnen, Me.TSM_Benutzer})
+        Me.ToolStripDropDownButton1.Image = CType(resources.GetObject("ToolStripDropDownButton1.Image"), System.Drawing.Image)
+        Me.ToolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.ToolStripDropDownButton1.Name = "ToolStripDropDownButton1"
+        Me.ToolStripDropDownButton1.Size = New System.Drawing.Size(29, 22)
+        Me.ToolStripDropDownButton1.Text = "Einstellungen"
+        '
+        'TSMI_Server_Verbindungen
+        '
+        Me.TSMI_Server_Verbindungen.Name = "TSMI_Server_Verbindungen"
+        Me.TSMI_Server_Verbindungen.Size = New System.Drawing.Size(225, 22)
+        Me.TSMI_Server_Verbindungen.Text = "Server Verbindungen"
+        '
+        'NachUpdateToolStripMenuItem
+        '
+        Me.NachUpdateToolStripMenuItem.Name = "NachUpdateToolStripMenuItem"
+        Me.NachUpdateToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
+        Me.NachUpdateToolStripMenuItem.Text = "Nach Updates suchen"
+        '
+        'TSMI_Admin
+        '
+        Me.TSMI_Admin.Name = "TSMI_Admin"
+        Me.TSMI_Admin.Size = New System.Drawing.Size(225, 22)
+        Me.TSMI_Admin.Text = "Administrative Einstellungen"
+        '
+        'TSMI_Bericht_Einstellungen
+        '
+        Me.TSMI_Bericht_Einstellungen.Name = "TSMI_Bericht_Einstellungen"
+        Me.TSMI_Bericht_Einstellungen.Size = New System.Drawing.Size(225, 22)
+        Me.TSMI_Bericht_Einstellungen.Text = "Bericht"
+        '
+        'AnsichtToolStripMenuItem1
+        '
+        Me.AnsichtToolStripMenuItem1.Name = "AnsichtToolStripMenuItem1"
+        Me.AnsichtToolStripMenuItem1.Size = New System.Drawing.Size(225, 22)
+        Me.AnsichtToolStripMenuItem1.Text = "Ansicht"
+        '
+        'TSMI_LogFile_Oeffnen
+        '
+        Me.TSMI_LogFile_Oeffnen.Name = "TSMI_LogFile_Oeffnen"
+        Me.TSMI_LogFile_Oeffnen.Size = New System.Drawing.Size(225, 22)
+        Me.TSMI_LogFile_Oeffnen.Text = "LogFile öffnen"
+        '
+        'TSM_Benutzer
+        '
+        Me.TSM_Benutzer.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSM_Benutzer_Erstellen, Me.TSM_Benutzer_Bearbeiten})
+        Me.TSM_Benutzer.Name = "TSM_Benutzer"
+        Me.TSM_Benutzer.Size = New System.Drawing.Size(225, 22)
+        Me.TSM_Benutzer.Text = "Benutzer"
+        '
+        'TSM_Benutzer_Erstellen
+        '
+        Me.TSM_Benutzer_Erstellen.Name = "TSM_Benutzer_Erstellen"
+        Me.TSM_Benutzer_Erstellen.Size = New System.Drawing.Size(130, 22)
+        Me.TSM_Benutzer_Erstellen.Text = "Erstellen"
+        '
+        'TSM_Benutzer_Bearbeiten
+        '
+        Me.TSM_Benutzer_Bearbeiten.Name = "TSM_Benutzer_Bearbeiten"
+        Me.TSM_Benutzer_Bearbeiten.Size = New System.Drawing.Size(130, 22)
+        Me.TSM_Benutzer_Bearbeiten.Text = "Bearbeiten"
+        '
+        'TSB_Issue
+        '
+        Me.TSB_Issue.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.TSB_Issue.Image = CType(resources.GetObject("TSB_Issue.Image"), System.Drawing.Image)
+        Me.TSB_Issue.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.TSB_Issue.Name = "TSB_Issue"
+        Me.TSB_Issue.Size = New System.Drawing.Size(23, 22)
+        Me.TSB_Issue.Text = "Fehler Melden"
+        '
+        'ToolStripDropDownButton3
+        '
+        Me.ToolStripDropDownButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.ToolStripDropDownButton3.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSMI_Checklistedit, Me.TSMI_ChecklistOpen})
+        Me.ToolStripDropDownButton3.Image = CType(resources.GetObject("ToolStripDropDownButton3.Image"), System.Drawing.Image)
+        Me.ToolStripDropDownButton3.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.ToolStripDropDownButton3.Name = "ToolStripDropDownButton3"
+        Me.ToolStripDropDownButton3.Size = New System.Drawing.Size(29, 22)
+        Me.ToolStripDropDownButton3.Text = "ToolStripDropDownButton3"
+        '
+        'TSMI_Checklistedit
+        '
+        Me.TSMI_Checklistedit.Name = "TSMI_Checklistedit"
+        Me.TSMI_Checklistedit.Size = New System.Drawing.Size(241, 22)
+        Me.TSMI_Checklistedit.Text = "Ckeckliste erstellen / bearbeiten"
+        '
+        'TSMI_ChecklistOpen
+        '
+        Me.TSMI_ChecklistOpen.Name = "TSMI_ChecklistOpen"
+        Me.TSMI_ChecklistOpen.Size = New System.Drawing.Size(241, 22)
+        Me.TSMI_ChecklistOpen.Text = "Checkliste öffnen"
+        '
         'Autodatenbank
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -917,8 +942,8 @@ Partial Class Autodatenbank
         Me.FLP_Main.PerformLayout()
         Me.TLP_Main1.ResumeLayout(False)
         Me.TLP_Main1.PerformLayout()
-        CType(Me.PB_Adressbook, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TableLayoutPanel1.ResumeLayout(False)
+        CType(Me.PB_Adressbook, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1016,4 +1041,7 @@ Partial Class Autodatenbank
     Friend WithEvents TSM_Benutzer_Erstellen As ToolStripMenuItem
     Friend WithEvents TSM_Benutzer_Bearbeiten As ToolStripMenuItem
     Friend WithEvents TSMI_MyCar As ToolStripLabel
+    Friend WithEvents ToolStripDropDownButton3 As ToolStripDropDownButton
+    Friend WithEvents TSMI_Checklistedit As ToolStripMenuItem
+    Friend WithEvents TSMI_ChecklistOpen As ToolStripMenuItem
 End Class

@@ -19,7 +19,7 @@ Imports MySqlConnector
 '
 
 
-Public Class SigninSettings
+Public Class AdminSettings
     Dim CreateNewRole As Boolean = False
     Dim SelectetRoleName As String = ""
     Private Shared acr122u As New Sydesoft.NfcDevice.ACR122U

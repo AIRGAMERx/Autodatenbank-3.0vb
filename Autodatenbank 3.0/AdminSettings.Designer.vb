@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class SigninSettings
+Partial Class AdminSettings
     Inherits System.Windows.Forms.Form
 
     'Das Formular überschreibt den Löschvorgang, um die Komponentenliste zu bereinigen.
@@ -23,7 +23,7 @@ Partial Class SigninSettings
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(SigninSettings))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AdminSettings))
         Me.CB_SignActive = New System.Windows.Forms.CheckBox()
         Me.CB_RememberLogin = New System.Windows.Forms.CheckBox()
         Me.BTN_OpenSmartphoneVerification = New System.Windows.Forms.Button()
@@ -172,7 +172,7 @@ Partial Class SigninSettings
         Me.GB_Permission.Controls.Add(Me.FlowLayoutPanel1)
         Me.GB_Permission.Location = New System.Drawing.Point(411, 12)
         Me.GB_Permission.Name = "GB_Permission"
-        Me.GB_Permission.Size = New System.Drawing.Size(516, 468)
+        Me.GB_Permission.Size = New System.Drawing.Size(542, 468)
         Me.GB_Permission.TabIndex = 38
         Me.GB_Permission.TabStop = False
         Me.GB_Permission.Text = "Berechtigungsstufen bearbeiten"
@@ -346,9 +346,9 @@ Partial Class SigninSettings
         Me.CB_EditEntries.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CB_EditEntries.Location = New System.Drawing.Point(248, 233)
         Me.CB_EditEntries.Name = "CB_EditEntries"
-        Me.CB_EditEntries.Size = New System.Drawing.Size(144, 20)
+        Me.CB_EditEntries.Size = New System.Drawing.Size(291, 20)
         Me.CB_EditEntries.TabIndex = 18
-        Me.CB_EditEntries.Text = "Einträge bearbeiten"
+        Me.CB_EditEntries.Text = "Einträge bearbeiten / Checklisten bearbeiten"
         Me.CB_EditEntries.UseVisualStyleBackColor = True
         '
         'CB_CreateEntries
@@ -357,9 +357,9 @@ Partial Class SigninSettings
         Me.CB_CreateEntries.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CB_CreateEntries.Location = New System.Drawing.Point(248, 209)
         Me.CB_CreateEntries.Name = "CB_CreateEntries"
-        Me.CB_CreateEntries.Size = New System.Drawing.Size(130, 20)
+        Me.CB_CreateEntries.Size = New System.Drawing.Size(263, 20)
         Me.CB_CreateEntries.TabIndex = 17
-        Me.CB_CreateEntries.Text = "Einträge erstellen"
+        Me.CB_CreateEntries.Text = "Einträge erstellen / Checklisten erstellen"
         Me.CB_CreateEntries.UseVisualStyleBackColor = True
         '
         'FlowLayoutPanel1
@@ -370,17 +370,17 @@ Partial Class SigninSettings
         Me.FlowLayoutPanel1.Size = New System.Drawing.Size(225, 393)
         Me.FlowLayoutPanel1.TabIndex = 0
         '
-        'SigninSettings
+        'AdminSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(938, 492)
+        Me.ClientSize = New System.Drawing.Size(965, 490)
         Me.Controls.Add(Me.GB_Permission)
         Me.Controls.Add(Me.GroupBox3)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
-        Me.Name = "SigninSettings"
+        Me.Name = "AdminSettings"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Administrative Einstellungen"
         Me.GroupBox3.ResumeLayout(False)
