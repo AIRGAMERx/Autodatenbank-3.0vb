@@ -12,11 +12,17 @@ Public Class UploadFiles
     End Sub
 
     Private Sub BTN_Upload_Click(sender As Object, e As EventArgs) Handles BTN_Upload.Click
-        If TXB_FileName.Text.Length > 3 Then
-            UploadFile()
+        If TXB_FileName.Text.ToLower = "mycar" Then
+            MsgBox("mycar ist ein Systemreservierter string")
         Else
-            MsgBox("Bezeichnung muss mindestens 3 Zeichen enthalten")
+            If TXB_FileName.Text.Length > 3 Then
+                UploadFile()
+            Else
+                MsgBox("Bezeichnung muss mindestens 3 Zeichen enthalten")
+            End If
+
         End If
+
     End Sub
 
 

@@ -23,49 +23,30 @@ Partial Class WorkWithChecklist
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(WorkWithChecklist))
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.CBB_SavedCars = New System.Windows.Forms.ComboBox()
-        Me.CB_ListChecklist = New System.Windows.Forms.ComboBox()
+        Me.CBB_ListChecklist = New System.Windows.Forms.ComboBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.BTN_SaveChecklist = New System.Windows.Forms.Button()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.LBL_Description = New System.Windows.Forms.Label()
         Me.LB_ChecklistPoints = New System.Windows.Forms.CheckedListBox()
+        Me.CB_Finish = New System.Windows.Forms.CheckBox()
         Me.SuspendLayout()
         '
-        'Label1
+        'CBB_ListChecklist
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(13, 13)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(127, 20)
-        Me.Label1.TabIndex = 0
-        Me.Label1.Text = "Auto auswählen:"
-        '
-        'CBB_SavedCars
-        '
-        Me.CBB_SavedCars.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CBB_SavedCars.FormattingEnabled = True
-        Me.CBB_SavedCars.Location = New System.Drawing.Point(17, 36)
-        Me.CBB_SavedCars.Name = "CBB_SavedCars"
-        Me.CBB_SavedCars.Size = New System.Drawing.Size(235, 28)
-        Me.CBB_SavedCars.TabIndex = 1
-        '
-        'CB_ListChecklist
-        '
-        Me.CB_ListChecklist.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CB_ListChecklist.FormattingEnabled = True
-        Me.CB_ListChecklist.Location = New System.Drawing.Point(275, 36)
-        Me.CB_ListChecklist.Name = "CB_ListChecklist"
-        Me.CB_ListChecklist.Size = New System.Drawing.Size(1491, 28)
-        Me.CB_ListChecklist.TabIndex = 3
+        Me.CBB_ListChecklist.Enabled = False
+        Me.CBB_ListChecklist.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CBB_ListChecklist.FormattingEnabled = True
+        Me.CBB_ListChecklist.Location = New System.Drawing.Point(24, 36)
+        Me.CBB_ListChecklist.Name = "CBB_ListChecklist"
+        Me.CBB_ListChecklist.Size = New System.Drawing.Size(1741, 28)
+        Me.CBB_ListChecklist.TabIndex = 3
         '
         'Label2
         '
         Me.Label2.AutoSize = True
         Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.Location = New System.Drawing.Point(271, 13)
+        Me.Label2.Location = New System.Drawing.Point(20, 13)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(162, 20)
         Me.Label2.TabIndex = 2
@@ -77,7 +58,7 @@ Partial Class WorkWithChecklist
         Me.BTN_SaveChecklist.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!)
         Me.BTN_SaveChecklist.ForeColor = System.Drawing.Color.FromArgb(CType(CType(138, Byte), Integer), CType(CType(157, Byte), Integer), CType(CType(193, Byte), Integer))
         Me.BTN_SaveChecklist.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.BTN_SaveChecklist.Location = New System.Drawing.Point(1443, 873)
+        Me.BTN_SaveChecklist.Location = New System.Drawing.Point(1443, 861)
         Me.BTN_SaveChecklist.Name = "BTN_SaveChecklist"
         Me.BTN_SaveChecklist.Size = New System.Drawing.Size(323, 63)
         Me.BTN_SaveChecklist.TabIndex = 37
@@ -108,22 +89,32 @@ Partial Class WorkWithChecklist
         Me.LB_ChecklistPoints.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.LB_ChecklistPoints.Location = New System.Drawing.Point(24, 104)
         Me.LB_ChecklistPoints.Name = "LB_ChecklistPoints"
-        Me.LB_ChecklistPoints.Size = New System.Drawing.Size(1742, 739)
+        Me.LB_ChecklistPoints.Size = New System.Drawing.Size(1742, 697)
         Me.LB_ChecklistPoints.TabIndex = 40
+        '
+        'CB_Finish
+        '
+        Me.CB_Finish.AutoSize = True
+        Me.CB_Finish.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CB_Finish.Location = New System.Drawing.Point(1443, 807)
+        Me.CB_Finish.Name = "CB_Finish"
+        Me.CB_Finish.Size = New System.Drawing.Size(225, 24)
+        Me.CB_Finish.TabIndex = 41
+        Me.CB_Finish.Text = "Checkliste abgeschlossen ?"
+        Me.CB_Finish.UseVisualStyleBackColor = True
         '
         'WorkWithChecklist
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1778, 947)
+        Me.ClientSize = New System.Drawing.Size(1778, 933)
+        Me.Controls.Add(Me.CB_Finish)
         Me.Controls.Add(Me.LB_ChecklistPoints)
         Me.Controls.Add(Me.LBL_Description)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.BTN_SaveChecklist)
-        Me.Controls.Add(Me.CB_ListChecklist)
+        Me.Controls.Add(Me.CBB_ListChecklist)
         Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.CBB_SavedCars)
-        Me.Controls.Add(Me.Label1)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "WorkWithChecklist"
@@ -133,13 +124,11 @@ Partial Class WorkWithChecklist
         Me.PerformLayout()
 
     End Sub
-
-    Friend WithEvents Label1 As Label
-    Friend WithEvents CBB_SavedCars As ComboBox
-    Friend WithEvents CB_ListChecklist As ComboBox
+    Friend WithEvents CBB_ListChecklist As ComboBox
     Friend WithEvents Label2 As Label
     Friend WithEvents BTN_SaveChecklist As Button
     Friend WithEvents Label3 As Label
     Friend WithEvents LBL_Description As Label
     Friend WithEvents LB_ChecklistPoints As CheckedListBox
+    Friend WithEvents CB_Finish As CheckBox
 End Class

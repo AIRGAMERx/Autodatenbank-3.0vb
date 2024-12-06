@@ -279,13 +279,13 @@ Public Class ChecklistEdit
 
 End Class
 
+
 Public Class ListboxItemChecklist
+
     Public Property Text As String
     Public Property Tag As Integer
     Public Property CreatedBy As String
     Public Property UpdatedBy As String
-
-
 
     Public Sub New(text As String, tag As Integer, CreatedBy As String, UpdatedBy As String)
         Me.Text = text

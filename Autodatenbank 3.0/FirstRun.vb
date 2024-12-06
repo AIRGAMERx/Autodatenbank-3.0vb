@@ -350,9 +350,7 @@ Public Class FirstRun
         Try
             connection.Open()
             cmdso.ExecuteNonQuery()
-            FTPHelper.CreateDirectory(My.Settings.Ftpserveruri, My.Settings.Ftpusername, My.Settings.Ftppassword, "Autodatenbank")
-            My.Settings.Ftpserveruri = My.Settings.Ftpserveruri + "/Autodatenbank"
-            My.Settings.Save()
+            FTPHelper.CreateDirectory(My.Settings.Ftpserveruri, My.Settings.Ftpusername, My.Settings.Ftppassword)
             UpdateSettings(My.Settings.Regkey)
             MsgBox("Tabellen und Verzeichniss erfolgreich erstellt.")
         Catch ex As Exception

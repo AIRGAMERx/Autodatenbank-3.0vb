@@ -279,13 +279,17 @@ Public Class Autodatenbank
 
             LoadSelectedCar()
             FillDGV()
+
             If My.Settings.sftp = True Then
                 SFTP.ListFilesFromSFTPForDGV2(Licenseplate)
+                MsgBox("SFTP")
             Else
                 FTP.ListFilesFromFTPForDGV2(Licenseplate)
+                MsgBox("FTP")
 
             End If
         Else
+
             ' Falls nichts ausgewählt ist, tue nichts oder setze Standardwerte
         End If
     End Sub
@@ -1373,7 +1377,12 @@ Public Class Autodatenbank
     End Sub
 
     Private Sub TSMI_ChecklistOpen_Click(sender As Object, e As EventArgs) Handles TSMI_ChecklistOpen.Click
-        WorkWithChecklist.Show()
+        If CBB_SavedCars.SelectedIndex > -1 Then
+            WorkWithChecklist.Show()
+        Else
+            MsgBox("Bitte wähle ein Auto aus")
+        End If
+
     End Sub
 End Class
 

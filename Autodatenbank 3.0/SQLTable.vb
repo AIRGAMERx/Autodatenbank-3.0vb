@@ -269,7 +269,7 @@ Module SQLTable
 
             ' Weitere Aktionen nach dem Erstellen der Tabellen
             If My.Settings.sftp = False Then
-                FTPHelper.CreateDirectory(My.Settings.Ftpserveruri, My.Settings.Ftpusername, My.Settings.Ftppassword, "Autodatenbank")
+                FTPHelper.CreateDirectory(My.Settings.Ftpserveruri, My.Settings.Ftpusername, My.Settings.Ftppassword)
                 My.Settings.Ftpserveruri &= "/Datenbank"
                 My.Settings.Save()
             Else

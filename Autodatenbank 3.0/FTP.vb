@@ -77,75 +77,103 @@ Module FTP
 
     Public Sub ListFilesFromFTPForDGV2(Licenseplate As String)
 
-
         Try
+            ' DataGridView leeren
             Autodatenbank.dgv2.Rows.Clear()
-            Dim i As Integer = -1
-            Dim anfrage As FtpWebRequest = CType(WebRequest.Create(My.Settings.Ftpserveruri + "/" + Licenseplate), FtpWebRequest)
+
+            Dim ftpUri As String
+            If My.Settings.Ftpserveruri.Contains("/Datenbank") Then
+                ftpUri = My.Settings.Ftpserveruri + "/" + Licenseplate
+            Else
+                ftpUri = My.Settings.Ftpserveruri + "/Datenbank/" + Licenseplate
+            End If
+
+            Dim anfrage As FtpWebRequest = CType(WebRequest.Create(ftpUri), FtpWebRequest)
             anfrage.Method = WebRequestMethods.Ftp.ListDirectoryDetails
             anfrage.Credentials = New NetworkCredential(My.Settings.Ftpusername, My.Settings.Ftppassword)
 
             Using antwort As FtpWebResponse = CType(anfrage.GetResponse(), FtpWebResponse)
                 Using streamReader As New System.IO.StreamReader(antwort.GetResponseStream())
+                    If streamReader.EndOfStream Then
+                        Exit Sub
+                    End If
+
+                    Dim i As Integer = -1
+
+                    ' Zeilen aus dem FTP-Stream lesen
                     While Not streamReader.EndOfStream
                         i += 1
                         Try
                             Dim zeile As String = streamReader.ReadLine()
-                            Dim zeilenteile() As String = zeile.Split(" "c)
-                            Dim dateiname As String = zeilenteile(zeilenteile.Length - 1)
-                            Dim datum As String = zeilenteile(zeilenteile.Length - 3)
-                            Dim pfad As String = My.Settings.Ftpserveruri + "/" + Licenseplate + "/" + dateiname
 
+                            ' Prüfen, ob die Zeile die erwartete Struktur hat
+                            If String.IsNullOrWhiteSpace(zeile) Then Continue While
+
+                            ' Beispiel für eine FTP-Antwort:
+                            ' drwxr-xr-x   2 user group       4096 Dec 18 10:53 myfile.txt
+                            ' Zerlege die Zeile, um den Dateinamen zu extrahieren
+                            Dim parts() As String = zeile.Split(New Char() {" "c}, StringSplitOptions.RemoveEmptyEntries)
+
+                            ' Sicherstellen, dass die Antwort genug Teile enthält
+                            If parts.Length < 9 Then Continue While
+
+                            ' Der Dateiname beginnt ab dem 9. Element (nach Datum und Uhrzeit)
+                            Dim dateiname As String = String.Join(" ", parts.Skip(8))
+                            Dim datum As String = $"{parts(5)} {parts(6)} {parts(7)}"
+                            Dim pfad As String = ftpUri + "/" + dateiname
+
+                            ' Zeile zur DataGridView hinzufügen
                             Autodatenbank.dgv2.Rows.Add()
                             Autodatenbank.dgv2.Rows(i).Cells(0).Value = dateiname
                             Autodatenbank.dgv2.Rows(i).Cells(1).Value = datum
                             Autodatenbank.dgv2.Rows(i).Cells(2).Value = pfad
+
                         Catch ex As Exception
+                            ' Fehler beim Verarbeiten einer Zeile ignorieren
                         End Try
                     End While
                 End Using
             End Using
 
-            For Each row As DataGridViewRow In Autodatenbank.dgv2.Rows
-                If row.Cells(0).Value.ToString = "." Then
-
-                    Autodatenbank.dgv2.Rows.Remove(row)
-                End If
-            Next
-
-            For Each row As DataGridViewRow In Autodatenbank.dgv2.Rows
-                If row.Cells(0).Value.ToString = ".." Then
-
+            ' "." und ".." Zeilen entfernen
+            For ind As Integer = Autodatenbank.dgv2.Rows.Count - 1 To 0 Step -1
+                Dim row As DataGridViewRow = Autodatenbank.dgv2.Rows(ind)
+                If row.Cells(0).Value IsNot Nothing AndAlso (row.Cells(0).Value.ToString() = "." OrElse row.Cells(0).Value.ToString() = "..") OrElse row.Cells(0).Value.ToString() = "mycar" Then
                     Autodatenbank.dgv2.Rows.Remove(row)
                 End If
             Next
 
         Catch ex As Exception
+            ' Fehler beim Verbinden mit dem FTP-Server
             MsgBox("Fehler bei der FTP-Verbindung: " & ex.Message, MsgBoxStyle.Critical)
             SavetoLogFile(ex.Message, "ListFilesFromFTP")
         End Try
-
-
-
-
 
     End Sub
 
 
 
 
+
+
+
     Public Sub UploadFileToFTP(DataPath As String, Dataname As String)
         Try
-            ' Überprüfen, ob der Ordner für das Kennzeichen auf dem FTP-Server vorhanden ist
-            FtpHelperUpload.ListDirs(My.Settings.Ftpserveruri & "/", My.Settings.Ftpusername, My.Settings.Ftppassword)
+            ' FTP-URI festlegen
+            Dim ftpuri As String
+            If My.Settings.Ftpserveruri.Contains("/Datenbank") Then
+                ftpuri = My.Settings.Ftpserveruri + "/"
+            Else
+                ftpuri = My.Settings.Ftpserveruri + "/Datenbank/"
+            End If
 
-            ' Ordner erstellen, falls nicht vorhanden
-            For Each directoryName As String In Dir()
+            Dim folderUri As String = ftpuri & Autodatenbank.Licenseplate & "/"
 
-                If directoryName <> Autodatenbank.Licenseplate Then
-                    FTPHelper.CreateDirectory(My.Settings.Ftpserveruri, My.Settings.Ftpusername, My.Settings.Ftppassword, Autodatenbank.Licenseplate)
-                End If
-            Next
+            ' Überprüfen, ob das Verzeichnis existiert
+            If Not FTPHelper.DirectoryExists(folderUri, My.Settings.Ftpusername, My.Settings.Ftppassword) Then
+                ' Ordner erstellen, falls er nicht existiert
+                FTPHelper.CreateDirectory(folderUri, My.Settings.Ftpusername, My.Settings.Ftppassword)
+            End If
 
             ' FTP-Daten-Upload
             Dim wc As New WebClient()
@@ -153,29 +181,51 @@ Module FTP
             AddHandler wc.UploadFileCompleted, AddressOf UploadFiles.UploadFileCompleted
 
             wc.Credentials = New NetworkCredential(My.Settings.Ftpusername, My.Settings.Ftppassword)
-            wc.UploadFileAsync(New Uri(My.Settings.Ftpserveruri & "/" & Autodatenbank.Licenseplate & "/" & Dataname), DataPath)
+            wc.UploadFileAsync(New Uri(folderUri & Dataname), DataPath)
+
         Catch ex As Exception
             MsgBox("Fehler beim FTP-Upload: " & ex.Message, MsgBoxStyle.Critical, "Fehler")
             SavetoLogFile(ex.Message, "UploadFileViaFTP")
         End Try
     End Sub
 
+
 End Module
 Public Class FTPHelper
 
-    Public Shared Sub CreateDirectory(ByVal serverUri As String, ByVal username As String, ByVal password As String, ByVal directoryName As String)
-        Dim request As FtpWebRequest = CType(WebRequest.Create(serverUri + "/" + directoryName), FtpWebRequest)
-        request.Method = WebRequestMethods.Ftp.MakeDirectory
-        request.Credentials = New NetworkCredential(username, password)
-
+    Public Shared Sub CreateDirectory(folderUri As String, username As String, password As String)
         Try
-            Dim response As FtpWebResponse = CType(request.GetResponse(), FtpWebResponse)
-            Console.WriteLine("Ordner erfolgreich erstellt: " + directoryName)
-            response.Close()
+            Dim request As FtpWebRequest = CType(WebRequest.Create(folderUri), FtpWebRequest)
+            request.Method = WebRequestMethods.Ftp.MakeDirectory
+            request.Credentials = New NetworkCredential(username, password)
+
+            Using response As FtpWebResponse = CType(request.GetResponse(), FtpWebResponse)
+                ' Verzeichnis wurde erstellt
+            End Using
         Catch ex As Exception
-            Console.WriteLine("Fehler beim Erstellen des Ordners: " + ex.Message)
-            SavetoLogFile(ex.Message, "FTPHelper")
+            Throw New Exception("Fehler beim Erstellen des Verzeichnisses: " & ex.Message)
         End Try
     End Sub
+
+
+    Public Shared Function DirectoryExists(folderUri As String, username As String, password As String) As Boolean
+        Try
+            Dim request As FtpWebRequest = CType(WebRequest.Create(folderUri), FtpWebRequest)
+            request.Method = WebRequestMethods.Ftp.ListDirectory
+            request.Credentials = New NetworkCredential(username, password)
+
+            Using response As FtpWebResponse = CType(request.GetResponse(), FtpWebResponse)
+                Return True ' Verzeichnis existiert
+            End Using
+        Catch ex As WebException
+            Dim response As FtpWebResponse = CType(ex.Response, FtpWebResponse)
+            If response.StatusCode = FtpStatusCode.ActionNotTakenFileUnavailable Then
+                ' Verzeichnis existiert nicht
+                Return False
+            Else
+                Throw ' Anderen Fehler werfen
+            End If
+        End Try
+    End Function
 
 End Class
