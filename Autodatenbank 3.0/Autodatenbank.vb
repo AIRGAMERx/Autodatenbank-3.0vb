@@ -282,10 +282,10 @@ Public Class Autodatenbank
 
             If My.Settings.sftp = True Then
                 SFTP.ListFilesFromSFTPForDGV2(Licenseplate)
-                MsgBox("SFTP")
+
             Else
                 FTP.ListFilesFromFTPForDGV2(Licenseplate)
-                MsgBox("FTP")
+
 
             End If
         Else

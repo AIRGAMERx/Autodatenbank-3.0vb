@@ -164,59 +164,61 @@ Public Class ChecklistEdit
 
 
 
-            If TXB_DescriptionChecklist.Text.Length > 3 Then
-                Dim query As String = "INSERT INTO checklist(Description, UpdatedBy, CreatedBy, Worksteps) VALUES (@Description, @UpdatedBy, @CreatedBy, @Worksteps)"
-                Using con As New MySqlConnection(My.Settings.connectionstring)
-                    con.Open()
-                    Using cmd As New MySqlCommand(query, con)
-                        cmd.Parameters.AddWithValue("@Description", TXB_DescriptionChecklist.Text)
-                        cmd.Parameters.AddWithValue("@UpdatedBy", My.Settings.Username)
-                        cmd.Parameters.AddWithValue("@CreatedBy", CreatedBy)
-                        cmd.Parameters.AddWithValue("@Worksteps", LBIToString)
-                        cmd.ExecuteNonQuery()
-                    End Using
-                End Using
-                GetChecklists()
-                TXB_DescriptionChecklist.Clear()
-                RTB_DescriptionWorkStep.Clear()
-                LB_ChecklistPoints.Items.Clear()
-                MsgBox("Checkliste erfolgreich gespeichert")
-                CreateNew = True
-
-
-            Else
-                MsgBox("Bezeichnung muss mindestens 3 Zeichen haben")
-            End If
-        Else
-            Dim items As List(Of String) = LB_ChecklistPoints.Items.Cast(Of Object)().Select(Function(x) x.ToString()).ToList()
-            Dim LBIToString As String = "{" & String.Join("|", items) & "}"
-
 
 
             If TXB_DescriptionChecklist.Text.Length > 3 Then
-                Dim query As String = "UPDATE  checklist SET Description = @Description, UpdatedBy = @UpdatedBy, Worksteps = @Worksteps"
-                Using con As New MySqlConnection(My.Settings.connectionstring)
-                    con.Open()
-                    Using cmd As New MySqlCommand(query, con)
-                        cmd.Parameters.AddWithValue("@Description", TXB_DescriptionChecklist.Text)
-                        cmd.Parameters.AddWithValue("@UpdatedBy", My.Settings.Username)
-                        cmd.Parameters.AddWithValue("@CreatedBy", CreatedBy)
-                        cmd.Parameters.AddWithValue("@Worksteps", LBIToString)
-                        cmd.ExecuteNonQuery()
+                    Dim query As String = "INSERT INTO checklist(Description, UpdatedBy, CreatedBy, Worksteps) VALUES (@Description, @UpdatedBy, @CreatedBy, @Worksteps)"
+                    Using con As New MySqlConnection(My.Settings.connectionstring)
+                        con.Open()
+                        Using cmd As New MySqlCommand(query, con)
+                            cmd.Parameters.AddWithValue("@Description", TXB_DescriptionChecklist.Text)
+                            cmd.Parameters.AddWithValue("@UpdatedBy", My.Settings.Username)
+                            cmd.Parameters.AddWithValue("@CreatedBy", CreatedBy)
+                            cmd.Parameters.AddWithValue("@Worksteps", LBIToString)
+                            cmd.ExecuteNonQuery()
+                        End Using
                     End Using
-                End Using
-                GetChecklists()
-                TXB_DescriptionChecklist.Clear()
-                RTB_DescriptionWorkStep.Clear()
-                LB_ChecklistPoints.Items.Clear()
-                MsgBox("Checkliste erfolgreich akutualisiert")
-                CreateNew = True
+                    GetChecklists()
+                    TXB_DescriptionChecklist.Clear()
+                    RTB_DescriptionWorkStep.Clear()
+                    LB_ChecklistPoints.Items.Clear()
+                    MsgBox("Checkliste erfolgreich gespeichert")
+                    CreateNew = True
 
 
+                Else
+                    MsgBox("Bezeichnung muss mindestens 3 Zeichen haben")
+                End If
             Else
-                MsgBox("Bezeichnung muss mindestens 3 Zeichen haben")
+                Dim items As List(Of String) = LB_ChecklistPoints.Items.Cast(Of Object)().Select(Function(x) x.ToString()).ToList()
+                Dim LBIToString As String = "{" & String.Join("|", items) & "}"
+
+
+
+                If TXB_DescriptionChecklist.Text.Length > 3 Then
+                    Dim query As String = "UPDATE  checklist SET Description = @Description, UpdatedBy = @UpdatedBy, Worksteps = @Worksteps"
+                    Using con As New MySqlConnection(My.Settings.connectionstring)
+                        con.Open()
+                        Using cmd As New MySqlCommand(query, con)
+                            cmd.Parameters.AddWithValue("@Description", TXB_DescriptionChecklist.Text)
+                            cmd.Parameters.AddWithValue("@UpdatedBy", My.Settings.Username)
+                            cmd.Parameters.AddWithValue("@CreatedBy", CreatedBy)
+                            cmd.Parameters.AddWithValue("@Worksteps", LBIToString)
+                            cmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+                    GetChecklists()
+                    TXB_DescriptionChecklist.Clear()
+                    RTB_DescriptionWorkStep.Clear()
+                    LB_ChecklistPoints.Items.Clear()
+                    MsgBox("Checkliste erfolgreich akutualisiert")
+                    CreateNew = True
+
+
+                Else
+                    MsgBox("Bezeichnung muss mindestens 3 Zeichen haben")
+                End If
             End If
-        End If
 
 
 

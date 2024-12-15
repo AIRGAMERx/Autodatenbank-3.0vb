@@ -277,7 +277,7 @@ Public Class WorkWithChecklist
                     ' Parameter hinzufügen
                     cmd.Parameters.AddWithValue("@ID", id)
                     If SavedChecklist = False Then
-                        cmd.Parameters.AddWithValue("@Description", description & "|" & DateAndTime.Today)
+                        cmd.Parameters.AddWithValue("@Description", description & " | " & DateAndTime.Today)
                         cmd.Parameters.AddWithValue("@Kennzeichen", kennzeichen)
                     Else
                         cmd.Parameters.AddWithValue("@Description", description)

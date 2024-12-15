@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports System.IO.Compression
 Imports System.Net
 Imports MySqlConnector
 Imports Renci.SshNet
@@ -364,11 +365,56 @@ Public Class FirstRun
 
     Private Sub BTN_ImportSettings_Click(sender As Object, e As EventArgs) Handles BTN_ImportSettings.Click
         Dim openFileDialog As New OpenFileDialog()
-        openFileDialog.Filter = "Encrypted files (*.enc)|*.enc|All files (*.*)|*.*"
+        openFileDialog.Filter = "Encrypted files (*.enczip)|*.enczip|All files (*.*)|*.*"
         openFileDialog.Title = "Verschlüsselte Konfigurationsdatei auswählen"
 
+
+
+
         If openFileDialog.ShowDialog() = DialogResult.OK Then
-            Dim filePath As String = openFileDialog.FileName
+            Dim zipedFilepath As String = openFileDialog.FileName
+            Dim connectionFile As String = ""
+            Dim filelist As List(Of String) = ListFilesInZip(zipedFilepath)
+            Dim OpenSSHKey As Boolean = False
+            Dim OpenSSHKeyFilename As String = ""
+            Try
+                For Each tempfile As String In Directory.GetFiles(Application.StartupPath & "/temp/")
+                    Try
+                        File.Delete(tempfile)
+                    Catch ex As Exception
+
+                    End Try
+                Next
+            Catch ex As Exception
+
+            End Try
+
+
+
+            ZipFile.ExtractToDirectory(zipedFilepath, Application.StartupPath & "/temp/")
+
+            For Each fileName As String In filelist
+                If Path.GetExtension(fileName) = ".enc" Then
+                    connectionFile = Application.StartupPath & "/temp/" & Path.GetFileName(fileName)
+                    Exit For
+                End If
+            Next
+
+            For Each fileName As String In filelist
+                If Path.GetExtension(fileName) = ".pem" Then
+                    OpenSSHKey = True
+                    CB_SFTP.Checked = True
+                    PNL_SFTP.Visible = True
+                    PNL_FTP.Visible = False
+                    Exit For
+                Else
+                    OpenSSHKey = False
+                End If
+
+            Next
+
+
+
 
             ' Passwort vom Benutzer abfragen
             Dim userPassword As String = InputBox("Bitte geben Sie das Passwort ein, um die Datei zu entschlüsseln:", "Passwort Eingabe")
@@ -383,7 +429,7 @@ Public Class FirstRun
 
             Try
                 ' Lesen Sie die gespeicherten Daten, die IV und verschlüsselte Daten enthalten
-                Dim ivAndEncryptedData As Byte() = IO.File.ReadAllBytes(filePath)
+                Dim ivAndEncryptedData As Byte() = IO.File.ReadAllBytes(connectionFile)
 
                 ' Extrahieren Sie den IV
                 Dim iv As Byte() = ivAndEncryptedData.Take(16).ToArray()
@@ -421,14 +467,39 @@ Public Class FirstRun
                             TXB_FTPUsername.Text = keyValue(1)
                         Case "FTPPassword"
                             TXB_FTPPassword.Text = keyValue(1)
+                        Case "SFTPServer"
+                            TXB_SFTPServerUri.Text = keyValue(1)
+                        Case "SFTPUser"
+                            TXB_SFTPUsername.Text = keyValue(1)
+                        Case "SFTPKeypass"
+                            My.Settings.keyfilepass = keyValue(1)
+                        Case "SFTPKeyFileName"
+                            OpenSSHKeyFilename = Path.GetFileNameWithoutExtension(keyValue(1))
                     End Select
                 Next
+                If OpenSSHKey = True Then
+                    If File.Exists(Application.StartupPath & "/temp/" & OpenSSHKeyFilename & ".pem") Then
+                        File.Copy(Application.StartupPath & "/temp/" & OpenSSHKeyFilename & ".pem", Application.StartupPath & "/" & OpenSSHKeyFilename & ".pem", True)
+                        My.Settings.keyfile = Application.StartupPath & "/" & OpenSSHKeyFilename & ".pem"
+                        If SSHKEY.CheckOpenSSHKey(My.Settings.keyfile, My.Settings.keyfilepass) = True Then
+                            CB_KeyFileLoaded.Checked = True
+                        Else
+                            CB_KeyFileLoaded.Checked = False
+                        End If
+                    End If
+
+                End If
+
+
+
 
                 Notify(NI_Successful, "Erfolg", "Daten wurden erfolgreich geladen", 5000, ToolTipIcon.None)
             Catch ex As UnauthorizedAccessException
                 Notify(NI_Error, "Fehler", "Zugriff verweigert. Bitte prüfen Sie die Berechtigungen", 5000, ToolTipIcon.None)
+                SavetoLogFile(ex.Message, "ImportServerConnection")
             Catch ex As Exception
                 Notify(NI_Error, "Fehler", "Ein Fehler ist aufgetreten: " & ex.Message, 5000, ToolTipIcon.None)
+                SavetoLogFile(ex.Message, "ImportServerconnection")
             End Try
         End If
     End Sub
@@ -473,7 +544,22 @@ Public Class FirstRun
     Private Sub LinkLabel1_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel1.LinkClicked
         Process.Start("https://www.lfdev.de/php/register.php")
     End Sub
+    Public Function ListFilesInZip(zipFilePath As String) As List(Of String)
+        ' Liste zur Speicherung der Dateinamen
+        Dim fileList As New List(Of String)()
 
+        ' Öffnet das ZIP-Archiv
+        Using archive As ZipArchive = ZipFile.OpenRead(zipFilePath)
+            ' Iteriere durch alle Einträge im ZIP-Archiv
+            For Each entry As ZipArchiveEntry In archive.Entries
+                ' Füge den vollständigen Dateipfad zur Liste hinzu
+                fileList.Add(entry.FullName)
+            Next
+        End Using
+
+        ' Rückgabe der Liste mit Dateinamen
+        Return fileList
+    End Function
 
 End Class
 

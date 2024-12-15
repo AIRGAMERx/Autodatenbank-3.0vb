@@ -121,49 +121,97 @@ Module SQLTable
 
             ' Tabelle Autos erstellen
             Dim createAutoSql As String = "CREATE TABLE IF NOT EXISTS `Autos` (
-            `Marke` VARCHAR(50) NULL DEFAULT 'N/A' COLLATE 'utf8mb4_0900_ai_ci',
-            `Model` VARCHAR(50) NULL DEFAULT 'N/A' COLLATE 'utf8mb4_0900_ai_ci',
-            `Kennzeichen` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `MKB` VARCHAR(50) NULL DEFAULT 'N/A' COLLATE 'utf8mb4_0900_ai_ci',
-            `Hubraum` VARCHAR(50) NULL DEFAULT 'N/A' COLLATE 'utf8mb4_0900_ai_ci',
-            `PS` VARCHAR(50) NULL DEFAULT 'N/A' COLLATE 'utf8mb4_0900_ai_ci',
-            `FIN` VARCHAR(50) NULL DEFAULT 'N/A' COLLATE 'utf8mb4_0900_ai_ci',
-            `Baujahr` VARCHAR(50) NULL DEFAULT 'N/A' COLLATE 'utf8mb4_0900_ai_ci',
-            `HSN` VARCHAR(50) NULL DEFAULT 'N/A' COLLATE 'utf8mb4_0900_ai_ci',
-            `Besitzer` VARCHAR(50) NULL DEFAULT 'N/A' COLLATE 'utf8mb4_0900_ai_ci',
-            `Gekauft` VARCHAR(50) NULL DEFAULT 'N/A' COLLATE 'utf8mb4_0900_ai_ci',
-            `Preis` VARCHAR(50) NULL DEFAULT 'N/A' COLLATE 'utf8mb4_0900_ai_ci',
-            `Info` VARCHAR(500) NULL DEFAULT 'N/A' COLLATE 'utf8mb4_0900_ai_ci',
-            `kunden_id` INT NULL DEFAULT NULL,
-            `tuev` DATE NULL DEFAULT NULL,
-            `PR` VARCHAR(500) NULL DEFAULT 'N/A' COLLATE 'utf8mb4_0900_ai_ci',
-            PRIMARY KEY (`Kennzeichen`) USING BTREE,
-            INDEX `fk_kunden_id` (`kunden_id`) USING BTREE,
-            CONSTRAINT `fk_kunden_id` FOREIGN KEY (`kunden_id`) REFERENCES `Kunden` (`ID`) ON UPDATE NO ACTION ON DELETE NO ACTION
-            )
-            COLLATE='utf8mb4_0900_ai_ci'
-            ENGINE=InnoDB;"
+            `Marke` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
+            `Model` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
+            `Kennzeichen` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+            `MKB` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
+            `Hubraum` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
+            `PS` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
+            `FIN` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
+            `Baujahr` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
+            `HSN` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
+            `Besitzer` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
+            `Gekauft` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
+            `Preis` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
+            `Info` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
+            `kunden_id` INT DEFAULT NULL,
+            `tuev` DATE DEFAULT NULL,
+            `PR` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
+            PRIMARY KEY (`Kennzeichen`),
+            CONSTRAINT `fk_kunden_id` FOREIGN KEY (`kunden_id`) REFERENCES `Kunden` (`ID`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
 
             Using cmda As New MySqlCommand(createAutoSql, connection)
                 cmda.ExecuteNonQuery()
             End Using
 
+            ' Tabelle Berechtigungen erstellen
+            Dim createBerechtigungenSql As String = "CREATE TABLE IF NOT EXISTS `Berechtigungen` (
+            `Name` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Key` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;"
+
+            Using cmdb As New MySqlCommand(createBerechtigungenSql, connection)
+                cmdb.ExecuteNonQuery()
+            End Using
+
+            ' Tabelle Checklist erstellen
+            Dim createChecklistSql As String = "CREATE TABLE IF NOT EXISTS `checklist` (
+            `ID` INT NOT NULL AUTO_INCREMENT,
+            `Description` VARCHAR(255) COLLATE utf8mb4_general_ci NOT NULL,
+            `UpdatedBy` VARCHAR(50) COLLATE utf8mb4_general_ci NOT NULL,
+            `CreatedBy` VARCHAR(50) COLLATE utf8mb4_general_ci NOT NULL,
+            `Worksteps` VARCHAR(5000) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            PRIMARY KEY (`ID`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;"
+
+            Using cmdc As New MySqlCommand(createChecklistSql, connection)
+                cmdc.ExecuteNonQuery()
+            End Using
+
+            ' Tabelle Kunden erstellen
+            Dim createKundenSql As String = "CREATE TABLE IF NOT EXISTS `Kunden` (
+            `ID` INT NOT NULL AUTO_INCREMENT,
+            `Name` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Straße` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Plz` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Ort` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Telefonnummer` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Email` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Erstellt` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            PRIMARY KEY (`ID`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;"
+
+            Using cmdk As New MySqlCommand(createKundenSql, connection)
+                cmdk.ExecuteNonQuery()
+            End Using
+
+            ' Tabelle Meldungen erstellen
+            Dim createMeldungenSql As String = "CREATE TABLE IF NOT EXISTS `Meldungen` (
+            `Name` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Datum` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Art` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Text` VARCHAR(255) COLLATE utf8mb4_general_ci DEFAULT NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;"
+
+            Using cmdm As New MySqlCommand(createMeldungenSql, connection)
+                cmdm.ExecuteNonQuery()
+            End Using
+
             ' Tabelle Reparatur erstellen
             Dim createReparaturSql As String = "CREATE TABLE IF NOT EXISTS `Reparatur` (
             `ID_Reparatur` INT NOT NULL AUTO_INCREMENT,
-            `ID_Kennzeichen` VARCHAR(50) NOT NULL DEFAULT 'Kennzeichenlos' COLLATE 'utf8mb4_0900_ai_ci',
-            `Bezeichnung` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Kilometer` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Datum` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Preis` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Kommentar` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Datein` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Art` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Bearbeiter` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            PRIMARY KEY (`ID_Reparatur`) USING BTREE
-        )
-        COLLATE='utf8mb4_0900_ai_ci'
-        ENGINE=InnoDB;"
+            `ID_Kennzeichen` VARCHAR(50) NOT NULL DEFAULT 'Kennzeichenlos',
+            `Bezeichnung` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+            `Kilometer` VARCHAR(50) DEFAULT NULL,
+            `Datum` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+            `Preis` VARCHAR(50) DEFAULT NULL,
+            `Kommentar` LONGTEXT COLLATE utf8mb4_0900_ai_ci,
+            `Art` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+            `Bearbeiter` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+            `Datein` LONGTEXT,
+            PRIMARY KEY (`ID_Reparatur`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
 
             Using cmdr As New MySqlCommand(createReparaturSql, connection)
                 cmdr.ExecuteNonQuery()
@@ -172,121 +220,87 @@ Module SQLTable
             ' Tabelle Service erstellen
             Dim createServiceSql As String = "CREATE TABLE IF NOT EXISTS `Service` (
             `ID_Service` INT NOT NULL AUTO_INCREMENT,
-            `ID_Kennzeichen` VARCHAR(50) NOT NULL DEFAULT 'Kennzeichenlos' COLLATE 'utf8mb4_0900_ai_ci',
-            `Bezeichnung` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Kilometer` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Datum` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Preis` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Kommentar` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Datein` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Art` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Bearbeiter` VARCHAR(50) NULL DEFAULT 'Kein Bearbeiter' COLLATE 'utf8mb4_0900_ai_ci',
-            PRIMARY KEY (`ID_Service`) USING BTREE
-        )
-        COLLATE='utf8mb4_0900_ai_ci'
-        ENGINE=InnoDB;"
+            `ID_Kennzeichen` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Kennzeichenlos',
+            `Bezeichnung` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+            `Kilometer` VARCHAR(50) DEFAULT NULL,
+            `Datum` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+            `Preis` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+            `Kommentar` LONGTEXT COLLATE utf8mb4_0900_ai_ci,
+            `Art` VARCHAR(50) DEFAULT NULL,
+            `Bearbeiter` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci DEFAULT 'Kein Bearbeiter',
+            `Datein` LONGTEXT,
+            PRIMARY KEY (`ID_Service`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
 
             Using cmds As New MySqlCommand(createServiceSql, connection)
                 cmds.ExecuteNonQuery()
             End Using
 
-            ' Tabelle Kunden erstellen
-            Dim createKundenSql As String = "CREATE TABLE IF NOT EXISTS `Kunden` (
-            `ID` INT NOT NULL AUTO_INCREMENT,
-            `Name` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-            `Straße` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-            `Plz` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-            `Ort` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-            `Telefonnummer` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-            `Email` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-            `Erstellt` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-            PRIMARY KEY (`ID`) USING BTREE
-        )
-        COLLATE='utf8mb4_general_ci'
-        ENGINE=InnoDB;"
-
-            Using cmdku As New MySqlCommand(createKundenSql, connection)
-                cmdku.ExecuteNonQuery()
-            End Using
-
-            ' Tabelle Meldungen erstellen
-            Dim createMeldungenSql As String = "CREATE TABLE IF NOT EXISTS `Meldungen` (
-            `Name` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-            `Datum` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-            `Art` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci',
-            `Text` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_general_ci'
-        )
-        COLLATE='utf8mb4_general_ci'
-        ENGINE=InnoDB;"
-
-            Using cmdmel As New MySqlCommand(createMeldungenSql, connection)
-                cmdmel.ExecuteNonQuery()
-            End Using
-
             ' Tabelle Sonstiges erstellen
-            Dim createSonstigeseSql As String = "CREATE TABLE IF NOT EXISTS `Sonstiges` (
+            Dim createSonstigesSql As String = "CREATE TABLE IF NOT EXISTS `Sonstiges` (
             `ID_Sonstiges` INT NOT NULL AUTO_INCREMENT,
-            `ID_Kennzeichen` VARCHAR(50) NOT NULL DEFAULT 'Kennzeichenlos' COLLATE 'utf8mb4_0900_ai_ci',
-            `Bezeichnung` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Kilometer` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Datum` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Preis` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Kommentar` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Datein` LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Art` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-            `Bearbeiter` VARCHAR(50) NULL DEFAULT 'Kein Bearbeiter' COLLATE 'utf8mb4_0900_ai_ci',
-            PRIMARY KEY (`ID_Sonstiges`) USING BTREE
-        )
-        COLLATE='utf8mb4_0900_ai_ci'
-        ENGINE=InnoDB;"
+            `ID_Kennzeichen` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Kennzeichenlos',
+            `Bezeichnung` VARCHAR(50) DEFAULT NULL,
+            `Kilometer` VARCHAR(50) DEFAULT NULL,
+            `Datum` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+            `Preis` VARCHAR(50) DEFAULT NULL,
+            `Kommentar` LONGTEXT COLLATE utf8mb4_0900_ai_ci,
+            `Art` VARCHAR(50) DEFAULT NULL,
+            `Bearbeiter` VARCHAR(50) DEFAULT 'Kein Bearbeiter',
+            `Datein` LONGTEXT,
+            PRIMARY KEY (`ID_Sonstiges`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
 
-            Using cmdso As New MySqlCommand(createSonstigeseSql, connection)
+            Using cmdso As New MySqlCommand(createSonstigesSql, connection)
                 cmdso.ExecuteNonQuery()
             End Using
 
+            ' Tabelle savedChecklist erstellen
+            Dim createSavedChecklistSql As String = "CREATE TABLE IF NOT EXISTS `savedChecklist` (
+            `ID` INT NOT NULL AUTO_INCREMENT,
+            `Kennzeichen` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Description` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Worksteps` VARCHAR(5000) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Infos` VARCHAR(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Finish` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Editor` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            PRIMARY KEY (`ID`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;"
 
-
-
-            Dim createBerechtigungenSql As String = "CREATE TABLE IF NOT EXISTS `Berechtigungen` (" &
-                               "`Name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL, " &
-                               "`Key` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL " &
-                               ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;"
-
-
-            Dim InsertDefaultRole As String = "INSERT IGNORE INTO `Berechtigungen` (`Name`, `Key`) VALUES ('Administrator', '111111111111');"
-
-
-
-            Using cmdbe As New MySqlCommand(createBerechtigungenSql, connection)
-                cmdbe.ExecuteNonQuery()
+            Using cmdsc As New MySqlCommand(createSavedChecklistSql, connection)
+                cmdsc.ExecuteNonQuery()
             End Using
 
-            Using cmdbeInsert As New MySqlCommand(InsertDefaultRole, connection)
-                cmdbeInsert.ExecuteNonQuery()
+            ' Tabelle Verbrauch erstellen
+            Dim createVerbrauchSql As String = "CREATE TABLE IF NOT EXISTS `Verbrauch` (
+            `Kennzeichen` VARCHAR(50) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'Kennzeichenlos',
+            `Wegstrecke` VARCHAR(50) COLLATE utf8mb4_general_ci NOT NULL,
+            `ID` INT NOT NULL AUTO_INCREMENT,
+            `Kraftstoffmenge` DOUBLE NOT NULL DEFAULT '0',
+            `PPL` DOUBLE NOT NULL DEFAULT '0',
+            `PPT` DOUBLE NOT NULL DEFAULT '0',
+            `Kilometerstand` DOUBLE NOT NULL,
+            `Datum` DATE NOT NULL,
+            `VerbrauchPro100km` DOUBLE DEFAULT NULL,
+            `latitude` DOUBLE DEFAULT NULL,
+            `longitude` DOUBLE DEFAULT NULL,
+            PRIMARY KEY (`ID`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;"
+
+            Using cmdv As New MySqlCommand(createVerbrauchSql, connection)
+                cmdv.ExecuteNonQuery()
             End Using
 
-
-
-            ' Weitere Aktionen nach dem Erstellen der Tabellen
-            If My.Settings.sftp = False Then
-                FTPHelper.CreateDirectory(My.Settings.Ftpserveruri, My.Settings.Ftpusername, My.Settings.Ftppassword)
-                My.Settings.Ftpserveruri &= "/Datenbank"
-                My.Settings.Save()
-            Else
-                CheckAndCreateDirectoryOnSFTP(My.Settings.SFTPServerUri, My.Settings.SFTPUsername)
-            End If
-
-            UpdateSettings(My.Settings.Regkey)
-            MsgBox("Tabellen und Verzeichnisse erfolgreich erstellt.")
+            MsgBox("Alle Tabellen erfolgreich erstellt!")
 
         Catch ex As Exception
-            MessageBox.Show("Fehler beim Erstellen der Tabellen: " & ex.Message)
-            SavetoLogFile(ex.Message, "CreateTables")
+            MsgBox("Fehler beim Erstellen der Tabellen: " & ex.Message, MsgBoxStyle.Critical)
         Finally
             connection.Close()
         End Try
 
     End Sub
+
 
 
 
@@ -298,124 +312,164 @@ Module SQLTable
         Try
             connection.Open()
 
-            ' Überprüfen und aktualisieren der Tabelle 'Users'
+            ' Tabelle 'Users' überprüfen und aktualisieren
             EnsureTableAndColumns(connection, "users", New Dictionary(Of String, String) From {
-                {"id", "VARCHAR(200) NOT NULL"},
-                {"user_name", "VARCHAR(200) NOT NULL"},
-                {"PermissionKey", "VARCHAR(50) NOT NULL DEFAULT '000000'"},
-                {"PermissionRole", "VARCHAR(50)  NULL DEFAULT NULL"},
-                {"VerifiKey", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Verified", "INT NOT NULL DEFAULT '0'"},
-                {"Authent", "VARCHAR(50) NOT NULL DEFAULT '0'"},
-                {"AuthentKey", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"UID", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"password", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"salt", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Passdate", "DATE NULL DEFAULT NULL"},
-                {"failed_attempts", "INT NULL DEFAULT '0'"},
-                {"lockout_until", "DATETIME NULL DEFAULT NULL"}
-            })
+            {"id", "VARCHAR(200) NOT NULL"},
+            {"user_name", "VARCHAR(200) NOT NULL"},
+            {"PermissionKey", "VARCHAR(50) NOT NULL DEFAULT '000000'"},
+            {"PermissionRole", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"VerifiKey", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Verified", "INT NOT NULL DEFAULT '0'"},
+            {"Authent", "VARCHAR(50) NOT NULL DEFAULT '0'"},
+            {"AuthentKey", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"UID", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"password", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"salt", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Passdate", "DATE NULL DEFAULT NULL"},
+            {"failed_attempts", "INT NULL DEFAULT '0'"},
+            {"lockout_until", "DATETIME NULL DEFAULT NULL"},
+            {"mycar", "VARCHAR(50) NULL DEFAULT NULL"}
+        })
 
-            ' Überprüfen und aktualisieren der Tabelle 'Autos'
+            ' Tabelle 'Autos' überprüfen und aktualisieren
             EnsureTableAndColumns(connection, "Autos", New Dictionary(Of String, String) From {
-                {"Marke", "VARCHAR(50) NULL DEFAULT 'N/A'"},
-                {"Model", "VARCHAR(50) NULL DEFAULT 'N/A'"},
-                {"Kennzeichen", "VARCHAR(50) NOT NULL"},
-                {"MKB", "VARCHAR(50) NULL DEFAULT 'N/A'"},
-                {"Hubraum", "VARCHAR(50) NULL DEFAULT 'N/A'"},
-                {"PS", "VARCHAR(50) NULL DEFAULT 'N/A'"},
-                {"FIN", "VARCHAR(50) NULL DEFAULT 'N/A'"},
-                {"Baujahr", "VARCHAR(50) NULL DEFAULT 'N/A'"},
-                {"HSN", "VARCHAR(50) NULL DEFAULT 'N/A'"},
-                {"Besitzer", "VARCHAR(50) NULL DEFAULT 'N/A'"},
-                {"Gekauft", "VARCHAR(50) NULL DEFAULT 'N/A'"},
-                {"Preis", "VARCHAR(50) NULL DEFAULT 'N/A'"},
-                {"Info", "VARCHAR(500) NULL DEFAULT 'N/A'"},
-                {"kunden_id", "INT NULL DEFAULT NULL"},
-                {"tuev", "DATE NULL DEFAULT NULL"},
-                {"PR", "VARCHAR(500) NULL DEFAULT 'N/A'"}
-            })
+            {"Marke", "VARCHAR(50) NULL DEFAULT 'N/A'"},
+            {"Model", "VARCHAR(50) NULL DEFAULT 'N/A'"},
+            {"Kennzeichen", "VARCHAR(50) NOT NULL"},
+            {"MKB", "VARCHAR(50) NULL DEFAULT 'N/A'"},
+            {"Hubraum", "VARCHAR(50) NULL DEFAULT 'N/A'"},
+            {"PS", "VARCHAR(50) NULL DEFAULT 'N/A'"},
+            {"FIN", "VARCHAR(50) NULL DEFAULT 'N/A'"},
+            {"Baujahr", "VARCHAR(50) NULL DEFAULT 'N/A'"},
+            {"HSN", "VARCHAR(50) NULL DEFAULT 'N/A'"},
+            {"Besitzer", "VARCHAR(50) NULL DEFAULT 'N/A'"},
+            {"Gekauft", "VARCHAR(50) NULL DEFAULT 'N/A'"},
+            {"Preis", "VARCHAR(50) NULL DEFAULT 'N/A'"},
+            {"Info", "VARCHAR(500) NULL DEFAULT 'N/A'"},
+            {"kunden_id", "INT NULL DEFAULT NULL"},
+            {"tuev", "DATE NULL DEFAULT NULL"},
+            {"PR", "VARCHAR(500) NULL DEFAULT 'N/A'"}
+        })
 
-            ' Überprüfen und aktualisieren der Tabelle 'Reparatur'
+            ' Tabelle 'Reparatur' überprüfen und aktualisieren
             EnsureTableAndColumns(connection, "Reparatur", New Dictionary(Of String, String) From {
-                {"ID_Reparatur", "INT NOT NULL AUTO_INCREMENT"},
-                {"ID_Kennzeichen", "VARCHAR(50) NOT NULL DEFAULT 'Kennzeichenlos'"},
-                {"Bezeichnung", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Kilometer", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Datum", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Preis", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Kommentar", "LONGTEXT NULL DEFAULT NULL"},
-                {"Datein", "LONGTEXT NULL DEFAULT NULL"},
-                {"Art", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Bearbeiter", "VARCHAR(50) NULL DEFAULT NULL"}
-            })
+            {"ID_Reparatur", "INT NOT NULL AUTO_INCREMENT"},
+            {"ID_Kennzeichen", "VARCHAR(50) NOT NULL DEFAULT 'Kennzeichenlos'"},
+            {"Bezeichnung", "VARCHAR(50) NOT NULL"},
+            {"Kilometer", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Datum", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Preis", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Kommentar", "LONGTEXT NULL DEFAULT NULL"},
+            {"Datein", "LONGTEXT NULL DEFAULT NULL"},
+            {"Art", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Bearbeiter", "VARCHAR(50) NULL DEFAULT NULL"}
+        })
 
-            ' Überprüfen und aktualisieren der Tabelle 'Service'
+            ' Tabelle 'Service' überprüfen und aktualisieren
             EnsureTableAndColumns(connection, "Service", New Dictionary(Of String, String) From {
-                {"ID_Service", "INT NOT NULL AUTO_INCREMENT"},
-                {"ID_Kennzeichen", "VARCHAR(50) NOT NULL DEFAULT 'Kennzeichenlos'"},
-                {"Bezeichnung", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Kilometer", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Datum", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Preis", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Kommentar", "LONGTEXT NULL DEFAULT NULL"},
-                 {"Datein", "LONGTEXT NULL DEFAULT NULL"},
-                {"Art", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Bearbeiter", "VARCHAR(50) NULL DEFAULT 'Kein Bearbeiter'"}
-            })
+            {"ID_Service", "INT NOT NULL AUTO_INCREMENT"},
+            {"ID_Kennzeichen", "VARCHAR(50) NOT NULL DEFAULT 'Kennzeichenlos'"},
+            {"Bezeichnung", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Kilometer", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Datum", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Preis", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Kommentar", "LONGTEXT NULL DEFAULT NULL"},
+            {"Datein", "LONGTEXT NULL DEFAULT NULL"},
+            {"Art", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Bearbeiter", "VARCHAR(50) NULL DEFAULT 'Kein Bearbeiter'"}
+        })
 
-            ' Überprüfen und aktualisieren der Tabelle 'Kunden'
+            ' Tabelle 'Kunden' überprüfen und aktualisieren
             EnsureTableAndColumns(connection, "Kunden", New Dictionary(Of String, String) From {
-                {"ID", "INT NOT NULL AUTO_INCREMENT"},
-                {"Name", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Straße", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Plz", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Ort", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Telefonnummer", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Email", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Erstellt", "VARCHAR(50) NULL DEFAULT NULL"}
-            })
+            {"ID", "INT NOT NULL AUTO_INCREMENT"},
+            {"Name", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Straße", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Plz", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Ort", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Telefonnummer", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Email", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Erstellt", "VARCHAR(50) NULL DEFAULT NULL"}
+        })
 
-            ' Überprüfen und aktualisieren der Tabelle 'Meldungen'
+            ' Tabelle 'Meldungen' überprüfen und aktualisieren
             EnsureTableAndColumns(connection, "Meldungen", New Dictionary(Of String, String) From {
-                {"Name", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Datum", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Art", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Text", "VARCHAR(255) NULL DEFAULT NULL"}
-            })
+            {"Name", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Datum", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Art", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Text", "VARCHAR(255) NULL DEFAULT NULL"}
+        })
 
-            ' Überprüfen und aktualisieren der Tabelle 'Sonstiges'
+            ' Tabelle 'Sonstiges' überprüfen und aktualisieren
             EnsureTableAndColumns(connection, "Sonstiges", New Dictionary(Of String, String) From {
-                {"ID_Sonstiges", "INT NOT NULL AUTO_INCREMENT"},
-                {"ID_Kennzeichen", "VARCHAR(50) NOT NULL DEFAULT 'Kennzeichenlos'"},
-                {"Bezeichnung", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Kilometer", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Datum", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Preis", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Kommentar", "LONGTEXT NULL DEFAULT NULL"},
-                 {"Datein", "LONGTEXT NULL DEFAULT NULL"},
-                {"Art", "VARCHAR(50) NULL DEFAULT NULL"},
-                {"Bearbeiter", "VARCHAR(50) NULL DEFAULT 'Kein Bearbeiter'"}
-            })
+            {"ID_Sonstiges", "INT NOT NULL AUTO_INCREMENT"},
+            {"ID_Kennzeichen", "VARCHAR(50) NOT NULL DEFAULT 'Kennzeichenlos'"},
+            {"Bezeichnung", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Kilometer", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Datum", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Preis", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Kommentar", "LONGTEXT NULL DEFAULT NULL"},
+            {"Datein", "LONGTEXT NULL DEFAULT NULL"},
+            {"Art", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Bearbeiter", "VARCHAR(50) NULL DEFAULT 'Kein Bearbeiter'"}
+        })
 
-            'Überprüfen und aktualisieren der Tabelle 'Berechtigungen'
+            ' Tabelle 'Berechtigungen' überprüfen und aktualisieren
             EnsureTableAndColumns(connection, "Berechtigungen", New Dictionary(Of String, String) From {
-                {"Name", "VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL"},
-                {"Key", "VARCHAR(255) COLLATE utf8mb4_general_ci DEFAULT NULL"}
-            })
+            {"Name", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Key", "VARCHAR(50) NULL DEFAULT NULL"}
+        })
 
+            ' Tabelle 'checklist' überprüfen und aktualisieren
+            EnsureTableAndColumns(connection, "checklist", New Dictionary(Of String, String) From {
+            {"ID", "INT NOT NULL AUTO_INCREMENT"},
+            {"Description", "VARCHAR(255) NOT NULL"},
+            {"UpdatedBy", "VARCHAR(50) NOT NULL"},
+            {"CreatedBy", "VARCHAR(50) NOT NULL"},
+            {"Worksteps", "VARCHAR(5000) NULL"}
+        })
+
+            ' Tabelle 'savedChecklist' überprüfen und aktualisieren
+            EnsureTableAndColumns(connection, "savedChecklist", New Dictionary(Of String, String) From {
+            {"ID", "INT NOT NULL AUTO_INCREMENT"},
+            {"Kennzeichen", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Description", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Worksteps", "VARCHAR(5000) NULL"},
+            {"Infos", "VARCHAR(255) NULL DEFAULT NULL"},
+            {"Finish", "VARCHAR(50) NULL DEFAULT NULL"},
+            {"Editor", "VARCHAR(50) NULL DEFAULT NULL"}
+        })
+
+            ' Tabelle 'Verbrauch' überprüfen und aktualisieren
+            EnsureTableAndColumns(connection, "Verbrauch", New Dictionary(Of String, String) From {
+            {"Kennzeichen", "VARCHAR(50) NOT NULL DEFAULT 'Kennzeichenlos'"},
+            {"Wegstrecke", "VARCHAR(50) NOT NULL"},
+            {"ID", "INT NOT NULL AUTO_INCREMENT"},
+            {"Kraftstoffmenge", "DOUBLE NOT NULL DEFAULT '0'"},
+            {"PPL", "DOUBLE NOT NULL DEFAULT '0'"},
+            {"PPT", "DOUBLE NOT NULL DEFAULT '0'"},
+            {"Kilometerstand", "DOUBLE NOT NULL"},
+            {"Datum", "DATE NOT NULL"},
+            {"VerbrauchPro100km", "DOUBLE NULL"},
+            {"latitude", "DOUBLE NULL"},
+            {"longitude", "DOUBLE NULL"}
+        })
+
+            ' Sicherstellen, dass ein Administrator existiert
             EnsureAdministratorExists(connection)
 
             Return True
 
         Catch ex As Exception
-            MessageBox.Show("Fehler beim Überprüfen oder Aktualisieren des Datenbankschemas: " & ex.Message)
-            SavetoLogFile(ex.Message, "UpdatesTables")
+            MsgBox("Fehler beim Aktualisieren der Tabellen: " & ex.Message, MsgBoxStyle.Critical)
+            SavetoLogFile(ex.Message, "UpdateTable")
             Return False
         Finally
             connection.Close()
         End Try
+
     End Function
+
+
 
     Private Sub EnsureTableAndColumns(connection As MySqlConnection, tableName As String, columns As Dictionary(Of String, String))
         For Each columnName As String In columns.Keys

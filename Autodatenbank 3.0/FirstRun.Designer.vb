@@ -33,8 +33,8 @@ Partial Class FirstRun
         Me.LBL_MySqlConnection = New System.Windows.Forms.Label()
         Me.LBL_FTPConnection = New System.Windows.Forms.Label()
         Me.PNL_2 = New System.Windows.Forms.Panel()
-        Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.BTN_ImportSettings = New System.Windows.Forms.Button()
+        Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.PNL_FTP = New System.Windows.Forms.Panel()
         Me.TXB_FTPServerUri = New System.Windows.Forms.TextBox()
         Me.Label14 = New System.Windows.Forms.Label()
@@ -177,6 +177,15 @@ Partial Class FirstRun
         Me.PNL_2.Size = New System.Drawing.Size(624, 782)
         Me.PNL_2.TabIndex = 2
         '
+        'BTN_ImportSettings
+        '
+        Me.BTN_ImportSettings.Location = New System.Drawing.Point(431, 756)
+        Me.BTN_ImportSettings.Name = "BTN_ImportSettings"
+        Me.BTN_ImportSettings.Size = New System.Drawing.Size(168, 23)
+        Me.BTN_ImportSettings.TabIndex = 10
+        Me.BTN_ImportSettings.Text = "Verbindungsdaten Importieren"
+        Me.BTN_ImportSettings.UseVisualStyleBackColor = True
+        '
         'GroupBox3
         '
         Me.GroupBox3.Controls.Add(Me.PNL_FTP)
@@ -189,15 +198,6 @@ Partial Class FirstRun
         Me.GroupBox3.TabIndex = 9
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "FTP Verbingunsdaten"
-        '
-        'BTN_ImportSettings
-        '
-        Me.BTN_ImportSettings.Location = New System.Drawing.Point(431, 756)
-        Me.BTN_ImportSettings.Name = "BTN_ImportSettings"
-        Me.BTN_ImportSettings.Size = New System.Drawing.Size(168, 23)
-        Me.BTN_ImportSettings.TabIndex = 10
-        Me.BTN_ImportSettings.Text = "Verbindungsdaten Importieren"
-        Me.BTN_ImportSettings.UseVisualStyleBackColor = True
         '
         'PNL_FTP
         '
@@ -556,6 +556,9 @@ Partial Class FirstRun
         Me.BTN_SaveData.TabIndex = 10
         Me.BTN_SaveData.Text = "Daten Sichern und Fortfahren"
         Me.BTN_SaveData.UseVisualStyleBackColor = True
+        '
+        'FBD_SaveConfigFile
+        '
         '
         'NI_Successful
         '

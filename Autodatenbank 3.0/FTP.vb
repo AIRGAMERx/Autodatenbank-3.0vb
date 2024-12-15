@@ -109,27 +109,24 @@ Module FTP
                             ' Prüfen, ob die Zeile die erwartete Struktur hat
                             If String.IsNullOrWhiteSpace(zeile) Then Continue While
 
-                            ' Beispiel für eine FTP-Antwort:
-                            ' drwxr-xr-x   2 user group       4096 Dec 18 10:53 myfile.txt
-                            ' Zerlege die Zeile, um den Dateinamen zu extrahieren
+
                             Dim parts() As String = zeile.Split(New Char() {" "c}, StringSplitOptions.RemoveEmptyEntries)
 
-                            ' Sicherstellen, dass die Antwort genug Teile enthält
+
                             If parts.Length < 9 Then Continue While
 
-                            ' Der Dateiname beginnt ab dem 9. Element (nach Datum und Uhrzeit)
+
                             Dim dateiname As String = String.Join(" ", parts.Skip(8))
                             Dim datum As String = $"{parts(5)} {parts(6)} {parts(7)}"
                             Dim pfad As String = ftpUri + "/" + dateiname
 
-                            ' Zeile zur DataGridView hinzufügen
                             Autodatenbank.dgv2.Rows.Add()
                             Autodatenbank.dgv2.Rows(i).Cells(0).Value = dateiname
                             Autodatenbank.dgv2.Rows(i).Cells(1).Value = datum
                             Autodatenbank.dgv2.Rows(i).Cells(2).Value = pfad
 
                         Catch ex As Exception
-                            ' Fehler beim Verarbeiten einer Zeile ignorieren
+
                         End Try
                     End While
                 End Using
