@@ -91,7 +91,7 @@ Public Class NewCar
     End Function
 
     Private Function GetTSN(input As String) As String
-        If input.Length >= 7 Then
+        If input.Length >= 8 Then
             Return input.Substring(5, 3)
         Else
             Return input

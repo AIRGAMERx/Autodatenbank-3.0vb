@@ -253,6 +253,7 @@
     <Compile Include="EditUser.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="EncryptionHelper.vb" />
     <Compile Include="FirstRun.vb">
       <SubType>Form</SubType>
     </Compile>

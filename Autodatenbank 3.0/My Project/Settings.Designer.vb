@@ -260,7 +260,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("330")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("331")>  _
         Public Property Version() As Integer
             Get
                 Return CType(Me("Version"),Integer)

@@ -537,7 +537,7 @@ Public Class FirstRun
             MsgBox("Bitte alle Lizenzdaten ausfüllen")
         End If
 
-
+        CreateRegKey(TXB_Regkey.Text)
 
     End Sub
 

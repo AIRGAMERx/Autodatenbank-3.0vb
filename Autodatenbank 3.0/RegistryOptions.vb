@@ -1,4 +1,5 @@
-﻿Imports System.Text
+﻿Imports System.Security.Cryptography
+Imports System.Text
 Imports Microsoft.Win32
 
 Module RegistryOptions
@@ -22,22 +23,19 @@ Module RegistryOptions
 
     Public Sub SetRegistryValue(path As String, keyName As String, keyValue As String)
         Try
-            ' Öffnen oder erstellen des Unterschlüssels
+            Dim encryptedValue = EncryptionHelper.Encrypt(keyValue) ' Verschlüsseln des Werts
+
             Dim currentUserKey As RegistryKey = Registry.CurrentUser
             Dim subKey As RegistryKey = currentUserKey.CreateSubKey(path)
 
             If subKey IsNot Nothing Then
-                ' Setzen des Wertes
-                subKey.SetValue(keyName, keyValue)
+                subKey.SetValue(keyName, encryptedValue) ' Verschlüsselten Wert speichern
                 subKey.Close()
                 currentUserKey.Close()
-
-
             End If
         Catch ex As Exception
-
-
-
+            ' Fehlerbehandlung
+            MessageBox.Show("Fehler beim Speichern des Schlüssels: " & ex.Message, "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -45,25 +43,53 @@ Module RegistryOptions
 
 
 
-    Public Function GetRegistryValue(path As String, KeyName As String) As String
-        Dim currentUserKey As RegistryKey = Registry.CurrentUser
-        Dim subKey As RegistryKey = currentUserKey.OpenSubKey(path)
+    Public Function GetRegistryValue(path As String, keyName As String) As String
+        Try
+            Dim currentUserKey As RegistryKey = Registry.CurrentUser
+            Dim subKey As RegistryKey = currentUserKey.OpenSubKey(path)
 
-        If subKey IsNot Nothing Then
+            If subKey IsNot Nothing Then
+                Dim encryptedValue As Object = subKey.GetValue(keyName)
+                If encryptedValue IsNot Nothing Then
+                    Dim valueString As String = encryptedValue.ToString()
 
-            Dim Value As Object = subKey.GetValue(KeyName)
-            If Value IsNot Nothing Then
-                Return Value.ToString
-            Else
-                Return Nothing
+                    ' Überprüfen, ob der Wert Base64-codiert ist
+                    If IsBase64String(valueString) Then
+                        Try
+                            ' Entschlüsseln, wenn Base64-codiert
+                            Return EncryptionHelper.Decrypt(valueString)
+                        Catch ex As CryptographicException
+                            ' Entschlüsselung fehlgeschlagen
+                            Console.WriteLine("Entschlüsselung fehlgeschlagen: " & ex.Message)
+                            Return valueString ' Klartext zurückgeben
+                        End Try
+                    Else
+                        ' Wenn nicht Base64-codiert, Klartext zurückgeben
+                        Return valueString
+                    End If
+                End If
+                subKey.Close()
             End If
-            subKey.Close()
-        End If
-        currentUserKey.Close()
+            currentUserKey.Close()
+        Catch ex As Exception
+            MessageBox.Show("Fehler beim Abrufen des Schlüssels: " & ex.Message, "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+
         Return Nothing
-
-
     End Function
+
+    ' Helferfunktion zur Überprüfung, ob ein String Base64-codiert ist
+    Private Function IsBase64String(value As String) As Boolean
+        Try
+            Dim buffer As Byte() = Convert.FromBase64String(value)
+            Return True
+        Catch ex As FormatException
+            Return False
+        End Try
+    End Function
+
+
+
 
 
 
@@ -78,14 +104,14 @@ Module RegistryOptions
                 My.Settings.Regkey = generatedKey
                 My.Settings.Save()
 
-                ' Speichern des Schlüssels in der Registry
+                ' Speichern des verschlüsselten Schlüssels in der Registry
                 Dim keyName As String = "RegKey"
-                Dim keyValue As String = generatedKey
+                Dim encryptedKey As String = EncryptionHelper.Encrypt(generatedKey) ' Verschlüsselung des Schlüssels
                 Dim currentUserKey As RegistryKey = Registry.CurrentUser
                 Dim subKey As RegistryKey = currentUserKey.CreateSubKey(RegistryPath)
 
                 If subKey IsNot Nothing Then
-                    subKey.SetValue(keyName, keyValue)
+                    subKey.SetValue(keyName, encryptedKey) ' Verschlüsselten Wert speichern
                     subKey.Close()
                 End If
                 currentUserKey.Close()

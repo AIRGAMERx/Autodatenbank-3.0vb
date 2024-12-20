@@ -75,6 +75,7 @@ Partial Class MyCar
         Me.Controls.Add(Me.FLP_CarData)
         Me.Controls.Add(Me.FLP_Refill)
         Me.Controls.Add(Me.priceChart)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "MyCar"
         Me.Text = "Mein Auto"

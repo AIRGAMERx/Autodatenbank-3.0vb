@@ -58,7 +58,7 @@ Module LogFile
 
         Try
             ' URL des PHP-Skripts
-            Dim url As String = "https://lfdev.de/PHP/get_issue.php"
+            Dim url As String = "https://lfdev.de/php/get_issue.php"
 
             ' Erstelle eine HttpClient-Instanz
             Using client As New HttpClient()

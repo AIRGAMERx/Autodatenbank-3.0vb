@@ -83,23 +83,23 @@ Module SQLTable
             connection.Open()
 
             Dim query As String = "CREATE TABLE IF NOT EXISTS `users` (
-           `id` VARCHAR(200) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
-           `user_name` VARCHAR(200) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
-           `PermissionKey` VARCHAR(50) NOT NULL DEFAULT '000000' COLLATE 'utf8mb4_0900_ai_ci',
-           `PermissionRole` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-           `VerifiKey` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-           `Verified` INT NOT NULL DEFAULT '0',
-           `Authent` VARCHAR(50) NOT NULL DEFAULT '0' COLLATE 'utf8mb4_0900_ai_ci',
-           `AuthentKey` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-           `UID` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-           `password` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-           `salt` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
-           `Passdate` DATE NULL DEFAULT NULL,
-           `failed_attempts` INT NULL DEFAULT '0',
-           `lockout_until` DATETIME NULL DEFAULT NULL,
-           PRIMARY KEY (`id`) USING BTREE
+            `id` VARCHAR(200) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+            `user_name` VARCHAR(200) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+            `PermissionKey` VARCHAR(50) NOT NULL DEFAULT '000000' COLLATE 'utf8mb4_unicode_ci',
+            `PermissionRole` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',
+            `VerifiKey` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',
+            `Verified` INT NOT NULL DEFAULT '0',
+            `Authent` VARCHAR(50) NOT NULL DEFAULT '0' COLLATE 'utf8mb4_unicode_ci',
+            `AuthentKey` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',
+            `UID` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',
+            `password` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',
+            `salt` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',
+            `Passdate` DATE NULL DEFAULT NULL,
+            `failed_attempts` INT NULL DEFAULT '0',
+            `lockout_until` DATETIME NULL DEFAULT NULL,
+            PRIMARY KEY (`id`) USING BTREE
         )
-        COLLATE='utf8mb4_0900_ai_ci'
+        COLLATE='utf8mb4_unicode_ci'
         ENGINE=InnoDB;"
 
             Using cmd As New MySqlCommand(query, connection)
@@ -119,27 +119,44 @@ Module SQLTable
         Try
             connection.Open()
 
+            ' Tabelle Kunden erstellen
+            Dim createKundenSql As String = "CREATE TABLE IF NOT EXISTS `Kunden` (
+            `ID` INT NOT NULL AUTO_INCREMENT,
+            `Name` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Straße` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Plz` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Ort` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Telefonnummer` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Email` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            `Erstellt` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+            PRIMARY KEY (`ID`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;"
+
+            Using cmdk As New MySqlCommand(createKundenSql, connection)
+                cmdk.ExecuteNonQuery()
+            End Using
+
             ' Tabelle Autos erstellen
             Dim createAutoSql As String = "CREATE TABLE IF NOT EXISTS `Autos` (
-            `Marke` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
-            `Model` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
-            `Kennzeichen` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-            `MKB` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
-            `Hubraum` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
-            `PS` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
-            `FIN` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
-            `Baujahr` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
-            `HSN` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
-            `Besitzer` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
-            `Gekauft` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
-            `Preis` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
-            `Info` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
+            `Marke` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'N/A',
+            `Model` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'N/A',
+            `Kennzeichen` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+            `MKB` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'N/A',
+            `Hubraum` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'N/A',
+            `PS` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'N/A',
+            `FIN` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'N/A',
+            `Baujahr` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'N/A',
+            `HSN` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'N/A',
+            `Besitzer` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'N/A',
+            `Gekauft` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'N/A',
+            `Preis` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'N/A',
+            `Info` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'N/A',
             `kunden_id` INT DEFAULT NULL,
             `tuev` DATE DEFAULT NULL,
-            `PR` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'N/A',
+            `PR` VARCHAR(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'N/A',
             PRIMARY KEY (`Kennzeichen`),
             CONSTRAINT `fk_kunden_id` FOREIGN KEY (`kunden_id`) REFERENCES `Kunden` (`ID`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
 
             Using cmda As New MySqlCommand(createAutoSql, connection)
                 cmda.ExecuteNonQuery()
@@ -149,7 +166,7 @@ Module SQLTable
             Dim createBerechtigungenSql As String = "CREATE TABLE IF NOT EXISTS `Berechtigungen` (
             `Name` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
             `Key` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;"
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;"
 
             Using cmdb As New MySqlCommand(createBerechtigungenSql, connection)
                 cmdb.ExecuteNonQuery()
@@ -169,22 +186,7 @@ Module SQLTable
                 cmdc.ExecuteNonQuery()
             End Using
 
-            ' Tabelle Kunden erstellen
-            Dim createKundenSql As String = "CREATE TABLE IF NOT EXISTS `Kunden` (
-            `ID` INT NOT NULL AUTO_INCREMENT,
-            `Name` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-            `Straße` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-            `Plz` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-            `Ort` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-            `Telefonnummer` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-            `Email` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-            `Erstellt` VARCHAR(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-            PRIMARY KEY (`ID`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;"
 
-            Using cmdk As New MySqlCommand(createKundenSql, connection)
-                cmdk.ExecuteNonQuery()
-            End Using
 
             ' Tabelle Meldungen erstellen
             Dim createMeldungenSql As String = "CREATE TABLE IF NOT EXISTS `Meldungen` (
@@ -201,17 +203,17 @@ Module SQLTable
             ' Tabelle Reparatur erstellen
             Dim createReparaturSql As String = "CREATE TABLE IF NOT EXISTS `Reparatur` (
             `ID_Reparatur` INT NOT NULL AUTO_INCREMENT,
-            `ID_Kennzeichen` VARCHAR(50) NOT NULL DEFAULT 'Kennzeichenlos',
-            `Bezeichnung` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci NOT NULL,
+            `ID_Kennzeichen` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Kennzeichenlos',
+            `Bezeichnung` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
             `Kilometer` VARCHAR(50) DEFAULT NULL,
-            `Datum` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+            `Datum` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
             `Preis` VARCHAR(50) DEFAULT NULL,
-            `Kommentar` LONGTEXT COLLATE utf8mb4_0900_ai_ci,
-            `Art` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-            `Bearbeiter` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+            `Kommentar` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+            `Art` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+            `Bearbeiter` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
             `Datein` LONGTEXT,
             PRIMARY KEY (`ID_Reparatur`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
 
             Using cmdr As New MySqlCommand(createReparaturSql, connection)
                 cmdr.ExecuteNonQuery()
@@ -219,37 +221,38 @@ Module SQLTable
 
             ' Tabelle Service erstellen
             Dim createServiceSql As String = "CREATE TABLE IF NOT EXISTS `Service` (
-            `ID_Service` INT NOT NULL AUTO_INCREMENT,
-            `ID_Kennzeichen` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Kennzeichenlos',
-            `Bezeichnung` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-            `Kilometer` VARCHAR(50) DEFAULT NULL,
-            `Datum` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-            `Preis` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-            `Kommentar` LONGTEXT COLLATE utf8mb4_0900_ai_ci,
-            `Art` VARCHAR(50) DEFAULT NULL,
-            `Bearbeiter` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci DEFAULT 'Kein Bearbeiter',
-            `Datein` LONGTEXT,
-            PRIMARY KEY (`ID_Service`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+    `ID_Service` INT NOT NULL AUTO_INCREMENT,
+    `ID_Kennzeichen` VARCHAR(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Kennzeichenlos',
+    `Bezeichnung` VARCHAR(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `Kilometer` VARCHAR(50) DEFAULT NULL,
+    `Datum` VARCHAR(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `Preis` VARCHAR(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `Kommentar` LONGTEXT COLLATE utf8mb4_unicode_ci,
+    `Art` VARCHAR(50) DEFAULT NULL,
+    `Bearbeiter` VARCHAR(50) COLLATE utf8mb4_unicode_ci DEFAULT 'Kein Bearbeiter',
+    `Datein` LONGTEXT,
+    PRIMARY KEY (`ID_Service`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
 
             Using cmds As New MySqlCommand(createServiceSql, connection)
                 cmds.ExecuteNonQuery()
+
             End Using
 
             ' Tabelle Sonstiges erstellen
             Dim createSonstigesSql As String = "CREATE TABLE IF NOT EXISTS `Sonstiges` (
             `ID_Sonstiges` INT NOT NULL AUTO_INCREMENT,
-            `ID_Kennzeichen` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Kennzeichenlos',
+            `ID_Kennzeichen` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Kennzeichenlos',
             `Bezeichnung` VARCHAR(50) DEFAULT NULL,
             `Kilometer` VARCHAR(50) DEFAULT NULL,
-            `Datum` VARCHAR(50) COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+            `Datum` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
             `Preis` VARCHAR(50) DEFAULT NULL,
-            `Kommentar` LONGTEXT COLLATE utf8mb4_0900_ai_ci,
+            `Kommentar` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
             `Art` VARCHAR(50) DEFAULT NULL,
             `Bearbeiter` VARCHAR(50) DEFAULT 'Kein Bearbeiter',
             `Datein` LONGTEXT,
             PRIMARY KEY (`ID_Sonstiges`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
             Using cmdso As New MySqlCommand(createSonstigesSql, connection)
                 cmdso.ExecuteNonQuery()
