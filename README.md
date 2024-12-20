@@ -90,6 +90,7 @@ Baue und starte die Anwendung.
 
 3. Konfiguration
 Beim ersten Start der Anwendung werden alle Verbindungsdaten angefordert, welche benötigt werden um die Autodatenbank zu betreiben.
+
 Sobald alle Daten eingegeben wurden, und alles erfolgreich Verbunden wurde, werden automatisch alle Tabellen und Verzeichnisse angelegt
 
 ---
