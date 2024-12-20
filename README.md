@@ -1,5 +1,7 @@
 ![Beschreibung des Bildes](https://lfdev.de/images/Autodatenbankklein.png)
 
+---
+Was kann die Autodatenbank: 
 
 Fahrzeugverwaltung: Ermöglicht das Speichern und Verwalten von Fahrzeugdaten wie Modell, Hersteller, Baujahr und VIN.
 
@@ -24,5 +26,35 @@ Checklisten: Erstelle Checklisten für dich und dein Team, um Aufträge struktur
 Fehlercode entschlüsseln: Über Fehlercodes entschlüsselt und im Klartext verfügbar um Fehler besser eingrenzen zu können.
 
 VAG exclusiv: Teilesuche mit Ersatzteilnummer und Entschlüsselung von PR-Nummern.
+
+
+
+---
+
+Funktionen
+
+Fahrzeugverwaltung:
+
+CRUD-Operationen (Erstellen, Lesen, Aktualisieren, Löschen) für Fahrzeugdaten.
+
+Speicherung wichtiger Informationen wie Marke, Modell, Baujahr, Kennzeichen und mehr.
+
+Benutzerberechtigungen:
+
+Verwaltung von Benutzern mit spezifischen Berechtigungen.
+
+Rollenzuweisung basierend auf PermissionKeys und PermissionRoles.
+
+Checklisten:
+
+Erstellung und Speicherung von Checklisten für spezifische Fahrzeuge.
+
+Speicherung von Arbeitsschritten und zugehörigen Informationen.
+
+Datenbankintegration:
+
+Verbindung zu einer MySQL/MariaDB-Datenbank.
+
+Speicherung aller Daten in einer relationalen Datenbank.
 
 
