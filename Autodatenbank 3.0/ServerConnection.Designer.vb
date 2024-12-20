@@ -98,9 +98,9 @@ Partial Class ServerConnection
         '
         'GB_FTPConnectionData
         '
-        Me.GB_FTPConnectionData.Controls.Add(Me.PNL_SFTP)
         Me.GB_FTPConnectionData.Controls.Add(Me.PNL_FTP)
         Me.GB_FTPConnectionData.Controls.Add(Me.CB_SFTP)
+        Me.GB_FTPConnectionData.Controls.Add(Me.PNL_SFTP)
         Me.GB_FTPConnectionData.Location = New System.Drawing.Point(17, 421)
         Me.GB_FTPConnectionData.Name = "GB_FTPConnectionData"
         Me.GB_FTPConnectionData.Size = New System.Drawing.Size(582, 225)

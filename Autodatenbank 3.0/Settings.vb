@@ -215,44 +215,48 @@ Module Settings
 
 
     Public Function EncryptString(ByVal plainText As String, ByVal key As String) As String
-        Dim aesAlg As New AesCryptoServiceProvider With {
-        .Key = HexStringToByteArray(key), ' Verwende HexStringToByteArray
-        .IV = New Byte(15) {} ' Initialisierungsvektor bleibt leer
-    }
+        Dim aes As New AesCryptoServiceProvider()
+        aes.Key = HexStringToByteArray(key)
 
-        Dim encryptor As ICryptoTransform = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV)
+        ' IV zufällig generieren
+        aes.GenerateIV()
+        Dim iv As Byte() = aes.IV
 
-        Using msEncrypt As New MemoryStream()
-            Using csEncrypt As New CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write)
-                Using swEncrypt As New StreamWriter(csEncrypt)
-                    swEncrypt.Write(plainText)
+        Using ms As New MemoryStream()
+            ' IV an den Anfang schreiben
+            ms.Write(iv, 0, iv.Length)
+
+            Using cs As New CryptoStream(ms, aes.CreateEncryptor(aes.Key, aes.IV), CryptoStreamMode.Write)
+                Using sw As New StreamWriter(cs)
+                    sw.Write(plainText)
                 End Using
-                Dim encryptedBytes() As Byte = msEncrypt.ToArray()
-                Return Convert.ToBase64String(encryptedBytes)
             End Using
+
+            ' Ergebnis: IV + verschlüsselte Daten
+            Return Convert.ToBase64String(ms.ToArray())
         End Using
     End Function
+
 
     Public Function DecryptString(ByVal cipherText As String, ByVal key As String) As String
-        If Not IsBase64String(cipherText) Then
-            Throw New FormatException("Ungültiger Base64-String")
-        End If
+        Dim fullCipher As Byte() = Convert.FromBase64String(cipherText)
+        Dim aes As New AesCryptoServiceProvider()
+        aes.Key = HexStringToByteArray(key)
 
-        Dim aesAlg As New AesCryptoServiceProvider With {
-        .Key = HexStringToByteArray(key), ' Verwende HexStringToByteArray
-        .IV = New Byte(15) {}
-    }
+        ' IV extrahieren (erste 16 Bytes bei AES)
+        Dim iv(CInt(aes.BlockSize / 8 - 1)) As Byte
+        Array.Copy(fullCipher, 0, iv, 0, iv.Length)
+        aes.IV = iv
 
-        Dim decryptor As ICryptoTransform = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV)
-
-        Using msDecrypt As New MemoryStream(Convert.FromBase64String(cipherText))
-            Using csDecrypt As New CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read)
-                Using srDecrypt As New StreamReader(csDecrypt)
-                    Return srDecrypt.ReadToEnd()
+        Using ms As New MemoryStream(fullCipher, iv.Length, fullCipher.Length - iv.Length)
+            Using cs As New CryptoStream(ms, aes.CreateDecryptor(aes.Key, aes.IV), CryptoStreamMode.Read)
+                Using sr As New StreamReader(cs)
+                    Return sr.ReadToEnd()
                 End Using
             End Using
         End Using
     End Function
+
 
     Public Function HexStringToByteArray(hex As String) As Byte()
         Dim bytes(hex.Length \ 2 - 1) As Byte

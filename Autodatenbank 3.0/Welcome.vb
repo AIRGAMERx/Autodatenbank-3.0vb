@@ -54,6 +54,7 @@ Public Class Welcome
             SetRegistryValue("Software\Autodatenbank3.0", "Version", My.Settings.Version.ToString)
             SetRegistryValue("Software\Autodatenbank3.0", "Path", Application.StartupPath)
             SetRegistryValue("Software\Autodatenbank3.0", "Update", "0")
+            SetRegistryValue("Software\Autodatenbank3.0", "Installed", "1")
 
 
 
