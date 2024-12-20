@@ -57,4 +57,72 @@ Verbindung zu einer MySQL/MariaDB-Datenbank.
 
 Speicherung aller Daten in einer relationalen Datenbank.
 
+--- 
+Bevor du die Anwendung verwendest, stelle sicher, dass folgende Anforderungen erfüllt sind:
+
+Software:
+
+Windows-Betriebssystem (Windows 7 oder neuer)
+
+.NET Framework 4.8 oder höher
+
+Datenbank und FTP-Server:
+
+MySQL oder MariaDB (Version 5.7 oder neuer)
+
+Zugang zu einer Datenbank mit korrekten Zugangsdaten
+
+Zugang zu einen FTP-Server mit Schreib berechtigungen
+
+---
+
+Installation
+
+1. Projekt herunterladen
+
+2. Kompilieren und Starten
+
+Öffne das Projekt in Visual Studio.
+
+Stelle sicher, dass alle Abhängigkeiten installiert sind.
+
+Baue und starte die Anwendung.
+
+3. Konfiguration
+Beim ersten Start der Anwendung werden alle Verbindungsdaten angefordert, welche benötigt werden um die Autodatenbank zu betreiben.
+Sobald alle Daten eingegeben wurden, und alles erfolgreich Verbunden wurde, werden automatisch alle Tabellen und Verzeichnisse angelegt
+
+---
+Bekannte Probleme
+
+Windows SmartScreen:
+
+Da die Anwendung nicht digital signiert ist, könnte Windows beim Ausführen eine Warnung anzeigen. Um dies zu umgehen, klicke auf "Weitere Informationen" und wähle "Trotzdem ausführen".
+
+---
+
+Mitmachen
+
+Wir suchen Beta-Tester, um die Autodatenbank 3.0 zu verbessern! Wenn du Fehler findest oder Ideen für neue Funktionen hast:
+
+Erstelle ein Issue in diesem Repository.
+
+Oder Sende innerhalb der Anwendung das Logfile um Fehler zu melden
+
+
+---
+Kontakt
+
+Wenn du Fragen hast oder Unterstützung benötigst, kontaktiere uns:
+
+E-Mail: l.fink@lfdev.de
+
+GitHub: AIRGAMERx
+
+
+
+
+
+
+
 
