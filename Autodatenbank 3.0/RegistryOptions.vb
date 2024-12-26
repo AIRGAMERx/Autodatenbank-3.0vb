@@ -9,6 +9,11 @@ Module RegistryOptions
         Dim KeyName As String = "RegKey"
 
         Dim KeyValue As String = GetRegistryValue(RegistryPath, KeyName)
+        If KeyValue = "-1" Then
+            Return False
+        End If
+
+
 
         If Not String.IsNullOrEmpty(KeyValue) Or Not String.IsNullOrWhiteSpace(KeyValue) Then
             My.Settings.Regkey = KeyValue
@@ -52,23 +57,26 @@ Module RegistryOptions
                 Dim encryptedValue As Object = subKey.GetValue(keyName)
                 If encryptedValue IsNot Nothing Then
                     Dim valueString As String = encryptedValue.ToString()
+                    If String.IsNullOrEmpty(valueString) Then
+                        Return "-1"
+                    End If
 
                     ' Überprüfen, ob der Wert Base64-codiert ist
                     If IsBase64String(valueString) Then
-                        Try
-                            ' Entschlüsseln, wenn Base64-codiert
-                            Return EncryptionHelper.Decrypt(valueString)
-                        Catch ex As CryptographicException
-                            ' Entschlüsselung fehlgeschlagen
-                            Console.WriteLine("Entschlüsselung fehlgeschlagen: " & ex.Message)
-                            Return valueString ' Klartext zurückgeben
-                        End Try
-                    Else
-                        ' Wenn nicht Base64-codiert, Klartext zurückgeben
-                        Return valueString
+                            Try
+                                ' Entschlüsseln, wenn Base64-codiert
+                                Return EncryptionHelper.Decrypt(valueString)
+                            Catch ex As CryptographicException
+                                ' Entschlüsselung fehlgeschlagen
+                                Console.WriteLine("Entschlüsselung fehlgeschlagen: " & ex.Message)
+                                Return valueString ' Klartext zurückgeben
+                            End Try
+                        Else
+                            ' Wenn nicht Base64-codiert, Klartext zurückgeben
+                            Return valueString
+                        End If
                     End If
-                End If
-                subKey.Close()
+                    subKey.Close()
             End If
             currentUserKey.Close()
         Catch ex As Exception

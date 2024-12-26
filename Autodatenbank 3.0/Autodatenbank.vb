@@ -664,10 +664,17 @@ Public Class Autodatenbank
     End Sub
 
     Private Sub ToolStripButton1_Click(sender As Object, e As EventArgs) Handles TSB_UploadFile.Click
-        If GetPermission(My.Settings.PermissionKey, 8) Then
-            UploadFiles.Show()
+        If CBB_SavedCars.SelectedIndex > -1 Then
+
+            If GetPermission(My.Settings.PermissionKey, 8) Then
+                UploadFiles.Show()
+            Else
+                MsgBox("Keine Berechtigung um Datein hochzuladen")
+            End If
+
         Else
-            MsgBox("Keine Berechtigung um Datein hochzuladen")
+            MsgBox("Bitte Fahrzeug auswählen")
+
         End If
     End Sub
 

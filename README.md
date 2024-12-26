@@ -1,4 +1,4 @@
-![Beschreibung des Bildes](https://lfdev.de/images/Autodatenbankklein.png)
+![Logo](https://lfdev.de/images/Autodatenbankklein.png)
 
 ---
 Was kann die Autodatenbank: 

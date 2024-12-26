@@ -31,6 +31,12 @@ Partial Class UploadFiles
         Me.Label2 = New System.Windows.Forms.Label()
         Me.TXB_FileName = New System.Windows.Forms.TextBox()
         Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
+        Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
+        Me.TSL_Screenshot = New System.Windows.Forms.ToolStripLabel()
+        Me.PB_PrevieScreenshot = New System.Windows.Forms.PictureBox()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.ToolStrip1.SuspendLayout()
+        CType(Me.PB_PrevieScreenshot, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'BTN_Upload
@@ -94,11 +100,47 @@ Partial Class UploadFiles
         Me.ProgressBar1.Size = New System.Drawing.Size(396, 23)
         Me.ProgressBar1.TabIndex = 6
         '
+        'ToolStrip1
+        '
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSL_Screenshot})
+        Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
+        Me.ToolStrip1.Name = "ToolStrip1"
+        Me.ToolStrip1.Size = New System.Drawing.Size(428, 25)
+        Me.ToolStrip1.TabIndex = 7
+        Me.ToolStrip1.Text = "ToolStrip1"
+        '
+        'TSL_Screenshot
+        '
+        Me.TSL_Screenshot.Name = "TSL_Screenshot"
+        Me.TSL_Screenshot.Size = New System.Drawing.Size(111, 22)
+        Me.TSL_Screenshot.Text = "Screenshot machen"
+        '
+        'PB_PrevieScreenshot
+        '
+        Me.PB_PrevieScreenshot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.PB_PrevieScreenshot.Location = New System.Drawing.Point(15, 184)
+        Me.PB_PrevieScreenshot.Name = "PB_PrevieScreenshot"
+        Me.PB_PrevieScreenshot.Size = New System.Drawing.Size(396, 225)
+        Me.PB_PrevieScreenshot.TabIndex = 8
+        Me.PB_PrevieScreenshot.TabStop = False
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(12, 168)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(109, 13)
+        Me.Label3.TabIndex = 9
+        Me.Label3.Text = "Vorschau Screenshot"
+        '
         'UploadFiles
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(428, 159)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.PB_PrevieScreenshot)
+        Me.Controls.Add(Me.ToolStrip1)
         Me.Controls.Add(Me.ProgressBar1)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.TXB_FileName)
@@ -109,7 +151,10 @@ Partial Class UploadFiles
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "UploadFiles"
-        Me.Text = "Datei Hochladen"
+        Me.Text = " Datei Hochladen"
+        Me.ToolStrip1.ResumeLayout(False)
+        Me.ToolStrip1.PerformLayout()
+        CType(Me.PB_PrevieScreenshot, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -123,4 +168,8 @@ Partial Class UploadFiles
     Friend WithEvents Label2 As Label
     Friend WithEvents TXB_FileName As TextBox
     Friend WithEvents ProgressBar1 As ProgressBar
+    Friend WithEvents ToolStrip1 As ToolStrip
+    Friend WithEvents TSL_Screenshot As ToolStripLabel
+    Friend WithEvents PB_PrevieScreenshot As PictureBox
+    Friend WithEvents Label3 As Label
 End Class
