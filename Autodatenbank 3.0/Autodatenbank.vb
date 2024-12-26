@@ -24,7 +24,7 @@ Public Class Autodatenbank
     Private isLPressed As Boolean = False
 
     Private Async Sub Autodatenbank_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
+        Console.WriteLine(My.Settings.Regkey & "  5")
 
 
 
@@ -52,6 +52,7 @@ Public Class Autodatenbank
 
             If My.Settings.Username = "" Then
                 Authent.Show()
+                My.Settings.CloseToAuth = True
                 Me.Close()
             End If
 
@@ -77,6 +78,7 @@ Public Class Autodatenbank
     Public Async Function Initialisation() As Task
         ' Lizensdaten Laden
         Try
+            Console.WriteLine(My.Settings.Regkey & "  8")
             Dim userdata = Await GetUserDataAsync(My.Settings.Regkey)
             My.Settings.LicenseName = userdata.Name
         Catch ex As Exception
@@ -207,10 +209,8 @@ Public Class Autodatenbank
     End Sub
 
     Private Sub Autodatenbank_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        If My.Settings.RememberLogin = False Then
-            My.Settings.Username = ""
-            My.Settings.PermissionKey = "000000000000"
-            My.Settings.UID = ""
+        If My.Settings.RememberLogin = False And My.Settings.CloseToAuth = False Then
+            My.Settings.Reset()
             My.Settings.Save()
         End If
 

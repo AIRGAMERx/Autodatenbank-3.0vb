@@ -1,4 +1,6 @@
 ﻿Imports System.ComponentModel
+Imports System.Data.SqlClient
+Imports System.IO
 Imports MySqlConnector
 
 
@@ -23,10 +25,12 @@ Public Class AdminSettings
     Dim CreateNewRole As Boolean = False
     Dim SelectetRoleName As String = ""
     Private Shared acr122u As New Sydesoft.NfcDevice.ACR122U
+    ReadOnly BackupDirPath As String = Application.StartupPath & "\SQLBackups"
 
     Private Sub SignInSettings_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         LoadOverallSettings()
         LoadPermissionTable()
+        TXB_BackupDirPath.Text = BackupDirPath
 
         If CheckExistTableUsers("users") Then
             CB_SignActive.Checked = True
@@ -299,11 +303,11 @@ Public Class AdminSettings
         My.Settings.Save()
     End Sub
 
-    Private Sub BTN_NewUserSave_Click(sender As Object, e As EventArgs) 
+    Private Sub BTN_NewUserSave_Click(sender As Object, e As EventArgs)
         NewUser.Show()
     End Sub
 
-    Private Sub BTN_EditUser_Click(sender As Object, e As EventArgs) 
+    Private Sub BTN_EditUser_Click(sender As Object, e As EventArgs)
         EditUser.Show()
     End Sub
 
@@ -382,14 +386,121 @@ Public Class AdminSettings
     End Sub
 
     Private Sub BTN_SaveLoginSettings_Click(sender As Object, e As EventArgs) Handles BTN_SaveLoginSettings.Click
-        My.Settings.RememberLogin = CB_RememberLogin.Checked
-        My.Settings.SmartphoneVerify = CB_SmartphoneSignIn.Checked
-        My.Settings.NFCVerify = CB_NFCVerify.Checked
-        My.Settings.OldPassword = cb_CheckOldPass.Checked
-        My.Settings.Save()
-        Notify(Autodatenbank.NI_Successful, "Erfolg", "Einstellungen wurden erfolgreich gespeichert", 3000, ToolTipIcon.None)
+
+        Try
+            My.Settings.RememberLogin = CB_RememberLogin.Checked
+            My.Settings.SmartphoneVerify = CB_SmartphoneSignIn.Checked
+            My.Settings.NFCVerify = CB_NFCVerify.Checked
+            My.Settings.OldPassword = cb_CheckOldPass.Checked
+            My.Settings.Save()
+
+
+
+            Dim rl As Integer = If(CB_RememberLogin.Checked, 1, 0)
+            Dim sv As Integer = If(CB_SmartphoneSignIn.Checked, 1, 0)
+            Dim nv As Integer = If(CB_NFCVerify.Checked, 1, 0)
+            Dim op As Integer = If(cb_CheckOldPass.Checked, 1, 0)
+
+
+
+
+            Using conn As New MySqlConnection(My.Settings.connectionstring)
+                Dim query As String = "UPDATE LoginSettings " &
+                          "SET RememberLogin = @rl, " &
+                          "SmartphoneVerify = @sv, " &
+                          "NFCVerify = @nv, " &
+                          "OldPassword = @op " &
+                          "WHERE ID = 1"
+
+                Using cmd As New MySqlCommand(query, conn)
+                    ' Parameter zuweisen
+                    cmd.Parameters.AddWithValue("@rl", SqlDbType.TinyInt).Value = rl
+                    cmd.Parameters.AddWithValue("@sv", SqlDbType.TinyInt).Value = sv
+                    cmd.Parameters.AddWithValue("@nv", SqlDbType.TinyInt).Value = nv
+                    cmd.Parameters.AddWithValue("@op", SqlDbType.TinyInt).Value = op
+
+                    ' Verbindung öffnen und Befehl ausführen
+                    conn.Open()
+                    cmd.ExecuteNonQuery()
+
+                    Notify(Autodatenbank.NI_Successful, "Erfolg", "Einstellungen wurden erfolgreich gespeichert", 3000, ToolTipIcon.None)
+                End Using
+            End Using
+        Catch ex As Exception
+            Notify(Autodatenbank.NI_Error, "Fehler", "Einstellungen konnten nicht gespeichert werden Siehe Logfile", 5000, ToolTipIcon.Error)
+            SavetoLogFile($"{ex.Message}{Environment.NewLine}{ex.StackTrace}", "SaveLoginSettings")
+        End Try
+
+
+
+
+
 
     End Sub
+
+    Private Sub BTN_BackupSQL_Click(sender As Object, e As EventArgs) Handles BTN_BackupSQL.Click
+        Dim BackupFilePath As String = BackupDirPath & "\Backup-Database-" & Now.Year & "." & Now.Month & "." & Now.Day & "." & Now.Hour.ToString("00") & "." & Now.Minute.ToString("00") & "." & Now.Second.ToString("00") & ".sql"
+
+        If Not Directory.Exists(BackupDirPath) Then
+            Directory.CreateDirectory(BackupDirPath)
+        End If
+
+        Try
+            ' Verbindung öffnen
+            Using connection As New MySqlConnection(My.Settings.connectionstring)
+                connection.Open()
+
+                Dim tablesQuery As String = "SHOW TABLES;"
+
+                ' Tabellen auslesen
+                Dim tableNames As New List(Of String)
+                Using tablesCmd As New MySqlCommand(tablesQuery, connection)
+                    Using tablesReader As MySqlDataReader = tablesCmd.ExecuteReader()
+                        While tablesReader.Read()
+                            tableNames.Add(tablesReader.GetString(0))
+                        End While
+                    End Using
+                End Using
+
+                ' Backup schreiben
+                Using writer As New IO.StreamWriter(BackupFilePath)
+                    For Each tableName In tableNames
+                        ' Hole die Tabellenstruktur
+                        Dim createTableQuery As String = $"SHOW CREATE TABLE `{tableName}`;"
+                        Using createCmd As New MySqlCommand(createTableQuery, connection)
+                            Using createReader As MySqlDataReader = createCmd.ExecuteReader()
+                                If createReader.Read() Then
+                                    writer.WriteLine(createReader.GetString(1) & ";")
+                                End If
+                            End Using
+                        End Using
+
+                        ' Hole die Daten der Tabelle
+                        Dim dataQuery As String = $"SELECT * FROM `{tableName}`;"
+                        Using dataCmd As New MySqlCommand(dataQuery, connection)
+                            Using dataReader As MySqlDataReader = dataCmd.ExecuteReader()
+                                While dataReader.Read()
+                                    Dim values As New List(Of String)
+                                    For i As Integer = 0 To dataReader.FieldCount - 1
+                                        Dim value = dataReader.GetValue(i).ToString().Replace("'", "''")
+                                        values.Add($"'{value}'")
+                                    Next
+                                    writer.WriteLine($"INSERT INTO `{tableName}` VALUES({String.Join(",", values)});")
+                                End While
+                            End Using
+                        End Using
+                    Next
+                End Using
+            End Using
+
+            MessageBox.Show("Backup erfolgreich erstellt!", "Backup", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Process.Start(BackupDirPath)
+        Catch ex As Exception
+            MessageBox.Show($"Fehler beim Backup: Siehe LogFile", "Backup", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            SavetoLogFile($"Fehler beim Backup: {ex.Message}{Environment.NewLine}{ex.StackTrace}", "CreateBackupSQL")
+        End Try
+    End Sub
+
 End Class
 
 

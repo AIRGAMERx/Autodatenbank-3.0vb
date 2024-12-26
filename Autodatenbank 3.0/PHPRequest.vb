@@ -80,47 +80,56 @@ Module PHPRequest
     Public Async Function GetUserDataAsync(Regkey As String) As Task(Of (Name As String, Email As String))
         Dim client As New HttpClient()
         Dim url As String = "https://lfdev.de/php/get_user_data.php"
+        If Not String.IsNullOrEmpty(Regkey) Then
 
-        ' Bereite die Form-Daten für den HTTP-POST vor (mit dem RegKey aus My.Settings)
-        Dim postData As New Dictionary(Of String, String) From {
+
+
+
+            ' Bereite die Form-Daten für den HTTP-POST vor (mit dem RegKey aus My.Settings)
+            Dim postData As New Dictionary(Of String, String) From {
         {"regKey", Regkey}
     }
-        Dim content As New FormUrlEncodedContent(postData)
+            Dim content As New FormUrlEncodedContent(postData)
 
-        Try
-            ' HTTP POST-Anfrage an das PHP-Backend senden
-            Dim response As HttpResponseMessage = Await client.PostAsync(url, content)
+            Try
+                ' HTTP POST-Anfrage an das PHP-Backend senden
+                Dim response As HttpResponseMessage = Await client.PostAsync(url, content)
 
-            ' Wenn die Antwort erfolgreich war, verarbeite die JSON-Antwort
-            If response.IsSuccessStatusCode Then
-                Dim jsonResponse As String = Await response.Content.ReadAsStringAsync()
-                Dim userData As JObject = JObject.Parse(jsonResponse)
+                ' Wenn die Antwort erfolgreich war, verarbeite die JSON-Antwort
+                If response.IsSuccessStatusCode Then
+                    Dim jsonResponse As String = Await response.Content.ReadAsStringAsync()
+                    Dim userData As JObject = JObject.Parse(jsonResponse)
 
-                ' Überprüfe, ob die Antwort erfolgreich war
-                If userData("success").ToObject(Of Boolean)() Then
-                    ' Extrahiere Name und E-Mail
-                    Dim name As String = userData("Name").ToString()
-                    Dim email As String = userData("Email").ToString()
+                    ' Überprüfe, ob die Antwort erfolgreich war
+                    If userData("success").ToObject(Of Boolean)() Then
+                        ' Extrahiere Name und E-Mail
+                        Dim name As String = userData("Name").ToString()
+                        Dim email As String = userData("Email").ToString()
 
-                    ' Rückgabe als Tuple
-                    Return (name, email)
+                        ' Rückgabe als Tuple
+                        Return (name, email)
+                    Else
+                        ' Fehler vom PHP-Backend anzeigen
+                        MessageBox.Show(userData("error").ToString(), "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        Return ("", "") ' Rückgabe eines leeren Wertes im Fehlerfall
+                    End If
                 Else
-                    ' Fehler vom PHP-Backend anzeigen
-                    MessageBox.Show(userData("error").ToString(), "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    ' Wenn die HTTP-Anfrage fehlschlägt, eine Fehlermeldung anzeigen
+                    MessageBox.Show("Verbindung zum Server fehlgeschlagen", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error)
                     Return ("", "") ' Rückgabe eines leeren Wertes im Fehlerfall
                 End If
-            Else
-                ' Wenn die HTTP-Anfrage fehlschlägt, eine Fehlermeldung anzeigen
-                MessageBox.Show("Verbindung zum Server fehlgeschlagen", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Return ("", "") ' Rückgabe eines leeren Wertes im Fehlerfall
-            End If
 
-        Catch ex As Exception
-            ' Allgemeine Fehlerbehandlung
+            Catch ex As Exception
+                ' Allgemeine Fehlerbehandlung
+                MessageBox.Show("Es wurden keine Daten gefunden")
+                SavetoLogFile(ex.Message, "GetUserDataAsync")
+                Return ("", "") ' Rückgabe eines leeren Wertes im Fehlerfall
+            End Try
+        Else
             MessageBox.Show("Es wurden keine Daten gefunden")
-            SavetoLogFile(ex.Message, "GetUserDataAsync")
+            SavetoLogFile("Regkey is Empty", "GetUserDataAsync")
             Return ("", "") ' Rückgabe eines leeren Wertes im Fehlerfall
-        End Try
+        End If
     End Function
 
 

@@ -18,6 +18,7 @@ Module RegistryOptions
         If Not String.IsNullOrEmpty(KeyValue) Or Not String.IsNullOrWhiteSpace(KeyValue) Then
             My.Settings.Regkey = KeyValue
             My.Settings.Save()
+
             Return True
         Else
             Return False

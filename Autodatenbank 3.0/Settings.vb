@@ -2,6 +2,7 @@
 Imports System.Security.Cryptography
 Imports System.Text
 Imports System.Xml.Serialization
+Imports MySqlConnector
 Imports Newtonsoft.Json
 
 Module Settings
@@ -369,6 +370,7 @@ Module Settings
                     Next
                 Next
             Catch ex As Exception
+                SavetoLogFile(ex.Message, "LoadDGVSettings")
                 SetDefaultDGVDataSettings()
             End Try
             If settings.DGVShowDataCode Is Nothing Then
@@ -738,7 +740,43 @@ Module Settings
 
         End If
     End Sub
+    Public Sub LoadLoginSettings()
 
+        Try
+            ' Datenbankverbindung herstellen
+            Using conn As New MySqlConnection(My.Settings.connectionstring)
+                Dim query As String = "SELECT * FROM LoginSettings WHERE ID = 1"
+                conn.Open()
+
+                Using cmd As New MySqlCommand(query, conn)
+                    Using reader As MySqlDataReader = cmd.ExecuteReader()
+                        If reader.Read() Then
+                            ' Werte direkt aus der Datenbank lesen
+                            Dim rl As Integer = reader.GetInt16("RememberLogin")
+                            Dim sv As Integer = reader.GetInt16("SmartphoneVerify")
+                            Dim nv As Integer = reader.GetInt16("NFCVerify")
+                            Dim op As Integer = reader.GetInt16("OldPassword")
+
+                            ' My.Settings-Werte setzen
+                            My.Settings.RememberLogin = (rl = 1)
+                            My.Settings.SmartphoneVerify = (sv = 1)
+                            My.Settings.NFCVerify = (nv = 1)
+                            My.Settings.OldPassword = (op = 1)
+                        End If
+                    End Using
+                End Using
+            End Using
+
+            ' Änderungen in My.Settings speichern
+            My.Settings.Save()
+
+        Catch ex As Exception
+            ' Fehler in Log-Datei speichern
+            SavetoLogFile($"{ex.Message}{Environment.NewLine}{ex.StackTrace}", "LoadLoginSettings")
+            MsgBox("Fehler beim Laden der Login-Einstellungen")
+        End Try
+
+    End Sub
 
 
 

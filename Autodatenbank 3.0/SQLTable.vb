@@ -294,6 +294,31 @@ Module SQLTable
                 cmdv.ExecuteNonQuery()
             End Using
 
+
+            Dim createTableSQL As String = "
+        CREATE TABLE IF NOT EXISTS `LoginSettings` (
+        `ID` INT AUTO_INCREMENT PRIMARY KEY,
+        `RememberLogin` TINYINT DEFAULT 0,
+        `SmartphoneVerify` TINYINT DEFAULT 0,
+        `NFCVerify` TINYINT DEFAULT 0,
+        `OldPassword` TINYINT DEFAULT 0
+         );
+        "
+
+            Dim insertRowSQL As String = "
+         INSERT INTO `LoginSettings` (`ID`, `RememberLogin`, `SmartphoneVerify`, `NFCVerify`, `OlderPassword`)
+         SELECT 1, 0, 0, 0, 0
+         WHERE NOT EXISTS (SELECT 1 FROM `LoginSettings` WHERE `ID` = 1);
+    "
+
+            Using cmdCreate As New MySqlCommand(createTableSQL, connection)
+                cmdCreate.ExecuteNonQuery()
+            End Using
+
+            Using cmdInsert As New MySqlCommand(insertRowSQL, connection)
+                cmdInsert.ExecuteNonQuery()
+            End Using
+
             MsgBox("Alle Tabellen erfolgreich erstellt!")
 
         Catch ex As Exception
@@ -457,8 +482,20 @@ Module SQLTable
             {"longitude", "DOUBLE NULL"}
         })
 
+            EnsureTableAndColumns(connection, "LoginSettings", New Dictionary(Of String, String) From {
+            {"ID", "INT NOT NULL AUTO_INCREMENT PRIMARY KEY"},
+            {"RememberLogin", "TINYINT NOT NULL DEFAULT 0"},
+            {"SmartphoneVerify", "TINYINT NOT NULL DEFAULT 0"},
+            {"NFCVerify", "TINYINT NOT NULL DEFAULT 0"},
+            {"OldPassword", "TINYINT NOT NULL DEFAULT 0"}
+    })
+
+
             ' Sicherstellen, dass ein Administrator existiert
             EnsureAdministratorExists(connection)
+
+            'Sicherstellen, dass eine Row in LoginSettings ist mit ID 1
+            EnsureLoginSettingsExists(connection)
 
             Return True
 
@@ -526,6 +563,29 @@ Module SQLTable
 
         Else
 
+        End If
+    End Sub
+
+    Private Sub EnsureLoginSettingsExists(connection As MySqlConnection)
+        Dim checkSettingsQuery As String = "SELECT COUNT(*) FROM `LoginSettings` WHERE `ID` = 1;"
+        Dim settingsExists As Boolean = False
+
+        ' Prüfe, ob eine Zeile mit ID = 1 existiert
+        Using checkCmd As New MySqlCommand(checkSettingsQuery, connection)
+            Dim count As Integer = Convert.ToInt32(checkCmd.ExecuteScalar())
+            settingsExists = (count > 0)
+        End Using
+
+        ' Wenn die Zeile nicht existiert, füge sie hinzu
+        If Not settingsExists Then
+            Dim insertSettingsQuery As String = "
+            INSERT INTO `LoginSettings` (`ID`, `RememberLogin`, `SmartphoneVerify`, `NFCVerify`, `OlderPassword`)
+            VALUES (1, 0, 0, 0, 0);"
+            Using insertCmd As New MySqlCommand(insertSettingsQuery, connection)
+                insertCmd.ExecuteNonQuery()
+            End Using
+
+            MessageBox.Show("Eine Standardzeile in der Tabelle 'LoginSettings' wurde hinzugefügt.")
         End If
     End Sub
 End Module

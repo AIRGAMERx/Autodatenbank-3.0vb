@@ -60,6 +60,10 @@ Partial Class Autodatenbank
         Me.LBL_Logout = New System.Windows.Forms.ToolStripLabel()
         Me.LBL_Login = New System.Windows.Forms.ToolStripLabel()
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripDropDownButton3 = New System.Windows.Forms.ToolStripDropDownButton()
+        Me.TSMI_Checklistedit = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TSMI_ChecklistOpen = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripDropDownButton1 = New System.Windows.Forms.ToolStripDropDownButton()
         Me.TSMI_Server_Verbindungen = New System.Windows.Forms.ToolStripMenuItem()
         Me.NachUpdateToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -73,9 +77,6 @@ Partial Class Autodatenbank
         Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
         Me.TSB_Issue = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripDropDownButton3 = New System.Windows.Forms.ToolStripDropDownButton()
-        Me.TSMI_Checklistedit = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TSMI_ChecklistOpen = New System.Windows.Forms.ToolStripMenuItem()
         Me.BTN_CreateReport = New System.Windows.Forms.Button()
         Me.lbl_CreateReport = New System.Windows.Forms.Label()
         Me.FLP_Main = New System.Windows.Forms.FlowLayoutPanel()
@@ -119,7 +120,6 @@ Partial Class Autodatenbank
         Me.NI_InspectionDate = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.NI_Successful = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.NI_Error = New System.Windows.Forms.NotifyIcon(Me.components)
-        Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
         CType(Me.dgv, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.DatabaseMenuStrip.SuspendLayout()
         CType(Me.dgv2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -382,6 +382,33 @@ Partial Class Autodatenbank
         Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
         Me.ToolStripSeparator6.Size = New System.Drawing.Size(6, 25)
         '
+        'ToolStripDropDownButton3
+        '
+        Me.ToolStripDropDownButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.ToolStripDropDownButton3.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSMI_Checklistedit, Me.TSMI_ChecklistOpen})
+        Me.ToolStripDropDownButton3.Image = CType(resources.GetObject("ToolStripDropDownButton3.Image"), System.Drawing.Image)
+        Me.ToolStripDropDownButton3.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.ToolStripDropDownButton3.Name = "ToolStripDropDownButton3"
+        Me.ToolStripDropDownButton3.Size = New System.Drawing.Size(29, 22)
+        Me.ToolStripDropDownButton3.Text = "ToolStripDropDownButton3"
+        '
+        'TSMI_Checklistedit
+        '
+        Me.TSMI_Checklistedit.Name = "TSMI_Checklistedit"
+        Me.TSMI_Checklistedit.Size = New System.Drawing.Size(241, 22)
+        Me.TSMI_Checklistedit.Text = "Ckeckliste erstellen / bearbeiten"
+        '
+        'TSMI_ChecklistOpen
+        '
+        Me.TSMI_ChecklistOpen.Name = "TSMI_ChecklistOpen"
+        Me.TSMI_ChecklistOpen.Size = New System.Drawing.Size(241, 22)
+        Me.TSMI_ChecklistOpen.Text = "Checkliste öffnen"
+        '
+        'ToolStripSeparator4
+        '
+        Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
+        Me.ToolStripSeparator4.Size = New System.Drawing.Size(6, 25)
+        '
         'ToolStripDropDownButton1
         '
         Me.ToolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
@@ -465,28 +492,6 @@ Partial Class Autodatenbank
         '
         Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
         Me.ToolStripSeparator8.Size = New System.Drawing.Size(6, 25)
-        '
-        'ToolStripDropDownButton3
-        '
-        Me.ToolStripDropDownButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripDropDownButton3.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSMI_Checklistedit, Me.TSMI_ChecklistOpen})
-        Me.ToolStripDropDownButton3.Image = CType(resources.GetObject("ToolStripDropDownButton3.Image"), System.Drawing.Image)
-        Me.ToolStripDropDownButton3.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ToolStripDropDownButton3.Name = "ToolStripDropDownButton3"
-        Me.ToolStripDropDownButton3.Size = New System.Drawing.Size(29, 22)
-        Me.ToolStripDropDownButton3.Text = "ToolStripDropDownButton3"
-        '
-        'TSMI_Checklistedit
-        '
-        Me.TSMI_Checklistedit.Name = "TSMI_Checklistedit"
-        Me.TSMI_Checklistedit.Size = New System.Drawing.Size(241, 22)
-        Me.TSMI_Checklistedit.Text = "Ckeckliste erstellen / bearbeiten"
-        '
-        'TSMI_ChecklistOpen
-        '
-        Me.TSMI_ChecklistOpen.Name = "TSMI_ChecklistOpen"
-        Me.TSMI_ChecklistOpen.Size = New System.Drawing.Size(241, 22)
-        Me.TSMI_ChecklistOpen.Text = "Checkliste öffnen"
         '
         'BTN_CreateReport
         '
@@ -913,11 +918,6 @@ Partial Class Autodatenbank
         Me.NI_Error.Icon = CType(resources.GetObject("NI_Error.Icon"), System.Drawing.Icon)
         Me.NI_Error.Text = "NotifyIcon1"
         Me.NI_Error.Visible = True
-        '
-        'ToolStripSeparator4
-        '
-        Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-        Me.ToolStripSeparator4.Size = New System.Drawing.Size(6, 25)
         '
         'Autodatenbank
         '

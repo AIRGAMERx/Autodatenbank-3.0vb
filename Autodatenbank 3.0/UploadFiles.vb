@@ -34,6 +34,12 @@ Public Class UploadFiles
 
             If IsValidFileName(TXB_FileName.Text) = True Then
 
+                TXB_FileName.Text = TXB_FileName.Text.Replace("ä", "ae").Replace("Ä", "Ae")
+                TXB_FileName.Text = TXB_FileName.Text.Replace("ö", "oe").Replace("Ö", "Oe")
+                TXB_FileName.Text = TXB_FileName.Text.Replace("ü", "ue").Replace("Ü", "Ue")
+
+
+
                 If File.Exists(TXB_DataPath.Text) Then
 
                     If My.Settings.sftp = True Then

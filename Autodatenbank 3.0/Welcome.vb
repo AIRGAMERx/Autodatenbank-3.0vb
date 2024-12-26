@@ -14,6 +14,7 @@ Public Class Welcome
 
 
         If SearchRegEntry() = True Then
+
             Dim permission As Integer = Await GetPermissionForRegKey(My.Settings.Regkey)
             If permission = 0 Then
                 MsgBox("Sie haben nicht die Berechtigung diese Anwendung zu starten")
@@ -60,6 +61,7 @@ Public Class Welcome
 
             ' Aufruf der Methode im Modul zur Überprüfung und Aktualisierung der Tabellen
             If FindConnectionSettings() = True Then
+                LoadConnectionSettings()
                 Invoke(Sub() Lbl_Status.Text = "Datenbanken auf Fehler prüfen")
                 SQLTable.UpdateTable()
             End If
@@ -71,6 +73,7 @@ Public Class Welcome
             If RegistryOptions.SearchRegEntry = True AndAlso FindConnectionSettings() = True Then
                 Invoke(Sub()
                            LoadConnectionSettings()
+                           LoadLoginSettings()
                            Autodatenbank.Show()
                            Me.Close()
                        End Sub)

@@ -222,8 +222,10 @@ Public Class Authent
                                         Autodatenbank.GetUserData(userId)
                                         My.Settings.LastUserLog = userId
                                         My.Settings.Save()
-                                        LoadDGVSettings()
                                         Autodatenbank.Show()
+                                        LoadOverallSettings()
+                                        LoadDGVSettings()
+                                        My.Settings.CloseToAuth = False
                                         Notify(Autodatenbank.NI_Successful, "Anmeldung", "Herzlich Wilkommen zurück " & My.Settings.Username, 5000, ToolTipIcon.None)
                                         Me.Close()
                                     End If
@@ -233,6 +235,7 @@ Public Class Authent
                                     My.Settings.LastUserLog = userId
                                     My.Settings.Save()
                                     LoadDGVSettings()
+                                    LoadOverallSettings()
                                     Autodatenbank.Show()
                                     Notify(Autodatenbank.NI_Successful, "Anmeldung", "Herzlich Wilkommen zurück " & My.Settings.Username, 5000, ToolTipIcon.None)
                                     Me.Close()
@@ -284,6 +287,7 @@ Public Class Authent
 
 
     Public Function GetUserNameFromID(ID As String) As String
+        Console.WriteLine(ID & "Last Login ID")
         If String.IsNullOrEmpty(ID) Then
             Return String.Empty
         Else
