@@ -6,36 +6,41 @@ Public Class ChecklistEdit
     Private CreateNew As Boolean = True
     Private CreatedBy As String = My.Settings.Username
     Private Sub Checklist_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        GetChecklists()
+        Try
+            GetChecklists()
+        Catch ex As Exception
+            MessageBox.Show("Ein Fehler ist aufgetreten: " & ex.Message & vbCrLf & "Fehler in Logfile abgelegt", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            SavetoLogFile(ex.Message, "GetChecklists")
+        End Try
     End Sub
 
 
     Private Sub GetChecklists()
-        LB_ListChecklist.Items.Clear()
-        Dim query As String = "SELECT * FROM checklist"
+        Try
+            LB_ListChecklist.Items.Clear()
+            Dim query As String = "SELECT * FROM checklist"
 
-        Using con As New MySqlConnection(My.Settings.connectionstring)
-            con.Open()
-            Using cmd As New MySqlCommand(query, con)
-                Using Reader As MySqlDataReader = cmd.ExecuteReader
-                    If Reader.HasRows Then
-                        While Reader.Read
-
-                            Dim description As String = (If(Reader.IsDBNull(Reader.GetOrdinal("Description")), "N/A", Reader.GetString(Reader.GetOrdinal("Description"))))
-                            Dim id As Integer = (If(Reader.IsDBNull(Reader.GetOrdinal("ID")), 0, Reader.GetInt16(Reader.GetOrdinal("ID"))))
-                            Dim Created As String = (If(Reader.IsDBNull(Reader.GetOrdinal("CreatedBy")), "N/A", Reader.GetString(Reader.GetOrdinal("CreatedBy"))))
-                            Dim Updated As String = (If(Reader.IsDBNull(Reader.GetOrdinal("UpdatedBy")), "N/A", Reader.GetString(Reader.GetOrdinal("UpdatedBy"))))
-                            Dim item As New ListboxItemChecklist(description, id, Created, Updated)
-                            LB_ListChecklist.Items.Add(item)
-                        End While
-                    End If
+            Using con As New MySqlConnection(My.Settings.connectionstring)
+                con.Open()
+                Using cmd As New MySqlCommand(query, con)
+                    Using Reader As MySqlDataReader = cmd.ExecuteReader
+                        If Reader.HasRows Then
+                            While Reader.Read
+                                Dim description As String = (If(Reader.IsDBNull(Reader.GetOrdinal("Description")), "N/A", Reader.GetString(Reader.GetOrdinal("Description"))))
+                                Dim id As Integer = (If(Reader.IsDBNull(Reader.GetOrdinal("ID")), 0, Reader.GetInt16(Reader.GetOrdinal("ID"))))
+                                Dim Created As String = (If(Reader.IsDBNull(Reader.GetOrdinal("CreatedBy")), "N/A", Reader.GetString(Reader.GetOrdinal("CreatedBy"))))
+                                Dim Updated As String = (If(Reader.IsDBNull(Reader.GetOrdinal("UpdatedBy")), "N/A", Reader.GetString(Reader.GetOrdinal("UpdatedBy"))))
+                                Dim item As New ListboxItemChecklist(description, id, Created, Updated)
+                                LB_ListChecklist.Items.Add(item)
+                            End While
+                        End If
+                    End Using
                 End Using
             End Using
-        End Using
-
-
-
-
+        Catch ex As Exception
+            MessageBox.Show("Ein Fehler ist aufgetreten: " & ex.Message & vbCrLf & "Fehler in Logfile abgelegt", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            SavetoLogFile(ex.Message, "GetChecklistsFunction")
+        End Try
     End Sub
     Private Sub TSMI_EditSavedChecklist_Click(sender As Object, e As EventArgs) Handles TSMI_EditSavedChecklist.Click
         If LB_ListChecklist.SelectedIndex > -1 Then

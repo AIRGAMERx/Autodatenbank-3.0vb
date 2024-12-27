@@ -26,6 +26,7 @@ Public Class AdminSettings
     Dim SelectetRoleName As String = ""
     Private Shared acr122u As New Sydesoft.NfcDevice.ACR122U
     ReadOnly BackupDirPath As String = Application.StartupPath & "\SQLBackups"
+    Dim selectedCarInfoAdmin As CarInfo
 
     Private Sub SignInSettings_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         LoadOverallSettings()
@@ -65,10 +66,37 @@ Public Class AdminSettings
         TT_Info(CB_RememberLogin, "Angemeldet bleiben", "Bei Aktivierung dieser Funktion wird der Benutzer nicht automatisch beim Beenden der Anwendung abgemeldet." & vbNewLine & "Dies wird nur bei Computern empfohlen, die alleine benutzt werden.")
 
         TT_Info(cb_CheckOldPass, "Passworterinnerung", "Bei Aktivierung dieser Funktion wird der Benutzer darauf aufmerksam gemacht, wenn das Passwort länger als 6 Monate nicht geändert wurde, ein neues zu erstellen.")
-
+        LoadCars()
     End Sub
 
+    Private Sub LoadCars()
+        Using connection As New MySqlConnection(My.Settings.connectionstring)
+            Try
+                connection.Open()
+                ' SQL-Abfrage, um das Kennzeichen und den Kundennamen abzurufen
+                Dim Query As String = "SELECT a.Kennzeichen, k.ID AS kunden_id, k.Name AS kunden_name FROM Autos a JOIN Kunden k ON a.kunden_id = k.ID"
 
+                Using Adapter As New MySqlDataAdapter(Query, connection)
+                    Dim dataTable As New DataTable()
+                    Adapter.Fill(dataTable)
+
+                    CBB_SavedCars.Items.Clear() ' Vorherige Items löschen, um Doppelungen zu vermeiden
+
+                    For Each row As DataRow In dataTable.Rows
+                        ' Initialisiere die CarInfo-Klasse mit Kennzeichen, KundenId und KundenName
+                        Dim carInfo As New CarInfo(row("Kennzeichen").ToString(), Convert.ToInt32(row("kunden_id")), row("kunden_name").ToString())
+                        If Not carInfo.Kennzeichen.Contains("(archiviert") Then
+                            CBB_SavedCars.Items.Add(carInfo)
+                        End If
+
+                    Next
+                End Using
+            Catch ex As Exception
+                Notify(Autodatenbank.NI_Error, "Fehler beim Abrufen der gespeicherten Autos ", ex.Message.ToString, 10000, ToolTipIcon.Error)
+                SavetoLogFile(ex.Message, "LoadCars")
+            End Try
+        End Using
+    End Sub
 
 
 
@@ -501,6 +529,62 @@ Public Class AdminSettings
         End Try
     End Sub
 
+    Private Sub BTN_CarArchive_Click(sender As Object, e As EventArgs) Handles BTN_CarArchive.Click
+        Select Case MessageBox.Show("Auto " & selectedCarInfoAdmin.Kennzeichen & " archivieren ?", "Ausgewähltes Auto archivieren ?", MessageBoxButtons.YesNo)
+            Case Windows.Forms.DialogResult.Yes
+                ArchiveCar(selectedCarInfoAdmin.Kennzeichen)
+            Case Windows.Forms.DialogResult.No
+                Exit Sub
+        End Select
+    End Sub
+
+    Public Sub CBB_SavedCars_SelectedIndexChanged(sender As Object, e As EventArgs) Handles CBB_SavedCars.SelectedIndexChanged
+
+        If CBB_SavedCars.SelectedIndex > -1 Then
+            selectedCarInfoAdmin = CType(CBB_SavedCars.SelectedItem, CarInfo)
+        End If
+
+    End Sub
+
+
+    Private Sub ArchiveCar(Kennzeichen As String)
+        Dim kennzeichenneu As String = Kennzeichen & "(archiviert)"
+
+        Dim queries As List(Of String) = New List(Of String) From {
+        "UPDATE Autos SET Kennzeichen = @Kennzeichenneu WHERE Kennzeichen = @Kennzeichenalt",
+        "UPDATE Reparatur SET ID_Kennzeichen = @Kennzeichenneu WHERE ID_Kennzeichen = @Kennzeichenalt",
+        "UPDATE Service SET ID_Kennzeichen = @Kennzeichenneu WHERE ID_Kennzeichen = @Kennzeichenalt",
+        "UPDATE Sonstiges SET ID_Kennzeichen = @Kennzeichenneu WHERE ID_Kennzeichen = @Kennzeichenalt",
+        "UPDATE users SET mycar = @Kennzeichenneu WHERE mycar = @Kennzeichenalt",
+        "UPDATE Verbrauch SET Kennzeichen = @Kennzeichenneu WHERE Kennzeichen = @Kennzeichenalt"
+    }
+
+        Using con As New MySqlConnection(My.Settings.connectionstring)
+            con.Open()
+
+            ' Transaktion starten
+            Using transaction As MySqlTransaction = con.BeginTransaction()
+                Try
+                    ' Alle Queries ausführen
+                    For Each query As String In queries
+                        Using cmd As New MySqlCommand(query, con, transaction)
+                            cmd.Parameters.AddWithValue("@Kennzeichenneu", kennzeichenneu)
+                            cmd.Parameters.AddWithValue("@Kennzeichenalt", Kennzeichen)
+                            cmd.ExecuteNonQuery()
+                        End Using
+                    Next
+
+                    ' Transaktion abschließen
+                    transaction.Commit()
+                    MsgBox("Auto erfolgreich Archiviert")
+                Catch ex As Exception
+                    ' Transaktion zurücksetzen, falls ein Fehler auftritt
+                    transaction.Rollback()
+                    Console.WriteLine($"Fehler: {ex.Message}")
+                End Try
+            End Using
+        End Using
+    End Sub
 End Class
 
 

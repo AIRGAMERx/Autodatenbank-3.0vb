@@ -53,13 +53,18 @@ Partial Class AdminSettings
         Me.CB_CreateEntries = New System.Windows.Forms.CheckBox()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
         Me.GB_DatabaseBackup = New System.Windows.Forms.GroupBox()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.BTN_BackupSQL = New System.Windows.Forms.Button()
         Me.TXB_BackupDirPath = New System.Windows.Forms.TextBox()
+        Me.BTN_BackupSQL = New System.Windows.Forms.Button()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.BTN_CarArchive = New System.Windows.Forms.Button()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.CBB_SavedCars = New System.Windows.Forms.ComboBox()
         Me.GroupBox3.SuspendLayout()
         Me.GB_Permission.SuspendLayout()
         Me.GB_AddPermissionRole.SuspendLayout()
         Me.GB_DatabaseBackup.SuspendLayout()
+        Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
         '
         'CB_SignActive
@@ -387,27 +392,6 @@ Partial Class AdminSettings
         Me.GB_DatabaseBackup.TabStop = False
         Me.GB_DatabaseBackup.Text = "Datenbank Backup"
         '
-        'Label2
-        '
-        Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(6, 30)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(82, 13)
-        Me.Label2.TabIndex = 38
-        Me.Label2.Text = "Backup Ordner:"
-        '
-        'BTN_BackupSQL
-        '
-        Me.BTN_BackupSQL.BackColor = System.Drawing.Color.LightGray
-        Me.BTN_BackupSQL.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!)
-        Me.BTN_BackupSQL.ForeColor = System.Drawing.Color.FromArgb(CType(CType(138, Byte), Integer), CType(CType(157, Byte), Integer), CType(CType(193, Byte), Integer))
-        Me.BTN_BackupSQL.Location = New System.Drawing.Point(9, 84)
-        Me.BTN_BackupSQL.Name = "BTN_BackupSQL"
-        Me.BTN_BackupSQL.Size = New System.Drawing.Size(365, 38)
-        Me.BTN_BackupSQL.TabIndex = 39
-        Me.BTN_BackupSQL.Text = "Backup erstellen"
-        Me.BTN_BackupSQL.UseVisualStyleBackColor = False
-        '
         'TXB_BackupDirPath
         '
         Me.TXB_BackupDirPath.Location = New System.Drawing.Point(9, 51)
@@ -417,11 +401,74 @@ Partial Class AdminSettings
         Me.TXB_BackupDirPath.Size = New System.Drawing.Size(358, 20)
         Me.TXB_BackupDirPath.TabIndex = 40
         '
+        'BTN_BackupSQL
+        '
+        Me.BTN_BackupSQL.BackColor = System.Drawing.Color.LightGray
+        Me.BTN_BackupSQL.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!)
+        Me.BTN_BackupSQL.ForeColor = System.Drawing.Color.FromArgb(CType(CType(138, Byte), Integer), CType(CType(157, Byte), Integer), CType(CType(193, Byte), Integer))
+        Me.BTN_BackupSQL.Location = New System.Drawing.Point(6, 84)
+        Me.BTN_BackupSQL.Name = "BTN_BackupSQL"
+        Me.BTN_BackupSQL.Size = New System.Drawing.Size(365, 38)
+        Me.BTN_BackupSQL.TabIndex = 39
+        Me.BTN_BackupSQL.Text = "Backup erstellen"
+        Me.BTN_BackupSQL.UseVisualStyleBackColor = False
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(6, 30)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(82, 13)
+        Me.Label2.TabIndex = 38
+        Me.Label2.Text = "Backup Ordner:"
+        '
+        'GroupBox1
+        '
+        Me.GroupBox1.Controls.Add(Me.BTN_CarArchive)
+        Me.GroupBox1.Controls.Add(Me.Label3)
+        Me.GroupBox1.Controls.Add(Me.CBB_SavedCars)
+        Me.GroupBox1.Location = New System.Drawing.Point(18, 362)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Size = New System.Drawing.Size(381, 118)
+        Me.GroupBox1.TabIndex = 40
+        Me.GroupBox1.TabStop = False
+        Me.GroupBox1.Text = "Auto Archivieren"
+        '
+        'BTN_CarArchive
+        '
+        Me.BTN_CarArchive.BackColor = System.Drawing.Color.LightGray
+        Me.BTN_CarArchive.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!)
+        Me.BTN_CarArchive.ForeColor = System.Drawing.Color.FromArgb(CType(CType(138, Byte), Integer), CType(CType(157, Byte), Integer), CType(CType(193, Byte), Integer))
+        Me.BTN_CarArchive.Location = New System.Drawing.Point(3, 68)
+        Me.BTN_CarArchive.Name = "BTN_CarArchive"
+        Me.BTN_CarArchive.Size = New System.Drawing.Size(365, 38)
+        Me.BTN_CarArchive.TabIndex = 41
+        Me.BTN_CarArchive.Text = "Ausgewähltes Auto Achivieren"
+        Me.BTN_CarArchive.UseVisualStyleBackColor = False
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(6, 22)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(107, 13)
+        Me.Label3.TabIndex = 41
+        Me.Label3.Text = "Bitte Auto auswählen"
+        '
+        'CBB_SavedCars
+        '
+        Me.CBB_SavedCars.FormattingEnabled = True
+        Me.CBB_SavedCars.Location = New System.Drawing.Point(6, 38)
+        Me.CBB_SavedCars.Name = "CBB_SavedCars"
+        Me.CBB_SavedCars.Size = New System.Drawing.Size(355, 21)
+        Me.CBB_SavedCars.TabIndex = 0
+        '
         'AdminSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(965, 490)
+        Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.GB_DatabaseBackup)
         Me.Controls.Add(Me.GB_Permission)
         Me.Controls.Add(Me.GroupBox3)
@@ -439,6 +486,8 @@ Partial Class AdminSettings
         Me.GB_AddPermissionRole.PerformLayout()
         Me.GB_DatabaseBackup.ResumeLayout(False)
         Me.GB_DatabaseBackup.PerformLayout()
+        Me.GroupBox1.ResumeLayout(False)
+        Me.GroupBox1.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -475,4 +524,8 @@ Partial Class AdminSettings
     Friend WithEvents Label2 As Label
     Friend WithEvents BTN_BackupSQL As Button
     Friend WithEvents TXB_BackupDirPath As TextBox
+    Friend WithEvents GroupBox1 As GroupBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents CBB_SavedCars As ComboBox
+    Friend WithEvents BTN_CarArchive As Button
 End Class

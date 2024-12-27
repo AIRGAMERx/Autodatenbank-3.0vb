@@ -39,7 +39,6 @@ Partial Class Autodatenbank
         Me.TSMI_Repair = New System.Windows.Forms.ToolStripMenuItem()
         Me.TSMI_Other = New System.Windows.Forms.ToolStripMenuItem()
         Me.Label15 = New System.Windows.Forms.Label()
-        Me.Label16 = New System.Windows.Forms.Label()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.TSL_Neues_Auto = New System.Windows.Forms.ToolStripLabel()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
@@ -65,15 +64,15 @@ Partial Class Autodatenbank
         Me.TSMI_ChecklistOpen = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripDropDownButton1 = New System.Windows.Forms.ToolStripDropDownButton()
-        Me.TSMI_Server_Verbindungen = New System.Windows.Forms.ToolStripMenuItem()
-        Me.NachUpdateToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TSMI_Admin = New System.Windows.Forms.ToolStripMenuItem()
         Me.TSMI_Bericht_Einstellungen = New System.Windows.Forms.ToolStripMenuItem()
-        Me.AnsichtToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TSMI_LogFile_Oeffnen = New System.Windows.Forms.ToolStripMenuItem()
         Me.TSM_Benutzer = New System.Windows.Forms.ToolStripMenuItem()
         Me.TSM_Benutzer_Erstellen = New System.Windows.Forms.ToolStripMenuItem()
         Me.TSM_Benutzer_Bearbeiten = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AnsichtToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.NachUpdateToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TSMI_Server_Verbindungen = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TSMI_Admin = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TSMI_LogFile_Oeffnen = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
         Me.TSB_Issue = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
@@ -120,6 +119,12 @@ Partial Class Autodatenbank
         Me.NI_InspectionDate = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.NI_Successful = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.NI_Error = New System.Windows.Forms.NotifyIcon(Me.components)
+        Me.CB_Service = New System.Windows.Forms.CheckBox()
+        Me.CB_Repair = New System.Windows.Forms.CheckBox()
+        Me.CB_Other = New System.Windows.Forms.CheckBox()
+        Me.Label18 = New System.Windows.Forms.Label()
+        Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
+        Me.BTN_RefreshSavedCars = New System.Windows.Forms.Button()
         CType(Me.dgv, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.DatabaseMenuStrip.SuspendLayout()
         CType(Me.dgv2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -129,6 +134,7 @@ Partial Class Autodatenbank
         Me.TLP_Main1.SuspendLayout()
         CType(Me.PB_Adressbook, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TableLayoutPanel1.SuspendLayout()
+        Me.TableLayoutPanel2.SuspendLayout()
         Me.SuspendLayout()
         '
         'dgv
@@ -237,15 +243,6 @@ Partial Class Autodatenbank
         Me.Label15.Size = New System.Drawing.Size(184, 13)
         Me.Label15.TabIndex = 6
         Me.Label15.Text = "Gespeicherte Dokumente, Bilder etc.."
-        '
-        'Label16
-        '
-        Me.Label16.AutoSize = True
-        Me.Label16.Location = New System.Drawing.Point(330, 41)
-        Me.Label16.Name = "Label16"
-        Me.Label16.Size = New System.Drawing.Size(165, 13)
-        Me.Label16.TabIndex = 7
-        Me.Label16.Text = "Wartung, Reparaturen, Sonstiges"
         '
         'ToolStrip1
         '
@@ -412,48 +409,18 @@ Partial Class Autodatenbank
         'ToolStripDropDownButton1
         '
         Me.ToolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripDropDownButton1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSMI_Server_Verbindungen, Me.NachUpdateToolStripMenuItem, Me.TSMI_Admin, Me.TSMI_Bericht_Einstellungen, Me.AnsichtToolStripMenuItem1, Me.TSMI_LogFile_Oeffnen, Me.TSM_Benutzer})
+        Me.ToolStripDropDownButton1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSMI_Bericht_Einstellungen, Me.TSM_Benutzer, Me.AnsichtToolStripMenuItem1, Me.NachUpdateToolStripMenuItem, Me.TSMI_Server_Verbindungen, Me.TSMI_Admin, Me.TSMI_LogFile_Oeffnen})
         Me.ToolStripDropDownButton1.Image = CType(resources.GetObject("ToolStripDropDownButton1.Image"), System.Drawing.Image)
         Me.ToolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ToolStripDropDownButton1.Name = "ToolStripDropDownButton1"
         Me.ToolStripDropDownButton1.Size = New System.Drawing.Size(29, 22)
         Me.ToolStripDropDownButton1.Text = "Einstellungen"
         '
-        'TSMI_Server_Verbindungen
-        '
-        Me.TSMI_Server_Verbindungen.Name = "TSMI_Server_Verbindungen"
-        Me.TSMI_Server_Verbindungen.Size = New System.Drawing.Size(225, 22)
-        Me.TSMI_Server_Verbindungen.Text = "Server Verbindungen"
-        '
-        'NachUpdateToolStripMenuItem
-        '
-        Me.NachUpdateToolStripMenuItem.Name = "NachUpdateToolStripMenuItem"
-        Me.NachUpdateToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
-        Me.NachUpdateToolStripMenuItem.Text = "Nach Updates suchen"
-        '
-        'TSMI_Admin
-        '
-        Me.TSMI_Admin.Name = "TSMI_Admin"
-        Me.TSMI_Admin.Size = New System.Drawing.Size(225, 22)
-        Me.TSMI_Admin.Text = "Administrative Einstellungen"
-        '
         'TSMI_Bericht_Einstellungen
         '
         Me.TSMI_Bericht_Einstellungen.Name = "TSMI_Bericht_Einstellungen"
         Me.TSMI_Bericht_Einstellungen.Size = New System.Drawing.Size(225, 22)
         Me.TSMI_Bericht_Einstellungen.Text = "Bericht"
-        '
-        'AnsichtToolStripMenuItem1
-        '
-        Me.AnsichtToolStripMenuItem1.Name = "AnsichtToolStripMenuItem1"
-        Me.AnsichtToolStripMenuItem1.Size = New System.Drawing.Size(225, 22)
-        Me.AnsichtToolStripMenuItem1.Text = "Ansicht"
-        '
-        'TSMI_LogFile_Oeffnen
-        '
-        Me.TSMI_LogFile_Oeffnen.Name = "TSMI_LogFile_Oeffnen"
-        Me.TSMI_LogFile_Oeffnen.Size = New System.Drawing.Size(225, 22)
-        Me.TSMI_LogFile_Oeffnen.Text = "LogFile öffnen"
         '
         'TSM_Benutzer
         '
@@ -473,6 +440,36 @@ Partial Class Autodatenbank
         Me.TSM_Benutzer_Bearbeiten.Name = "TSM_Benutzer_Bearbeiten"
         Me.TSM_Benutzer_Bearbeiten.Size = New System.Drawing.Size(130, 22)
         Me.TSM_Benutzer_Bearbeiten.Text = "Bearbeiten"
+        '
+        'AnsichtToolStripMenuItem1
+        '
+        Me.AnsichtToolStripMenuItem1.Name = "AnsichtToolStripMenuItem1"
+        Me.AnsichtToolStripMenuItem1.Size = New System.Drawing.Size(225, 22)
+        Me.AnsichtToolStripMenuItem1.Text = "Ansicht"
+        '
+        'NachUpdateToolStripMenuItem
+        '
+        Me.NachUpdateToolStripMenuItem.Name = "NachUpdateToolStripMenuItem"
+        Me.NachUpdateToolStripMenuItem.Size = New System.Drawing.Size(225, 22)
+        Me.NachUpdateToolStripMenuItem.Text = "Nach Updates suchen"
+        '
+        'TSMI_Server_Verbindungen
+        '
+        Me.TSMI_Server_Verbindungen.Name = "TSMI_Server_Verbindungen"
+        Me.TSMI_Server_Verbindungen.Size = New System.Drawing.Size(225, 22)
+        Me.TSMI_Server_Verbindungen.Text = "Server Verbindungen"
+        '
+        'TSMI_Admin
+        '
+        Me.TSMI_Admin.Name = "TSMI_Admin"
+        Me.TSMI_Admin.Size = New System.Drawing.Size(225, 22)
+        Me.TSMI_Admin.Text = "Administrative Einstellungen"
+        '
+        'TSMI_LogFile_Oeffnen
+        '
+        Me.TSMI_LogFile_Oeffnen.Name = "TSMI_LogFile_Oeffnen"
+        Me.TSMI_LogFile_Oeffnen.Size = New System.Drawing.Size(225, 22)
+        Me.TSMI_LogFile_Oeffnen.Text = "LogFile öffnen"
         '
         'ToolStripSeparator7
         '
@@ -520,7 +517,7 @@ Partial Class Autodatenbank
         '
         Me.FLP_Main.AutoSize = True
         Me.FLP_Main.BackColor = System.Drawing.Color.White
-        Me.FLP_Main.Controls.Add(Me.Label1)
+        Me.FLP_Main.Controls.Add(Me.TableLayoutPanel2)
         Me.FLP_Main.Controls.Add(Me.CBB_SavedCars)
         Me.FLP_Main.Controls.Add(Me.Label2)
         Me.FLP_Main.Controls.Add(Me.TXB_Brand)
@@ -558,15 +555,16 @@ Partial Class Autodatenbank
         Me.FLP_Main.Margin = New System.Windows.Forms.Padding(0, 5, 0, 5)
         Me.FLP_Main.Name = "FLP_Main"
         Me.FLP_Main.Padding = New System.Windows.Forms.Padding(10, 20, 10, 10)
-        Me.FLP_Main.Size = New System.Drawing.Size(292, 963)
+        Me.FLP_Main.Size = New System.Drawing.Size(292, 1025)
         Me.FLP_Main.TabIndex = 13
         Me.FLP_Main.WrapContents = False
         '
         'Label1
         '
+        Me.Label1.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(13, 20)
+        Me.Label1.Location = New System.Drawing.Point(3, 10)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(101, 16)
         Me.Label1.TabIndex = 2
@@ -576,7 +574,7 @@ Partial Class Autodatenbank
         '
         Me.CBB_SavedCars.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CBB_SavedCars.FormattingEnabled = True
-        Me.CBB_SavedCars.Location = New System.Drawing.Point(13, 39)
+        Me.CBB_SavedCars.Location = New System.Drawing.Point(13, 60)
         Me.CBB_SavedCars.Name = "CBB_SavedCars"
         Me.CBB_SavedCars.Size = New System.Drawing.Size(266, 24)
         Me.CBB_SavedCars.TabIndex = 1
@@ -584,7 +582,7 @@ Partial Class Autodatenbank
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(13, 66)
+        Me.Label2.Location = New System.Drawing.Point(13, 87)
         Me.Label2.Name = "Label2"
         Me.Label2.Padding = New System.Windows.Forms.Padding(0, 3, 0, 0)
         Me.Label2.Size = New System.Drawing.Size(37, 16)
@@ -594,7 +592,7 @@ Partial Class Autodatenbank
         'TXB_Brand
         '
         Me.TXB_Brand.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TXB_Brand.Location = New System.Drawing.Point(13, 85)
+        Me.TXB_Brand.Location = New System.Drawing.Point(13, 106)
         Me.TXB_Brand.Name = "TXB_Brand"
         Me.TXB_Brand.Size = New System.Drawing.Size(264, 22)
         Me.TXB_Brand.TabIndex = 2
@@ -602,7 +600,7 @@ Partial Class Autodatenbank
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(13, 110)
+        Me.Label3.Location = New System.Drawing.Point(13, 131)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(36, 13)
         Me.Label3.TabIndex = 29
@@ -611,7 +609,7 @@ Partial Class Autodatenbank
         'TXB_Model
         '
         Me.TXB_Model.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TXB_Model.Location = New System.Drawing.Point(13, 126)
+        Me.TXB_Model.Location = New System.Drawing.Point(13, 147)
         Me.TXB_Model.Name = "TXB_Model"
         Me.TXB_Model.Size = New System.Drawing.Size(264, 22)
         Me.TXB_Model.TabIndex = 3
@@ -619,7 +617,7 @@ Partial Class Autodatenbank
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(13, 151)
+        Me.Label5.Location = New System.Drawing.Point(13, 172)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(69, 13)
         Me.Label5.TabIndex = 33
@@ -628,7 +626,7 @@ Partial Class Autodatenbank
         'TXB_LicensePlate
         '
         Me.TXB_LicensePlate.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TXB_LicensePlate.Location = New System.Drawing.Point(13, 167)
+        Me.TXB_LicensePlate.Location = New System.Drawing.Point(13, 188)
         Me.TXB_LicensePlate.Name = "TXB_LicensePlate"
         Me.TXB_LicensePlate.ReadOnly = True
         Me.TXB_LicensePlate.Size = New System.Drawing.Size(264, 22)
@@ -637,7 +635,7 @@ Partial Class Autodatenbank
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(13, 192)
+        Me.Label4.Location = New System.Drawing.Point(13, 213)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(137, 13)
         Me.Label4.TabIndex = 35
@@ -646,7 +644,7 @@ Partial Class Autodatenbank
         'TXB_Motorcode
         '
         Me.TXB_Motorcode.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TXB_Motorcode.Location = New System.Drawing.Point(13, 208)
+        Me.TXB_Motorcode.Location = New System.Drawing.Point(13, 229)
         Me.TXB_Motorcode.Name = "TXB_Motorcode"
         Me.TXB_Motorcode.Size = New System.Drawing.Size(264, 22)
         Me.TXB_Motorcode.TabIndex = 4
@@ -654,7 +652,7 @@ Partial Class Autodatenbank
         'Label9
         '
         Me.Label9.AutoSize = True
-        Me.Label9.Location = New System.Drawing.Point(13, 233)
+        Me.Label9.Location = New System.Drawing.Point(13, 254)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(84, 13)
         Me.Label9.TabIndex = 38
@@ -663,7 +661,7 @@ Partial Class Autodatenbank
         'TXB_Displacement
         '
         Me.TXB_Displacement.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TXB_Displacement.Location = New System.Drawing.Point(13, 249)
+        Me.TXB_Displacement.Location = New System.Drawing.Point(13, 270)
         Me.TXB_Displacement.Name = "TXB_Displacement"
         Me.TXB_Displacement.Size = New System.Drawing.Size(264, 22)
         Me.TXB_Displacement.TabIndex = 5
@@ -671,7 +669,7 @@ Partial Class Autodatenbank
         'Label8
         '
         Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(13, 274)
+        Me.Label8.Location = New System.Drawing.Point(13, 295)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(75, 13)
         Me.Label8.TabIndex = 42
@@ -680,7 +678,7 @@ Partial Class Autodatenbank
         'TXB_Power
         '
         Me.TXB_Power.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TXB_Power.Location = New System.Drawing.Point(13, 290)
+        Me.TXB_Power.Location = New System.Drawing.Point(13, 311)
         Me.TXB_Power.Name = "TXB_Power"
         Me.TXB_Power.Size = New System.Drawing.Size(264, 22)
         Me.TXB_Power.TabIndex = 6
@@ -688,7 +686,7 @@ Partial Class Autodatenbank
         'Label7
         '
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(13, 315)
+        Me.Label7.Location = New System.Drawing.Point(13, 336)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(24, 13)
         Me.Label7.TabIndex = 44
@@ -697,7 +695,7 @@ Partial Class Autodatenbank
         'TXB_VIN
         '
         Me.TXB_VIN.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TXB_VIN.Location = New System.Drawing.Point(13, 331)
+        Me.TXB_VIN.Location = New System.Drawing.Point(13, 352)
         Me.TXB_VIN.Name = "TXB_VIN"
         Me.TXB_VIN.Size = New System.Drawing.Size(264, 22)
         Me.TXB_VIN.TabIndex = 7
@@ -705,7 +703,7 @@ Partial Class Autodatenbank
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(13, 356)
+        Me.Label6.Location = New System.Drawing.Point(13, 377)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(43, 13)
         Me.Label6.TabIndex = 46
@@ -714,7 +712,7 @@ Partial Class Autodatenbank
         'TXB_ConstructionYear
         '
         Me.TXB_ConstructionYear.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TXB_ConstructionYear.Location = New System.Drawing.Point(13, 372)
+        Me.TXB_ConstructionYear.Location = New System.Drawing.Point(13, 393)
         Me.TXB_ConstructionYear.Name = "TXB_ConstructionYear"
         Me.TXB_ConstructionYear.Size = New System.Drawing.Size(264, 22)
         Me.TXB_ConstructionYear.TabIndex = 8
@@ -722,7 +720,7 @@ Partial Class Autodatenbank
         'Label13
         '
         Me.Label13.AutoSize = True
-        Me.Label13.Location = New System.Drawing.Point(13, 397)
+        Me.Label13.Location = New System.Drawing.Point(13, 418)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(148, 13)
         Me.Label13.TabIndex = 47
@@ -731,7 +729,7 @@ Partial Class Autodatenbank
         'TXB_KeyNumber
         '
         Me.TXB_KeyNumber.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TXB_KeyNumber.Location = New System.Drawing.Point(13, 413)
+        Me.TXB_KeyNumber.Location = New System.Drawing.Point(13, 434)
         Me.TXB_KeyNumber.Name = "TXB_KeyNumber"
         Me.TXB_KeyNumber.Size = New System.Drawing.Size(264, 22)
         Me.TXB_KeyNumber.TabIndex = 9
@@ -744,7 +742,7 @@ Partial Class Autodatenbank
         Me.TLP_Main1.Controls.Add(Me.Label12, 0, 0)
         Me.TLP_Main1.Controls.Add(Me.PB_Adressbook, 1, 0)
         Me.TLP_Main1.GrowStyle = System.Windows.Forms.TableLayoutPanelGrowStyle.FixedSize
-        Me.TLP_Main1.Location = New System.Drawing.Point(10, 438)
+        Me.TLP_Main1.Location = New System.Drawing.Point(10, 459)
         Me.TLP_Main1.Margin = New System.Windows.Forms.Padding(0, 0, 0, 5)
         Me.TLP_Main1.Name = "TLP_Main1"
         Me.TLP_Main1.Padding = New System.Windows.Forms.Padding(5, 0, 10, 0)
@@ -777,7 +775,7 @@ Partial Class Autodatenbank
         'TXB_Owner
         '
         Me.TXB_Owner.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TXB_Owner.Location = New System.Drawing.Point(13, 471)
+        Me.TXB_Owner.Location = New System.Drawing.Point(13, 492)
         Me.TXB_Owner.Name = "TXB_Owner"
         Me.TXB_Owner.Size = New System.Drawing.Size(264, 22)
         Me.TXB_Owner.TabIndex = 10
@@ -785,7 +783,7 @@ Partial Class Autodatenbank
         'Label11
         '
         Me.Label11.AutoSize = True
-        Me.Label11.Location = New System.Drawing.Point(13, 496)
+        Me.Label11.Location = New System.Drawing.Point(13, 517)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(62, 13)
         Me.Label11.TabIndex = 49
@@ -794,7 +792,7 @@ Partial Class Autodatenbank
         'TXB_BuyDate
         '
         Me.TXB_BuyDate.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TXB_BuyDate.Location = New System.Drawing.Point(13, 512)
+        Me.TXB_BuyDate.Location = New System.Drawing.Point(13, 533)
         Me.TXB_BuyDate.Name = "TXB_BuyDate"
         Me.TXB_BuyDate.Size = New System.Drawing.Size(264, 22)
         Me.TXB_BuyDate.TabIndex = 11
@@ -802,7 +800,7 @@ Partial Class Autodatenbank
         'Label10
         '
         Me.Label10.AutoSize = True
-        Me.Label10.Location = New System.Drawing.Point(13, 537)
+        Me.Label10.Location = New System.Drawing.Point(13, 558)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(30, 13)
         Me.Label10.TabIndex = 50
@@ -811,7 +809,7 @@ Partial Class Autodatenbank
         'TXB_Price
         '
         Me.TXB_Price.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TXB_Price.Location = New System.Drawing.Point(13, 553)
+        Me.TXB_Price.Location = New System.Drawing.Point(13, 574)
         Me.TXB_Price.Name = "TXB_Price"
         Me.TXB_Price.Size = New System.Drawing.Size(264, 22)
         Me.TXB_Price.TabIndex = 12
@@ -819,7 +817,7 @@ Partial Class Autodatenbank
         'Label17
         '
         Me.Label17.AutoSize = True
-        Me.Label17.Location = New System.Drawing.Point(13, 578)
+        Me.Label17.Location = New System.Drawing.Point(13, 599)
         Me.Label17.Name = "Label17"
         Me.Label17.Size = New System.Drawing.Size(117, 13)
         Me.Label17.TabIndex = 55
@@ -832,7 +830,7 @@ Partial Class Autodatenbank
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.TableLayoutPanel1.Controls.Add(Me.CBB_NextInspectionYear, 1, 0)
         Me.TableLayoutPanel1.Controls.Add(Me.CBB_NextInspectionMonth, 0, 0)
-        Me.TableLayoutPanel1.Location = New System.Drawing.Point(13, 594)
+        Me.TableLayoutPanel1.Location = New System.Drawing.Point(13, 615)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 1
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
@@ -859,7 +857,7 @@ Partial Class Autodatenbank
         '
         'BTN_ShowPRNumbers
         '
-        Me.BTN_ShowPRNumbers.Location = New System.Drawing.Point(13, 632)
+        Me.BTN_ShowPRNumbers.Location = New System.Drawing.Point(13, 653)
         Me.BTN_ShowPRNumbers.Name = "BTN_ShowPRNumbers"
         Me.BTN_ShowPRNumbers.Size = New System.Drawing.Size(264, 39)
         Me.BTN_ShowPRNumbers.TabIndex = 15
@@ -869,7 +867,7 @@ Partial Class Autodatenbank
         'Label14
         '
         Me.Label14.AutoSize = True
-        Me.Label14.Location = New System.Drawing.Point(13, 674)
+        Me.Label14.Location = New System.Drawing.Point(13, 695)
         Me.Label14.Name = "Label14"
         Me.Label14.Padding = New System.Windows.Forms.Padding(0, 10, 0, 0)
         Me.Label14.Size = New System.Drawing.Size(115, 23)
@@ -878,15 +876,15 @@ Partial Class Autodatenbank
         '
         'RTB_Infos
         '
-        Me.RTB_Infos.Location = New System.Drawing.Point(13, 700)
+        Me.RTB_Infos.Location = New System.Drawing.Point(13, 721)
         Me.RTB_Infos.Name = "RTB_Infos"
-        Me.RTB_Infos.Size = New System.Drawing.Size(264, 119)
+        Me.RTB_Infos.Size = New System.Drawing.Size(264, 96)
         Me.RTB_Infos.TabIndex = 16
         Me.RTB_Infos.Text = ""
         '
         'BTN_SaveCarData
         '
-        Me.BTN_SaveCarData.Location = New System.Drawing.Point(13, 825)
+        Me.BTN_SaveCarData.Location = New System.Drawing.Point(13, 823)
         Me.BTN_SaveCarData.Name = "BTN_SaveCarData"
         Me.BTN_SaveCarData.Size = New System.Drawing.Size(264, 39)
         Me.BTN_SaveCarData.TabIndex = 17
@@ -896,7 +894,7 @@ Partial Class Autodatenbank
         'BTN_DeleteCarData
         '
         Me.BTN_DeleteCarData.ForeColor = System.Drawing.Color.Red
-        Me.BTN_DeleteCarData.Location = New System.Drawing.Point(13, 870)
+        Me.BTN_DeleteCarData.Location = New System.Drawing.Point(13, 868)
         Me.BTN_DeleteCarData.Name = "BTN_DeleteCarData"
         Me.BTN_DeleteCarData.Size = New System.Drawing.Size(264, 36)
         Me.BTN_DeleteCarData.TabIndex = 18
@@ -919,17 +917,90 @@ Partial Class Autodatenbank
         Me.NI_Error.Text = "NotifyIcon1"
         Me.NI_Error.Visible = True
         '
+        'CB_Service
+        '
+        Me.CB_Service.AutoSize = True
+        Me.CB_Service.Checked = True
+        Me.CB_Service.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.CB_Service.Location = New System.Drawing.Point(371, 42)
+        Me.CB_Service.Name = "CB_Service"
+        Me.CB_Service.Size = New System.Drawing.Size(67, 17)
+        Me.CB_Service.TabIndex = 14
+        Me.CB_Service.Text = "Wartung"
+        Me.CB_Service.UseVisualStyleBackColor = True
+        '
+        'CB_Repair
+        '
+        Me.CB_Repair.AutoSize = True
+        Me.CB_Repair.Checked = True
+        Me.CB_Repair.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.CB_Repair.Location = New System.Drawing.Point(444, 42)
+        Me.CB_Repair.Name = "CB_Repair"
+        Me.CB_Repair.Size = New System.Drawing.Size(85, 17)
+        Me.CB_Repair.TabIndex = 15
+        Me.CB_Repair.Text = "Reparaturen"
+        Me.CB_Repair.UseVisualStyleBackColor = True
+        '
+        'CB_Other
+        '
+        Me.CB_Other.AutoSize = True
+        Me.CB_Other.Checked = True
+        Me.CB_Other.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.CB_Other.Location = New System.Drawing.Point(535, 42)
+        Me.CB_Other.Name = "CB_Other"
+        Me.CB_Other.Size = New System.Drawing.Size(72, 17)
+        Me.CB_Other.TabIndex = 16
+        Me.CB_Other.Text = "Sonstiges"
+        Me.CB_Other.UseVisualStyleBackColor = True
+        '
+        'Label18
+        '
+        Me.Label18.AutoSize = True
+        Me.Label18.Location = New System.Drawing.Point(333, 43)
+        Me.Label18.Name = "Label18"
+        Me.Label18.Size = New System.Drawing.Size(32, 13)
+        Me.Label18.TabIndex = 17
+        Me.Label18.Text = "Filter:"
+        '
+        'TableLayoutPanel2
+        '
+        Me.TableLayoutPanel2.ColumnCount = 2
+        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TableLayoutPanel2.Controls.Add(Me.Label1, 0, 0)
+        Me.TableLayoutPanel2.Controls.Add(Me.BTN_RefreshSavedCars, 1, 0)
+        Me.TableLayoutPanel2.Location = New System.Drawing.Point(10, 20)
+        Me.TableLayoutPanel2.Margin = New System.Windows.Forms.Padding(0)
+        Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
+        Me.TableLayoutPanel2.RowCount = 1
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(266, 37)
+        Me.TableLayoutPanel2.TabIndex = 56
+        '
+        'BTN_RefreshSavedCars
+        '
+        Me.BTN_RefreshSavedCars.BackgroundImage = CType(resources.GetObject("BTN_RefreshSavedCars.BackgroundImage"), System.Drawing.Image)
+        Me.BTN_RefreshSavedCars.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.BTN_RefreshSavedCars.Location = New System.Drawing.Point(231, 3)
+        Me.BTN_RefreshSavedCars.Name = "BTN_RefreshSavedCars"
+        Me.BTN_RefreshSavedCars.Size = New System.Drawing.Size(32, 31)
+        Me.BTN_RefreshSavedCars.TabIndex = 3
+        Me.BTN_RefreshSavedCars.UseVisualStyleBackColor = True
+        '
         'Autodatenbank
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ControlLight
         Me.ClientSize = New System.Drawing.Size(1584, 985)
+        Me.Controls.Add(Me.Label18)
+        Me.Controls.Add(Me.CB_Other)
+        Me.Controls.Add(Me.CB_Repair)
+        Me.Controls.Add(Me.CB_Service)
         Me.Controls.Add(Me.FLP_Main)
         Me.Controls.Add(Me.lbl_CreateReport)
         Me.Controls.Add(Me.BTN_CreateReport)
         Me.Controls.Add(Me.ToolStrip1)
-        Me.Controls.Add(Me.Label16)
         Me.Controls.Add(Me.Label15)
         Me.Controls.Add(Me.dgv2)
         Me.Controls.Add(Me.dgv)
@@ -950,6 +1021,8 @@ Partial Class Autodatenbank
         Me.TLP_Main1.PerformLayout()
         CType(Me.PB_Adressbook, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TableLayoutPanel1.ResumeLayout(False)
+        Me.TableLayoutPanel2.ResumeLayout(False)
+        Me.TableLayoutPanel2.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -957,7 +1030,6 @@ Partial Class Autodatenbank
     Friend WithEvents dgv As DataGridView
     Friend WithEvents dgv2 As DataGridView
     Friend WithEvents Label15 As Label
-    Friend WithEvents Label16 As Label
     Friend WithEvents ToolStrip1 As ToolStrip
     Friend WithEvents TSL_Neues_Auto As ToolStripLabel
     Friend WithEvents ToolStripDropDownButton1 As ToolStripDropDownButton
@@ -1051,4 +1123,10 @@ Partial Class Autodatenbank
     Friend WithEvents TSMI_Checklistedit As ToolStripMenuItem
     Friend WithEvents TSMI_ChecklistOpen As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator4 As ToolStripSeparator
+    Friend WithEvents CB_Service As CheckBox
+    Friend WithEvents CB_Repair As CheckBox
+    Friend WithEvents CB_Other As CheckBox
+    Friend WithEvents Label18 As Label
+    Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
+    Friend WithEvents BTN_RefreshSavedCars As Button
 End Class

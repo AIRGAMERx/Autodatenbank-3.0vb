@@ -357,9 +357,10 @@ Public Class Autodatenbank
             My.Settings.LicensePlate = TXB_LicensePlate.Text
             My.Settings.Save()
             My.Settings.Reload()
-
-            If NextInspectionDue(CInt(CBB_NextInspectionYear.SelectedItem), CInt(CBB_NextInspectionMonth.SelectedItem)) Then
-                Notify(NI_InspectionDate, "TÜV abgelaufen", "Bei " & TXB_LicensePlate.Text & " ist der TÜV abgelaufen, bitte demnächst erneuern", 5000, ToolTipIcon.Warning)
+            If Not TXB_LicensePlate.Text.Contains("archiviert") Then
+                If NextInspectionDue(CInt(CBB_NextInspectionYear.SelectedItem), CInt(CBB_NextInspectionMonth.SelectedItem)) Then
+                    Notify(NI_InspectionDate, "TÜV abgelaufen", "Bei " & TXB_LicensePlate.Text & " ist der TÜV abgelaufen, bitte demnächst erneuern", 5000, ToolTipIcon.Warning)
+                End If
             End If
         Catch ex As Exception
             Notify(NI_Error, "Fehler beim Laden der Daten", ex.Message.ToString, 10000, ToolTipIcon.Error)
@@ -491,14 +492,19 @@ Public Class Autodatenbank
         Try
             connection.Open() ' Nur einmal die Verbindung öffnen
 
-            ' Service-Daten abrufen
-            FetchData("SELECT * FROM Service WHERE ID_Kennzeichen = @SearchValue", connection, searchValue, "Service", i)
+            If CB_Service.Checked Then
+                FetchData("SELECT * FROM Service WHERE ID_Kennzeichen = @SearchValue", connection, searchValue, "Service", i)
+            End If
 
-            ' Reparatur-Daten abrufen
-            FetchData("SELECT * FROM Reparatur WHERE ID_Kennzeichen = @SearchValue", connection, searchValue, "Reparatur", i)
+            If CB_Repair.Checked Then
+                FetchData("SELECT * FROM Reparatur WHERE ID_Kennzeichen = @SearchValue", connection, searchValue, "Reparatur", i)
+            End If
 
-            ' Sonstiges-Daten abrufen
-            FetchData("SELECT * FROM Sonstiges WHERE ID_Kennzeichen = @SearchValue", connection, searchValue, "Sonstiges", i)
+            If CB_Other.Checked Then
+                FetchData("SELECT * FROM Sonstiges WHERE ID_Kennzeichen = @SearchValue", connection, searchValue, "Sonstiges", i)
+            End If
+
+
         Catch ex As Exception
             MessageBox.Show("Fehler beim Abrufen der Daten: " & ex.Message)
             SavetoLogFile(ex.Message, "FillDGV")
@@ -1071,6 +1077,7 @@ Public Class Autodatenbank
             BTN_CreateReport.Location = New Point((Me.Width - BTN_CreateReport.Width) - 28, lbl_CreateReport.Location.Y + 19)
             dgv.Columns("Kommentar").Width = dgv.Size.Width - 7 * 100 - 50
 
+
         End If
 
         If Me.Size.Height <= 1024 Or Me.Size.Width <= 1600 Then
@@ -1389,6 +1396,34 @@ Public Class Autodatenbank
         Else
             MsgBox("Bitte wähle ein Auto aus")
         End If
+
+    End Sub
+
+    Private Sub CB_Service_CheckedChanged(sender As Object, e As EventArgs) Handles CB_Service.CheckedChanged
+        FillDGV()
+    End Sub
+
+    Private Sub CB_Repair_CheckedChanged(sender As Object, e As EventArgs) Handles CB_Repair.CheckedChanged
+        FillDGV()
+    End Sub
+
+    Private Sub CB_Other_CheckedChanged(sender As Object, e As EventArgs) Handles CB_Other.CheckedChanged
+        FillDGV()
+    End Sub
+
+    Private Sub FLP_Main_Paint(sender As Object, e As PaintEventArgs) Handles FLP_Main.Paint
+
+    End Sub
+
+    Private Sub BTN_RefreshSavedCars_Click(sender As Object, e As EventArgs) Handles BTN_RefreshSavedCars.Click
+        Try
+
+
+            LoadCars()
+            Notify(NI_Successful, "Erfolg", "Autos erfolgreich aktualisiert", 3000, ToolTipIcon.None)
+        Catch ex As Exception
+
+        End Try
 
     End Sub
 End Class
