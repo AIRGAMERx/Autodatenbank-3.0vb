@@ -22,6 +22,7 @@ Partial Class UploadFiles
     'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(UploadFiles))
         Me.BTN_Upload = New System.Windows.Forms.Button()
         Me.BTN_SelectFile = New System.Windows.Forms.Button()
@@ -33,10 +34,15 @@ Partial Class UploadFiles
         Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.TSL_Screenshot = New System.Windows.Forms.ToolStripLabel()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.TSL_Scann = New System.Windows.Forms.ToolStripLabel()
         Me.PB_PrevieScreenshot = New System.Windows.Forms.PictureBox()
+        Me.CMS_UploadFiles = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ZuschneidenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.ToolStrip1.SuspendLayout()
         CType(Me.PB_PrevieScreenshot, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.CMS_UploadFiles.SuspendLayout()
         Me.SuspendLayout()
         '
         'BTN_Upload
@@ -102,7 +108,7 @@ Partial Class UploadFiles
         '
         'ToolStrip1
         '
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSL_Screenshot})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSL_Screenshot, Me.ToolStripSeparator1, Me.TSL_Scann})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(428, 25)
@@ -115,14 +121,38 @@ Partial Class UploadFiles
         Me.TSL_Screenshot.Size = New System.Drawing.Size(111, 22)
         Me.TSL_Screenshot.Text = "Screenshot machen"
         '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 25)
+        '
+        'TSL_Scann
+        '
+        Me.TSL_Scann.Name = "TSL_Scann"
+        Me.TSL_Scann.Size = New System.Drawing.Size(117, 22)
+        Me.TSL_Scann.Text = "Dokumente Scannen"
+        '
         'PB_PrevieScreenshot
         '
         Me.PB_PrevieScreenshot.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.PB_PrevieScreenshot.ContextMenuStrip = Me.CMS_UploadFiles
         Me.PB_PrevieScreenshot.Location = New System.Drawing.Point(15, 184)
         Me.PB_PrevieScreenshot.Name = "PB_PrevieScreenshot"
         Me.PB_PrevieScreenshot.Size = New System.Drawing.Size(396, 225)
         Me.PB_PrevieScreenshot.TabIndex = 8
         Me.PB_PrevieScreenshot.TabStop = False
+        '
+        'CMS_UploadFiles
+        '
+        Me.CMS_UploadFiles.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ZuschneidenToolStripMenuItem})
+        Me.CMS_UploadFiles.Name = "CMS_UploadFiles"
+        Me.CMS_UploadFiles.Size = New System.Drawing.Size(143, 26)
+        '
+        'ZuschneidenToolStripMenuItem
+        '
+        Me.ZuschneidenToolStripMenuItem.Name = "ZuschneidenToolStripMenuItem"
+        Me.ZuschneidenToolStripMenuItem.Size = New System.Drawing.Size(142, 22)
+        Me.ZuschneidenToolStripMenuItem.Text = "Zuschneiden"
         '
         'Label3
         '
@@ -150,11 +180,15 @@ Partial Class UploadFiles
         Me.Controls.Add(Me.BTN_Upload)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "UploadFiles"
+        Me.ShowInTaskbar = False
         Me.Text = " Datei Hochladen"
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
         CType(Me.PB_PrevieScreenshot, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.CMS_UploadFiles.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -172,4 +206,8 @@ Partial Class UploadFiles
     Friend WithEvents TSL_Screenshot As ToolStripLabel
     Friend WithEvents PB_PrevieScreenshot As PictureBox
     Friend WithEvents Label3 As Label
+    Friend WithEvents TSL_Scann As ToolStripLabel
+    Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
+    Friend WithEvents CMS_UploadFiles As ContextMenuStrip
+    Friend WithEvents ZuschneidenToolStripMenuItem As ToolStripMenuItem
 End Class

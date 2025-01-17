@@ -1,4 +1,5 @@
-﻿Imports MySqlConnector
+﻿Imports System.Text.RegularExpressions
+Imports MySqlConnector
 Imports Sydesoft.NfcDevice
 'PermissionKey entschluesseln
 
@@ -198,72 +199,86 @@ Public Class NewUser
         End Using
     End Function
 
-    Private Sub LinkLabel1_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel1.LinkClicked
-        If TXB_Password.PasswordChar = "*" Then
-            TXB_Password.PasswordChar = Nothing
-            TXB_PasswordRepeat.PasswordChar = Nothing
-            LinkLabel1.Text = "Verdecken"
-        Else
-            TXB_Password.PasswordChar = "*"c
-            TXB_PasswordRepeat.PasswordChar = "*"c
-            LinkLabel1.Text = "Anzeigen"
-        End If
+    Private Function GetOTP() As String
+        Dim rnd As New Random
+        Dim otp As String = rnd.Next(1, 99999999).ToString
+        Return otp
+    End Function
 
-    End Sub
+    Private Function ValidEmail(Email As String) As Boolean
+        Dim emailRegex As String = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        Return Regex.IsMatch(Email, emailRegex)
+    End Function
 
     Private Sub BTN_Save_Click(sender As Object, e As EventArgs) Handles BTN_Save.Click
-        If TXB_UserName.Text.Length > 2 Then
+        If TXB_UserName.Text.Length > 2 And ValidEmail(TXB_Email.Text) = True Then
             If FreeUsername(TXB_UserName.Text) = True Then
-                If TXB_Password.Text = TXB_PasswordRepeat.Text And TXB_Password.Text.Length >= 4 Then
+                Dim otp As String = GetOTP()
 
-                    Dim PermissionRole As String = cbb_PermissionRole.SelectedItem.ToString
-                    Dim ID As Integer = Generate_ID()
+                Dim PermissionRole As String = cbb_PermissionRole.SelectedItem.ToString
+                Dim ID As Integer = Generate_ID()
 
-                    ' Hashen des Passworts und Erhalt von Salt und Hash
-                    Dim passwordResult As PasswordHashResult = PasswordHelper.HashPassword(TXB_Password.Text)
+                ' Hashen des Passworts und Erhalt von Salt und Hash
+                Dim passwordResult As PasswordHashResult = PasswordHelper.HashPassword(otp)
 
-                    Dim UID As String = If(CB_NFC.Checked And TXB_UID.Text.Length > 5, TXB_UID.Text, String.Empty)
-                    If FreeUID(UID) = True And CB_NFC.Checked Or CB_NFC.Checked = False Then
+                Dim UID As String = If(CB_NFC.Checked And TXB_UID.Text.Length > 5, TXB_UID.Text, String.Empty)
+                If FreeUID(UID) = True And CB_NFC.Checked Or CB_NFC.Checked = False Then
 
-                        Dim connection As New MySqlConnection(My.Settings.connectionstring)
+                    Dim connection As New MySqlConnection(My.Settings.connectionstring)
+                    Try
+                        connection.Open()
 
-                        Try
-                            connection.Open()
-                            ' Anpassung der SQL-Anweisung, um Salt und Hash getrennt zu speichern
-                            Dim query As String = "INSERT INTO users(id, user_name, PermissionRole, UID, password, salt, Passdate) VALUES (@ID, @user_name, @PermissionRole, @UID, @Password, @Salt, @Passdate)"
-                            Using cmdInsert As New MySqlCommand(query, connection)
-                                cmdInsert.Parameters.AddWithValue("@ID", ID)
-                                cmdInsert.Parameters.AddWithValue("@user_name", TXB_UserName.Text)
-                                cmdInsert.Parameters.AddWithValue("@PermissionRole", PermissionRole)
-                                cmdInsert.Parameters.AddWithValue("@UID", UID)
-                                cmdInsert.Parameters.AddWithValue("@Password", passwordResult.HashedPassword)
-                                cmdInsert.Parameters.AddWithValue("@Salt", passwordResult.Salt)
-                                cmdInsert.Parameters.AddWithValue("@Passdate", Now.Date)
-                                cmdInsert.ExecuteNonQuery()
-                            End Using
+                        Dim query As String = "INSERT INTO users(id, user_name, PermissionRole, UID, email, otp, otp_date, password, salt) VALUES (@ID, @user_name, @PermissionRole, @UID, @email, @otp, @otp_date, @password, @salt)"
+                        Using cmdInsert As New MySqlCommand(query, connection)
+                            cmdInsert.Parameters.AddWithValue("@ID", ID)
+                            cmdInsert.Parameters.AddWithValue("@user_name", TXB_UserName.Text)
+                            cmdInsert.Parameters.AddWithValue("@PermissionRole", PermissionRole)
+                            cmdInsert.Parameters.AddWithValue("@UID", UID)
+                            cmdInsert.Parameters.AddWithValue("@email", TXB_Email.Text)
+                            cmdInsert.Parameters.AddWithValue("@otp", 1)
+                            cmdInsert.Parameters.AddWithValue("@otp_date", Now.Date)
+                            cmdInsert.Parameters.AddWithValue("@password", passwordResult.HashedPassword)
+                            cmdInsert.Parameters.AddWithValue("@salt", passwordResult.Salt)
 
-                            connection.Close()
+
+                            cmdInsert.ExecuteNonQuery()
+                        End Using
+                        connection.Close()
+
+
+
+                        If SendEmail(TXB_Email.Text, "Ihr OneTimePassword für die einmalige Anmeldung an der Autodatenbank", "Hallo " & TXB_UserName.Text & "," & vbNewLine & "Ihr Account für die Autodatenbank wurde erfolgreich angelegt. Anbei erhalten Sie das OneTimePassword, dieses ist nur 1 stunde gültig" & vbNewLine & vbNewLine & "OneTimePassword: " & otp) = True Then
                             MsgBox("Benutzer wurde erfolgreich angelegt", MsgBoxStyle.Information, Title:="Benutzer angelegt")
                             Me.Close()
-                        Catch ex As Exception
-                            MsgBox("Fehler beim Anlegen des Benutzers: " & ex.Message)
-                            SavetoLogFile(ex.Message, "CreateNewUser")
-                        End Try
-                    Else
-                        MsgBox("Dieser NFC Transponder ist schon in Benutzung, bitte anderen nehmen", MsgBoxStyle.Information)
-                    End If
+                        Else
+                            MsgBox("Fehler beim erstellen des Benutzers. Siehe Logfile")
+                            SavetoLogFile("OPT-Email konnte nicht versand werden", "SetNewUser")
+                        End If
+
+
+                    Catch ex As Exception
+                        MsgBox("Fehler beim Anlegen des Benutzers: " & ex.Message)
+                        SavetoLogFile(ex.Message, "CreateNewUser")
+                    End Try
                 Else
-                    MsgBox("Passwörter stimmen nicht überein")
+                    MsgBox("Dieser NFC Transponder ist schon in Benutzung, bitte anderen nehmen", MsgBoxStyle.Information)
                 End If
+
             Else
                 MsgBox("Benutzername schon vergeben," & vbNewLine & "bitte anderen Benutzernamen eingeben", MsgBoxStyle.Information)
             End If
         Else
-            MsgBox("Gültigen Namen eingeben." & vbNewLine & "Mindestens 3 Zeichen")
+            MsgBox("Gültigen Namen eingeben mindestens 3 Zeichen." & vbNewLine & "Email auf Gültigkeit überprüfen.")
         End If
 
 
     End Sub
+
+
+
+
+
+
 End Class
 
 

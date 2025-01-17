@@ -7,6 +7,7 @@ Imports Newtonsoft.Json
 
 Module Settings
     ReadOnly ConnectionSettingsFilePath As String = Application.StartupPath & "\ConnectionSettings.xml"
+    ReadOnly EmailSettingsFilePath As String = Application.StartupPath & "\Settings\" & My.Settings.UID & "\EmailSettings.json"
     ReadOnly DGVSettingsFilePath As String = Application.StartupPath & "\Settings\" & My.Settings.UID & "\DGVSettings.json"
     ReadOnly OverallSettingsFilePath As String = Application.StartupPath & "\Settings\" & My.Settings.UID & "\OverallSettings.json"
     ReadOnly CompDataFilePath As String = Application.StartupPath & "\Settings\" & My.Settings.UID & "\CompData.json"
@@ -24,10 +25,75 @@ Module Settings
         End If
     End Function
 
+    Public Sub CreateEmailSettings(SmtpServer As String, Port As Integer, Username As String, Password As String, SenderEmail As String, SenderDisplayName As String, EnableSsl As Boolean, Timeout As Integer, key As String)
+        Try
+            ' Eingaben validieren
+            If String.IsNullOrWhiteSpace(SmtpServer) Then Throw New ArgumentException("SMTP-Server darf nicht leer sein.")
+            If Port <= 0 Then Throw New ArgumentException("Port muss größer als 0 sein.")
+            If String.IsNullOrWhiteSpace(SenderEmail) OrElse Not SenderEmail.Contains("@") Then Throw New ArgumentException("Ungültige Absender-E-Mail.")
+
+            ' Schlüssel validieren oder automatisch generieren
+            If Not IsValidHexString(key) Then
+                Throw New ArgumentException("Der Schlüssel muss ein gültiger Hex-String sein (0-9, A-F).")
+            End If
+
+            ' Daten erstellen und verschlüsseln
+            Dim Data As New EmailSettings With {
+            .SmtpServer = EncryptString(SmtpServer, key),
+            .Port = Port,
+            .Username = EncryptString(Username, key),
+            .Password = EncryptString(Password, key),
+            .SenderEmail = EncryptString(SenderEmail, key),
+            .SenderDisplayName = EncryptString(SenderDisplayName, key),
+            .EnableSsl = EnableSsl,
+            .Timeout = Timeout
+        }
+
+            ' Daten speichern
+            Dim json As String = Newtonsoft.Json.JsonConvert.SerializeObject(Data)
+            File.WriteAllText(EmailSettingsFilePath, json)
+        Catch ex As Exception
+            Throw New ApplicationException("Fehler beim Erstellen der E-Mail-Einstellungen.", ex)
+        End Try
+    End Sub
+
+
+    Public Function LoadEmailSettings(key As String) As EmailSettings
+        Try
+            ' Überprüfen, ob die Datei existiert
+            If Not File.Exists(EmailSettingsFilePath) Then
+                Throw New FileNotFoundException("Es wurden keine Email Verbindungsdaten gefunden, bitte trage diese noch ein.")
+            End If
+
+            ' Dateiinhalt lesen
+            Dim json As String = File.ReadAllText(EmailSettingsFilePath)
+
+            ' JSON deserialisieren in ein EmailSettings-Objekt
+            Dim encryptedSettings As EmailSettings = Newtonsoft.Json.JsonConvert.DeserializeObject(Of EmailSettings)(json)
+
+            ' Entschlüsselte Werte erstellen
+            Dim decryptedSettings As New EmailSettings With {
+            .SmtpServer = DecryptString(encryptedSettings.SmtpServer, key),
+            .Port = encryptedSettings.Port,
+            .Username = DecryptString(encryptedSettings.Username, key),
+            .Password = DecryptString(encryptedSettings.Password, key),
+            .SenderEmail = DecryptString(encryptedSettings.SenderEmail, key),
+            .SenderDisplayName = DecryptString(encryptedSettings.SenderDisplayName, key),
+            .EnableSsl = encryptedSettings.EnableSsl,
+            .Timeout = encryptedSettings.Timeout
+        }
+
+            ' Entschlüsselte Einstellungen zurückgeben
+            Return decryptedSettings
+
+        Catch ex As Exception
+            ' Fehler behandeln
+            Throw New ApplicationException("Fehler beim Laden der E-Mail-Einstellungen.", ex)
+        End Try
+    End Function
+
 
     Public Function CreateSettings(Connectionstring As String, FTPServer As String, FTPUsername As String, FTPPassword As String, SFTP As Boolean, KeyFile As String, KeyFilePass As String, SFTPServerUri As String, SFTPUsername As String, key As String) As Boolean
-
-
 
         Try
 
@@ -69,6 +135,8 @@ Module Settings
 
 
     End Function
+
+
 
     Public Sub LoadConnectionSettings()
         Try
@@ -238,6 +306,22 @@ Module Settings
         End Using
     End Function
 
+    Public Function GenerateKeyFromPassphrase(passphrase As String) As String
+        If String.IsNullOrEmpty(passphrase) Then
+            Throw New ArgumentException("Die Passphrase darf nicht leer sein.")
+        End If
+
+        Using sha256 As New Security.Cryptography.SHA256Managed()
+            Dim keyBytes As Byte() = Text.Encoding.UTF8.GetBytes(passphrase)
+            Dim hashBytes As Byte() = sha256.ComputeHash(keyBytes)
+            Return BitConverter.ToString(hashBytes).Replace("-", "") ' Hex-String zurückgeben
+        End Using
+    End Function
+
+    Private Function IsValidHexString(key As String) As Boolean
+        Dim regex As New Text.RegularExpressions.Regex("^[0-9A-Fa-f]+$")
+        Return regex.IsMatch(key) AndAlso (key.Length Mod 2 = 0)
+    End Function
 
     Public Function DecryptString(ByVal cipherText As String, ByVal key As String) As String
         Dim fullCipher As Byte() = Convert.FromBase64String(cipherText)
@@ -479,7 +563,7 @@ Module Settings
             End If
         Catch ex As Exception
             ' Fehler protokollieren
-            MessageBox.Show($"Ein Fehler ist aufgetreten: {ex.Message}{Environment.NewLine}{ex.StackTrace}")
+            SavetoLogFile(ex.Message & ex.StackTrace, "SetSavedDGVDataSettings")
         End Try
     End Sub
 
@@ -847,6 +931,18 @@ Public Class OverallSettings
 
 End Class
 
+
+Public Class EmailSettings
+    Public Property SmtpServer As String
+    Public Property Port As Integer
+    Public Property Username As String
+    Public Property Password As String
+    Public Property SenderEmail As String
+    Public Property SenderDisplayName As String
+    Public Property EnableSsl As Boolean
+    Public Property Timeout As Integer
+
+End Class
 
 
 

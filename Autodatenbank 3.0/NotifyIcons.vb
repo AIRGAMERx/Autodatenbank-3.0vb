@@ -12,19 +12,23 @@ Module NotifyIcons
         Dim t As New Timer()
         t.Interval = time
 
-
-        AddHandler t.Tick, Sub(timerSender, timerEventArgs)
-                               ni.Visible = False
-                               t.Stop()
-                               t.Dispose()
-                           End Sub
-
-        t.Start() ' Timer starten
+        Try
 
 
+            AddHandler t.Tick, Sub(timerSender, timerEventArgs)
+                                   ni.Visible = False
+                                   t.Stop()
+                                   t.Dispose()
+                               End Sub
+
+            t.Start() ' Timer starten
 
 
 
+
+        Catch ex As Exception
+
+        End Try
 
     End Sub
 

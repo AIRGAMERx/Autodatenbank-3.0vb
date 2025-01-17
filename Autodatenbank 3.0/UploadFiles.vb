@@ -1,7 +1,12 @@
 ﻿Imports System.Drawing.Imaging
 Imports System.IO
 Imports System.Net
+Imports System.Runtime.InteropServices
+Imports TwainDotNet
+Imports TwainDotNet.TwainNative
+Imports TwainDotNet.WinFroms
 Public Class UploadFiles
+    Private Twain As Twain
     Public dir As New List(Of String)
     Dim tempFolderPath As String = Path.Combine(Application.StartupPath, "temp")
     Private Sub BTN_SelectFile_Click(sender As Object, e As EventArgs) Handles BTN_SelectFile.Click
@@ -30,41 +35,75 @@ Public Class UploadFiles
 
 
     Private Sub UploadFile()
+        Dim extensionList As New List(Of String) From {".jpg", ".png", ".bmp"}
+        Dim thumbnailPathTemp As String = Path.Combine(Application.StartupPath, "Temp\thumbnail.jpg")
+        Dim thumbnailCreated As Boolean = False
         Try
+            ' Temp-Verzeichnis erstellen
+            CreateTempDirectory()
 
-            If IsValidFileName(TXB_FileName.Text) = True Then
-
-                TXB_FileName.Text = TXB_FileName.Text.Replace("ä", "ae").Replace("Ä", "Ae")
-                TXB_FileName.Text = TXB_FileName.Text.Replace("ö", "oe").Replace("Ö", "Oe")
-                TXB_FileName.Text = TXB_FileName.Text.Replace("ü", "ue").Replace("Ü", "Ue")
-
-
-
-                If File.Exists(TXB_DataPath.Text) Then
-
-                    If My.Settings.sftp = True Then
-                        ' SFTP-Upload ausführen
-                        SFTP.UploadFileToSFTP(TXB_DataPath.Text, TXB_FileName.Text)
-                    Else
-                        ' FTP-Upload ausführen
-                        FTP.UploadFileToFTP(TXB_DataPath.Text, TXB_FileName.Text)
-                    End If
-                    Me.Close()
-                Else
-                    MsgBox("Ausgewählte Datei konnte nicht gefunden werden")
-                End If
-            Else
-                MsgBox("Fehler im Dateinamen prüfe folgende Sachen" & vbNewLine &
-                "Der Dateiname enthält ungültige Zeichen für Dateinamen (z. B. *, /, , :)." & vbNewLine &
-                "Dateiendung ist nicht angegeben" & vbNewLine &
-                "Dateiname beginnt oder endet mit einem Punkt")
+            ' Dateiname validieren
+            If Not IsValidFileName(TXB_FileName.Text) Then
+                MsgBox("Fehler im Dateinamen. Prüfe folgende Dinge:" & vbNewLine &
+                   "- Ungültige Zeichen im Dateinamen (z. B. *, /, :, etc.)" & vbNewLine &
+                   "- Fehlende Dateiendung" & vbNewLine &
+                   "- Dateiname beginnt oder endet mit einem Punkt.", MsgBoxStyle.Critical)
+                Exit Sub
             End If
+
+            ' Sonderzeichen im Dateinamen ersetzen
+            TXB_FileName.Text = ReplaceUmlauts(TXB_FileName.Text)
+
+            ' Prüfen, ob die Datei existiert
+            If Not File.Exists(TXB_DataPath.Text) Then
+                MsgBox("Die ausgewählte Datei konnte nicht gefunden werden.", MsgBoxStyle.Critical)
+                Exit Sub
+            End If
+
+            ' Überprüfen der Dateiendung
+            Dim ext As String = Path.GetExtension(TXB_DataPath.Text).ToLower()
+            If extensionList.Contains(ext) Then
+                ' Thumbnail erstellen
+                thumbnailCreated = CreateThumbnail(TXB_DataPath.Text, thumbnailPathTemp)
+            End If
+
+            ' Wenn das Thumbnail nicht erstellt werden konnte
+            If Not thumbnailCreated AndAlso extensionList.Contains(ext) Then
+                ' Benutzer fragen, ob er trotzdem fortfahren möchte
+                Dim result As DialogResult = MessageBox.Show("Fehler beim Erstellen des Thumbnails. Trotzdem fortfahren?", "Fehler", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+                If result = DialogResult.No Then
+                    ' Benutzer hat entschieden, nicht fortzufahren – gesamte Aktion abbrechen
+                    Exit Sub
+                End If
+            End If
+
+            ' Thumbnail hochladen, wenn erstellt
+            If thumbnailCreated Then
+                If My.Settings.sftp Then
+                    UploadThumbnailToSFTP(thumbnailPathTemp, TXB_FileName.Text)
+                Else
+                    UploadThumbnailToFTP(thumbnailPathTemp, TXB_FileName.Text)
+                End If
+            End If
+
+            ' Hauptdatei hochladen – nur nach Benutzerbestätigung oder erfolgreicher Thumbnail-Erstellung
+            If My.Settings.sftp Then
+                SFTP.UploadFileToSFTP(TXB_DataPath.Text, TXB_FileName.Text)
+            Else
+                FTP.UploadFileToFTP(TXB_DataPath.Text, TXB_FileName.Text)
+            End If
+
+            ' Erfolgreiche Benachrichtigung
+            Notify(Autodatenbank.NI_Successful, "Erfolg", "Datei erfolgreich hochgeladen", 3000, ToolTipIcon.None)
+
+            ' Fenster schließen
+            Me.Close()
         Catch ex As Exception
             MsgBox("Fehler beim Hochladen der Datei: " & ex.Message, MsgBoxStyle.Critical, "Fehler beim Upload")
             SavetoLogFile(ex.Message, "UploadFile")
         End Try
-
     End Sub
+
 
 
     Public Sub UploadProgressChanged(sender As Object, e As UploadProgressChangedEventArgs)
@@ -78,7 +117,7 @@ Public Class UploadFiles
             Else
                 FTP.ListFilesFromFTPForDGV2(Autodatenbank.Licenseplate)
             End If
-            MsgBox("Datei wurde erfolgreich hochgeladen")
+
         Else
             MsgBox("Fehler beim Hochladen der Datei: " & e.Error.Message, MsgBoxStyle.Critical, Title:="Fehler beim Upload")
         End If
@@ -120,6 +159,7 @@ Public Class UploadFiles
 
     Private Sub UploadFiles_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         LoadOverallSettings()
+        TT_Info(PB_PrevieScreenshot, "Bearbeiten", "Zum bearbeiten des Dokuments Rechtsklick")
     End Sub
 
     Private Sub TSL_Screenshot_Click(sender As Object, e As EventArgs) Handles TSL_Screenshot.Click
@@ -136,18 +176,32 @@ Public Class UploadFiles
 
                 ' Prüfe, ob ein gültiger Bereich ausgewählt wurde
                 If rect.Width > 0 And rect.Height > 0 Then
-                    Dim bmp As New Bitmap(rect.Width, rect.Height)
+                    ' Erhalte den Monitor, auf dem sich der ausgewählte Bereich befindet
+                    Dim screen As Screen = Screen.FromRectangle(rect)
 
+                    ' Berechne die korrekten absoluten Koordinaten (inkl. Monitor-Offset)
+                    Dim adjustedX As Integer = rect.X + screen.Bounds.X
+                    Dim adjustedY As Integer = rect.Y + screen.Bounds.Y
+
+                    ' Bildschirm-Skalierung des Monitors berücksichtigen
+                    Dim dpiX As Single = Graphics.FromHwnd(IntPtr.Zero).DpiX / 96.0F
+                    Dim dpiY As Single = Graphics.FromHwnd(IntPtr.Zero).DpiY / 96.0F
+
+                    ' Skaliere den ausgewählten Bereich
+                    Dim scaledRect As New Rectangle(CInt(adjustedX * dpiX),
+                                                 CInt(adjustedY * dpiY),
+                                                 CInt(rect.Width * dpiX),
+                                                 CInt(rect.Height * dpiY))
+
+                    ' Screenshot erstellen
+                    Dim bmp As New Bitmap(scaledRect.Width, scaledRect.Height)
                     Using g As Graphics = Graphics.FromImage(bmp)
-                        g.CopyFromScreen(rect.Location, Point.Empty, rect.Size)
+                        g.CopyFromScreen(New Point(scaledRect.X, scaledRect.Y), Point.Empty, scaledRect.Size)
                     End Using
 
                     ' Speicherort definieren
                     Dim tempFolderPath As String = Path.Combine(Application.StartupPath, "temp")
-                    If Not Directory.Exists(tempFolderPath) Then
-                        Directory.CreateDirectory(tempFolderPath)
-                    End If
-
+                    CreateTempDirectory()
                     Dim tempFilePath As String = Path.Combine(tempFolderPath, $"screenshot_{DateTime.Now:yyyyMMdd_HHmmss}.png")
 
                     ' Screenshot speichern
@@ -160,7 +214,6 @@ Public Class UploadFiles
                     Using fs As New FileStream(tempFilePath, FileMode.Open, FileAccess.Read)
                         PB_PrevieScreenshot.BackgroundImage = Image.FromStream(fs)
                     End Using
-
                 Else
                     MessageBox.Show("Kein gültiger Bereich ausgewählt.")
                     Exit Sub
@@ -173,6 +226,134 @@ Public Class UploadFiles
             Cursor = Cursors.Default
             Me.Enabled = True ' Reaktiviert das Formular
         End Try
+    End Sub
+
+
+
+
+    Private Sub TSL_Scann_Click(sender As Object, e As EventArgs) Handles TSL_Scann.Click
+        Scann.Show()
+
+
+        'Try
+        ' TWAIN-Manager initialisieren
+        ' Twain = New Twain(New WinFormsWindowMessageHook(Me))
+
+        ' Ereignisse definieren
+        ' AddHandler Twain.TransferImage, AddressOf OnImageScanned
+        ' AddHandler Twain.ScanningComplete, AddressOf OnScanComplete
+
+        ' Scanner auswählen
+        ' Twain.SelectSource()
+
+        ' Scan-Einstellungen festlegen
+        ' Dim Settings As New ScanSettings()
+        ' Settings.ShowTwainUI = False ' Zeigt die Scanner-Benutzeroberfläche an
+        ' Settings.Resolution = New ResolutionSettings()
+        ' Settings.UseAutoFeeder = False ' Flachbett-Scanner verwenden
+        '  Settings.UseDuplex = False ' Einseitiges Scannen
+        '
+        ' Scan starten
+        'Twain.StartScanning(Settings)
+
+        'Catch ex As Exception
+        ' MsgBox($"Fehler beim Scannen: {ex.Message}")
+        ' End Try '
+    End Sub
+
+    ' Bild speichern
+
+
+    Private Sub OnImageScanned(sender As Object, args As TransferImageEventArgs)
+        If args.Image IsNot Nothing Then
+            Try
+                ' Temp-Ordner erstellen
+                Dim tempFolderPath As String = Path.Combine(Application.StartupPath, "temp")
+                If Not Directory.Exists(tempFolderPath) Then
+                    Directory.CreateDirectory(tempFolderPath)
+                End If
+
+                ' Pfad für die gescannte Datei erstellen
+                Dim tempFilePath As String = Path.Combine(tempFolderPath, $"scanned_document_{DateTime.Now:yyyyMMdd_HHmmss}.png")
+
+                ' Bitmap erstellen und speichern
+                Using bitmap As New Bitmap(args.Image)
+                    bitmap.Save(tempFilePath, System.Drawing.Imaging.ImageFormat.Png)
+                End Using
+
+                ' Daten in die Textboxen schreiben
+                TXB_DataPath.Text = tempFilePath
+                TXB_FileName.Text = Path.GetFileName(tempFilePath)
+
+                ' Bild in der PictureBox anzeigen
+                Using fs As New FileStream(tempFilePath, FileMode.Open, FileAccess.Read)
+                    PB_PrevieScreenshot.BackgroundImage = Image.FromStream(fs)
+                End Using
+
+                ' Größe der Form anpassen (optional)
+                Me.Size = New Size(444, 469)
+            Catch ex As Exception
+                ' Fehlerbehandlung
+                MsgBox($"Fehler beim Speichern des Bildes: {ex.Message}{vbCrLf}StackTrace: {ex.StackTrace}")
+            End Try
+        Else
+            MsgBox("Kein Bild zum Speichern vorhanden.")
+        End If
+    End Sub
+
+    Private Sub OnScanComplete(sender As Object, e As EventArgs)
+        MsgBox("Scannen abgeschlossen.")
+    End Sub
+
+    Private Sub ZuschneidenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ZuschneidenToolStripMenuItem.Click
+        ' Prüfen, ob ein Bild in der PictureBox vorhanden ist
+        If PB_PrevieScreenshot.BackgroundImage Is Nothing Then
+            MessageBox.Show("Es ist kein Bild zum Zuschneiden vorhanden.")
+            Return
+        End If
+
+        ' Das Bild, das zugeschnitten werden soll (z. B. aus einer PictureBox)
+        Dim cropForm As New CropImage(CType(PB_PrevieScreenshot.BackgroundImage, Bitmap))
+
+        ' Zuschneideform anzeigen
+        If cropForm.ShowDialog() = DialogResult.OK Then
+            ' Das zugeschnittene Bild aus der Form zurückholen
+            Dim croppedImage As Bitmap = cropForm.CroppedImage
+
+            ' Sicherstellen, dass ein Bild zurückgegeben wurde
+            If croppedImage Is Nothing Then
+                MessageBox.Show("Das Zuschneiden wurde nicht abgeschlossen.")
+                Return
+            End If
+
+            ' Das zugeschnittene Bild an die Hauptform übergeben
+            ReceiveCroppedImage(croppedImage)
+
+        Else
+            MessageBox.Show("Das Zuschneiden wurde abgebrochen.")
+        End If
+    End Sub
+
+    Public Sub ReceiveCroppedImage(croppedImage As Bitmap)
+        'Temporäre Speicherung des Bildes
+        Dim tempFilePath As String = Path.Combine(tempFolderPath, $"scanned_cropped_document_{DateTime.Now:yyyyMMdd_HHmmss}.png")
+
+
+
+        ' Zeige das zugeschnittene Bild in der PictureBox an
+        PB_PrevieScreenshot.BackgroundImage = croppedImage
+
+        ' Speichere das Bild auf der Festplatte
+
+        croppedImage.Save(tempFilePath, Imaging.ImageFormat.Jpeg)
+        TXB_DataPath.Text = tempFilePath
+
+        ' Optional: Benutzer informieren
+
+    End Sub
+
+    Private Sub ToolStrip1_ItemClicked(sender As Object, e As ToolStripItemClickedEventArgs) Handles ToolStrip1.ItemClicked
+
     End Sub
 End Class
 Public Class FtpHelperUpload
@@ -280,3 +461,5 @@ Public Class SelectionOverlay
         Me.Opacity = 0.3 ' Halbtransparent
     End Sub
 End Class
+
+

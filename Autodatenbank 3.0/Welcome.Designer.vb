@@ -70,6 +70,7 @@ Partial Class Welcome
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "Welcome"
+        Me.Opacity = 0.9R
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Welcome"
         CType(Me.PB_Logo, System.ComponentModel.ISupportInitialize).EndInit()

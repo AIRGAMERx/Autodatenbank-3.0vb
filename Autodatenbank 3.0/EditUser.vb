@@ -147,7 +147,7 @@ Public Class EditUser
             Try
                 Using con As New MySqlConnection(My.Settings.connectionstring)
                     con.Open()
-                    Dim query As String = "SELECT PermissionRole, UID FROM users WHERE id = @ID"
+                    Dim query As String = "SELECT PermissionRole, UID, email FROM users WHERE id = @ID"
                     Using command As New MySqlCommand(query, con)
                         command.Parameters.AddWithValue("@ID", userID)
 
@@ -160,6 +160,7 @@ Public Class EditUser
                                 End If
 
                                 TXB_UID.Text = reader("UID").ToString()
+                                TXB_Email.Text = reader("email").ToString
                             End While
                         End Using
                     End Using
@@ -171,25 +172,14 @@ Public Class EditUser
         End If
     End Sub
 
-    Private Sub LinkLabel1_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel1.LinkClicked
-        If TXB_Password.PasswordChar = "*"c Then
-            TXB_Password.PasswordChar = Nothing
-            TXB_PasswordRepeat.PasswordChar = Nothing
-            LinkLabel1.Text = "Verdecken"
-        Else
-            TXB_Password.PasswordChar = "*"c
-            TXB_PasswordRepeat.PasswordChar = "*"c
-            LinkLabel1.Text = "Anzeigen"
-        End If
 
-    End Sub
 
     Private Sub BTN_Save_Click(sender As Object, e As EventArgs) Handles BTN_Save.Click
-        If TXB_Password.Text.Length > 3 Or Not NewPassword Then
-            If CB_NFC.Checked And FreeUID(TXB_UID.Text) = True Or CB_NFC.Checked = False Then
-                If Not NewPassword OrElse (TXB_Password.Text IsNot TXB_PasswordRepeat.Text) Then
 
-                    Dim PermissionRole As String = cbb_PermissionRole.SelectedItem.ToString
+        If CB_NFC.Checked And FreeUID(TXB_UID.Text) = True Or CB_NFC.Checked = False Then
+
+
+            Dim PermissionRole As String = cbb_PermissionRole.SelectedItem.ToString
                     Dim UID As String = TXB_UID.Text
                     Dim con As New MySqlConnection(My.Settings.connectionstring)
 
@@ -202,32 +192,22 @@ Public Class EditUser
                     Dim userName As String = selectedItem.UserName
                     Dim userID As String = selectedItem.ID
 
-                    ' Wenn ein neues Passwort gesetzt werden soll, hashen und Salt generieren
-                    Dim pass As String = String.Empty
-                    Dim salt As String = String.Empty
 
-                    If NewPassword Then
-                        Dim passwordResult As PasswordHashResult = PasswordHelper.HashPassword(TXB_Password.Text)
-                        pass = passwordResult.HashedPassword
-                        salt = passwordResult.Salt
-                    End If
 
-                    Dim query As String
-                    If NewPassword Then
-                        query = "UPDATE users SET password = @Password, salt = @Salt, PermissionRole = @PermissionRole, uid = @UID, passdate = @Passdate WHERE id = @UserID"
-                    Else
-                        query = "UPDATE users SET PermissionRole = @PermissionRole, uid = @UID WHERE id = @UserID"
-                    End If
 
-                    Using cmd As New MySqlCommand(query, con)
+
+            Dim query As String = "UPDATE users SET PermissionRole = @PermissionRole, uid = @UID, email = @Email WHERE id = @UserID"
+
+
+            Using cmd As New MySqlCommand(query, con)
                         If NewPassword Then
-                            cmd.Parameters.AddWithValue("@Password", pass)
-                            cmd.Parameters.AddWithValue("@Salt", salt)
-                            cmd.Parameters.AddWithValue("@Passdate", Now.Date)
+
+                    cmd.Parameters.AddWithValue("@Passdate", Now.Date)
                         End If
                         cmd.Parameters.AddWithValue("@PermissionRole", PermissionRole)
-                        cmd.Parameters.AddWithValue("@UID", UID)
-                        cmd.Parameters.AddWithValue("@UserID", userID)
+                cmd.Parameters.AddWithValue("@UID", UID)
+                cmd.Parameters.AddWithValue("@Email", TXB_Email.Text)
+                cmd.Parameters.AddWithValue("@UserID", userID)
 
                         Try
                             con.Open()
@@ -244,33 +224,50 @@ Public Class EditUser
                             con.Close()
                         End Try
                     End Using
-                Else
-                    MsgBox("Passwörter stimmen nicht überein", MsgBoxStyle.Critical, Title:="Fehler beim Passwort")
-                End If
-            Else
+
+        Else
                 MsgBox("NFC Transponder schon in Benutzung, bitte anderen benutzen", MsgBoxStyle.Critical, Title:="Fehler bei NFC Transponder")
                 TXB_UID.Clear()
             End If
-        Else
-            MsgBox("Passwort muss mindestens 4 Zeichen haben", MsgBoxStyle.Critical, Title:="Fehler beim Passwort")
-        End If
+
     End Sub
 
-    Private Sub TXB_Password_TextChanged(sender As Object, e As EventArgs) Handles TXB_Password.TextChanged
-        If TXB_Password.Text.Length > 0 AndAlso TXB_Password.Text = TXB_PasswordRepeat.Text Then
-            NewPassword = True
-        Else
-            NewPassword = False
-        End If
-    End Sub
+    Private Sub BTN_SendOTP_Click(sender As Object, e As EventArgs) Handles BTN_SendOTP.Click
+        If CBB_Username.SelectedIndex > -1 Then
+            If String.IsNullOrEmpty(TXB_Email.Text) OrElse Not TXB_Email.Text.Contains("@") Then Throw New ArgumentException("Bite gültige Email-Adresse eingeben")
+            Dim selectedItem As ComboBoxItemEditUser = CType(CBB_Username.SelectedItem, ComboBoxItemEditUser)
+            Dim userName As String = selectedItem.UserName
+            Dim userID As String = selectedItem.ID
+            Dim otp As String = GetOTP()
+            Dim passwordResult As PasswordHashResult = PasswordHelper.HashPassword(otp)
+            If SendEmail(TXB_Email.Text, "Ihr OneTimePassword für die einmalige Anmeldung an der Autodatenbank", "Hallo " & userName & "," & vbNewLine & "Anbei erhalten Sie das OneTimePassword, dieses ist nur 1 stunde gültig" & vbNewLine & vbNewLine & "OneTimePassword: " & otp) = True Then
+                Dim query As String = "UPDATE users SET otp = @otp, otp_date = @otp_date, password = @password, salt = @salt WHERE id = @ID"
 
-    Private Sub TXB_PasswordRepeat_TextChanged(sender As Object, e As EventArgs) Handles TXB_PasswordRepeat.TextChanged
-        If TXB_Password.Text.Length > 0 AndAlso TXB_Password.Text = TXB_PasswordRepeat.Text Then
-            NewPassword = True
+                Using con As New MySqlConnection(My.Settings.connectionstring)
+                    con.Open()
+
+                    Using cmd As New MySqlCommand(query, con)
+                        cmd.Parameters.AddWithValue("@otp", 1)
+                        cmd.Parameters.AddWithValue("@otp_date", Now)
+                        cmd.Parameters.AddWithValue("@password", passwordResult.HashedPassword)
+                        cmd.Parameters.AddWithValue("@salt", passwordResult.Salt)
+                        cmd.Parameters.AddWithValue("@ID", userID)
+                        cmd.ExecuteNonQuery()
+                        MsgBox("Das OneTimePasswort wurde per Email versendet")
+                    End Using
+                End Using
+            End If
+
+
         Else
-            NewPassword = False
+            MsgBox("Bitte Benutzername auswählen")
         End If
     End Sub
+    Private Function GetOTP() As String
+        Dim rnd As New Random
+        Dim otp As String = rnd.Next(1, 99999999).ToString
+        Return otp
+    End Function
 End Class
 
 Public Class ComboBoxItemEditUser

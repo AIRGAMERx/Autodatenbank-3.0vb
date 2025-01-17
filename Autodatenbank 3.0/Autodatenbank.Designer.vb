@@ -72,14 +72,18 @@ Partial Class Autodatenbank
         Me.NachUpdateToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TSMI_Server_Verbindungen = New System.Windows.Forms.ToolStripMenuItem()
         Me.TSMI_Admin = New System.Windows.Forms.ToolStripMenuItem()
-        Me.TSMI_LogFile_Oeffnen = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LogfileÖffnenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.EinstellungenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TSMI_CacheRemove = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
         Me.TSB_Issue = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
         Me.BTN_CreateReport = New System.Windows.Forms.Button()
         Me.lbl_CreateReport = New System.Windows.Forms.Label()
         Me.FLP_Main = New System.Windows.Forms.FlowLayoutPanel()
+        Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.BTN_RefreshSavedCars = New System.Windows.Forms.Button()
         Me.CBB_SavedCars = New System.Windows.Forms.ComboBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.TXB_Brand = New System.Windows.Forms.TextBox()
@@ -123,18 +127,18 @@ Partial Class Autodatenbank
         Me.CB_Repair = New System.Windows.Forms.CheckBox()
         Me.CB_Other = New System.Windows.Forms.CheckBox()
         Me.Label18 = New System.Windows.Forms.Label()
-        Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
-        Me.BTN_RefreshSavedCars = New System.Windows.Forms.Button()
+        Me.PGB_FetchFTPData = New System.Windows.Forms.ProgressBar()
+        Me.EmailEinstellungenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.dgv, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.DatabaseMenuStrip.SuspendLayout()
         CType(Me.dgv2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.FTPMenuStrip.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
         Me.FLP_Main.SuspendLayout()
+        Me.TableLayoutPanel2.SuspendLayout()
         Me.TLP_Main1.SuspendLayout()
         CType(Me.PB_Adressbook, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TableLayoutPanel1.SuspendLayout()
-        Me.TableLayoutPanel2.SuspendLayout()
         Me.SuspendLayout()
         '
         'dgv
@@ -409,7 +413,7 @@ Partial Class Autodatenbank
         'ToolStripDropDownButton1
         '
         Me.ToolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripDropDownButton1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSMI_Bericht_Einstellungen, Me.TSM_Benutzer, Me.AnsichtToolStripMenuItem1, Me.NachUpdateToolStripMenuItem, Me.TSMI_Server_Verbindungen, Me.TSMI_Admin, Me.TSMI_LogFile_Oeffnen})
+        Me.ToolStripDropDownButton1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.TSMI_Bericht_Einstellungen, Me.TSM_Benutzer, Me.AnsichtToolStripMenuItem1, Me.NachUpdateToolStripMenuItem, Me.TSMI_Server_Verbindungen, Me.TSMI_Admin})
         Me.ToolStripDropDownButton1.Image = CType(resources.GetObject("ToolStripDropDownButton1.Image"), System.Drawing.Image)
         Me.ToolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ToolStripDropDownButton1.Name = "ToolStripDropDownButton1"
@@ -461,15 +465,28 @@ Partial Class Autodatenbank
         '
         'TSMI_Admin
         '
+        Me.TSMI_Admin.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.EinstellungenToolStripMenuItem, Me.EmailEinstellungenToolStripMenuItem, Me.TSMI_CacheRemove, Me.LogfileÖffnenToolStripMenuItem})
         Me.TSMI_Admin.Name = "TSMI_Admin"
         Me.TSMI_Admin.Size = New System.Drawing.Size(225, 22)
         Me.TSMI_Admin.Text = "Administrative Einstellungen"
         '
-        'TSMI_LogFile_Oeffnen
+        'LogfileÖffnenToolStripMenuItem
         '
-        Me.TSMI_LogFile_Oeffnen.Name = "TSMI_LogFile_Oeffnen"
-        Me.TSMI_LogFile_Oeffnen.Size = New System.Drawing.Size(225, 22)
-        Me.TSMI_LogFile_Oeffnen.Text = "LogFile öffnen"
+        Me.LogfileÖffnenToolStripMenuItem.Name = "LogfileÖffnenToolStripMenuItem"
+        Me.LogfileÖffnenToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.LogfileÖffnenToolStripMenuItem.Text = "Logfile öffnen"
+        '
+        'EinstellungenToolStripMenuItem
+        '
+        Me.EinstellungenToolStripMenuItem.Name = "EinstellungenToolStripMenuItem"
+        Me.EinstellungenToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.EinstellungenToolStripMenuItem.Text = "Einstellungen"
+        '
+        'TSMI_CacheRemove
+        '
+        Me.TSMI_CacheRemove.Name = "TSMI_CacheRemove"
+        Me.TSMI_CacheRemove.Size = New System.Drawing.Size(180, 22)
+        Me.TSMI_CacheRemove.Text = "Cache leeren"
         '
         'ToolStripSeparator7
         '
@@ -559,6 +576,21 @@ Partial Class Autodatenbank
         Me.FLP_Main.TabIndex = 13
         Me.FLP_Main.WrapContents = False
         '
+        'TableLayoutPanel2
+        '
+        Me.TableLayoutPanel2.ColumnCount = 2
+        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.TableLayoutPanel2.Controls.Add(Me.Label1, 0, 0)
+        Me.TableLayoutPanel2.Controls.Add(Me.BTN_RefreshSavedCars, 1, 0)
+        Me.TableLayoutPanel2.Location = New System.Drawing.Point(10, 20)
+        Me.TableLayoutPanel2.Margin = New System.Windows.Forms.Padding(0)
+        Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
+        Me.TableLayoutPanel2.RowCount = 1
+        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.TableLayoutPanel2.Size = New System.Drawing.Size(266, 37)
+        Me.TableLayoutPanel2.TabIndex = 56
+        '
         'Label1
         '
         Me.Label1.Anchor = System.Windows.Forms.AnchorStyles.Left
@@ -569,6 +601,16 @@ Partial Class Autodatenbank
         Me.Label1.Size = New System.Drawing.Size(101, 16)
         Me.Label1.TabIndex = 2
         Me.Label1.Text = "Auto auswählen"
+        '
+        'BTN_RefreshSavedCars
+        '
+        Me.BTN_RefreshSavedCars.BackgroundImage = CType(resources.GetObject("BTN_RefreshSavedCars.BackgroundImage"), System.Drawing.Image)
+        Me.BTN_RefreshSavedCars.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.BTN_RefreshSavedCars.Location = New System.Drawing.Point(231, 3)
+        Me.BTN_RefreshSavedCars.Name = "BTN_RefreshSavedCars"
+        Me.BTN_RefreshSavedCars.Size = New System.Drawing.Size(32, 31)
+        Me.BTN_RefreshSavedCars.TabIndex = 3
+        Me.BTN_RefreshSavedCars.UseVisualStyleBackColor = True
         '
         'CBB_SavedCars
         '
@@ -962,30 +1004,19 @@ Partial Class Autodatenbank
         Me.Label18.TabIndex = 17
         Me.Label18.Text = "Filter:"
         '
-        'TableLayoutPanel2
+        'PGB_FetchFTPData
         '
-        Me.TableLayoutPanel2.ColumnCount = 2
-        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.TableLayoutPanel2.Controls.Add(Me.Label1, 0, 0)
-        Me.TableLayoutPanel2.Controls.Add(Me.BTN_RefreshSavedCars, 1, 0)
-        Me.TableLayoutPanel2.Location = New System.Drawing.Point(10, 20)
-        Me.TableLayoutPanel2.Margin = New System.Windows.Forms.Padding(0)
-        Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
-        Me.TableLayoutPanel2.RowCount = 1
-        Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel2.Size = New System.Drawing.Size(266, 37)
-        Me.TableLayoutPanel2.TabIndex = 56
+        Me.PGB_FetchFTPData.Location = New System.Drawing.Point(333, 959)
+        Me.PGB_FetchFTPData.Name = "PGB_FetchFTPData"
+        Me.PGB_FetchFTPData.Size = New System.Drawing.Size(1239, 23)
+        Me.PGB_FetchFTPData.TabIndex = 18
+        Me.PGB_FetchFTPData.Visible = False
         '
-        'BTN_RefreshSavedCars
+        'EmailEinstellungenToolStripMenuItem
         '
-        Me.BTN_RefreshSavedCars.BackgroundImage = CType(resources.GetObject("BTN_RefreshSavedCars.BackgroundImage"), System.Drawing.Image)
-        Me.BTN_RefreshSavedCars.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.BTN_RefreshSavedCars.Location = New System.Drawing.Point(231, 3)
-        Me.BTN_RefreshSavedCars.Name = "BTN_RefreshSavedCars"
-        Me.BTN_RefreshSavedCars.Size = New System.Drawing.Size(32, 31)
-        Me.BTN_RefreshSavedCars.TabIndex = 3
-        Me.BTN_RefreshSavedCars.UseVisualStyleBackColor = True
+        Me.EmailEinstellungenToolStripMenuItem.Name = "EmailEinstellungenToolStripMenuItem"
+        Me.EmailEinstellungenToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.EmailEinstellungenToolStripMenuItem.Text = "Email Einstellungen"
         '
         'Autodatenbank
         '
@@ -993,6 +1024,7 @@ Partial Class Autodatenbank
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.ControlLight
         Me.ClientSize = New System.Drawing.Size(1584, 985)
+        Me.Controls.Add(Me.PGB_FetchFTPData)
         Me.Controls.Add(Me.Label18)
         Me.Controls.Add(Me.CB_Other)
         Me.Controls.Add(Me.CB_Repair)
@@ -1017,12 +1049,12 @@ Partial Class Autodatenbank
         Me.ToolStrip1.PerformLayout()
         Me.FLP_Main.ResumeLayout(False)
         Me.FLP_Main.PerformLayout()
+        Me.TableLayoutPanel2.ResumeLayout(False)
+        Me.TableLayoutPanel2.PerformLayout()
         Me.TLP_Main1.ResumeLayout(False)
         Me.TLP_Main1.PerformLayout()
         CType(Me.PB_Adressbook, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TableLayoutPanel1.ResumeLayout(False)
-        Me.TableLayoutPanel2.ResumeLayout(False)
-        Me.TableLayoutPanel2.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1113,7 +1145,6 @@ Partial Class Autodatenbank
     Friend WithEvents TSMI_Repair As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents TSMI_Other As ToolStripMenuItem
-    Friend WithEvents TSMI_LogFile_Oeffnen As ToolStripMenuItem
     Friend WithEvents TSMI_Bericht_Einstellungen As ToolStripMenuItem
     Friend WithEvents TSM_Benutzer As ToolStripMenuItem
     Friend WithEvents TSM_Benutzer_Erstellen As ToolStripMenuItem
@@ -1129,4 +1160,9 @@ Partial Class Autodatenbank
     Friend WithEvents Label18 As Label
     Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
     Friend WithEvents BTN_RefreshSavedCars As Button
+    Friend WithEvents PGB_FetchFTPData As ProgressBar
+    Friend WithEvents LogfileÖffnenToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents EinstellungenToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents TSMI_CacheRemove As ToolStripMenuItem
+    Friend WithEvents EmailEinstellungenToolStripMenuItem As ToolStripMenuItem
 End Class

@@ -156,7 +156,7 @@ Partial Class NewCustomer
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(367, 447)
+        Me.ClientSize = New System.Drawing.Size(362, 451)
         Me.Controls.Add(Me.BTN_Save)
         Me.Controls.Add(Me.TXB_Email)
         Me.Controls.Add(Me.Label7)
@@ -170,10 +170,17 @@ Partial Class NewCustomer
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.TXB_Name)
         Me.Controls.Add(Me.Label1)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.MaximizeBox = False
+        Me.MaximumSize = New System.Drawing.Size(378, 490)
+        Me.MinimizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(378, 490)
         Me.Name = "NewCustomer"
+        Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Neuen Kunden anlgen"
+        Me.TopMost = True
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

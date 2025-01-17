@@ -158,4 +158,7 @@ Public Class DatabaseEntries
         End If
     End Sub
 
+    Private Sub LL_Today_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LL_Today.LinkClicked
+        TXB_Date.Text = DateTime.Now.ToString("dd.MM.yyyy")
+    End Sub
 End Class

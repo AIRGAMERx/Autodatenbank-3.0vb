@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports System.Net
 Imports Renci.SshNet
 Imports Renci.SshNet.Common
 Imports Renci.SshNet.Sftp
@@ -184,12 +185,24 @@ Module SFTP
 
     End Sub
 
+
+
     Public Sub ListFilesFromSFTPForDGV2(Licenseplate As String)
         Try
+            ' DataGridView leeren
             Autodatenbank.dgv2.Rows.Clear()
+
+            ' ProgressBar initialisieren
+            Autodatenbank.PGB_FetchFTPData.Visible = True
+            Autodatenbank.PGB_FetchFTPData.Minimum = 0
+            Autodatenbank.PGB_FetchFTPData.Maximum = 100
+            Autodatenbank.PGB_FetchFTPData.Value = 0
+
+            ' Verbindung zu SFTP-Server herstellen
             Dim privateKeyFilePath As String = My.Settings.keyfile
             Dim keyFile As PrivateKeyFile
 
+            ' Private Key laden (mit oder ohne Passwort)
             If String.IsNullOrEmpty(My.Settings.keyfilepass) Or My.Settings.keyfile = "Default" Then
                 keyFile = New PrivateKeyFile(privateKeyFilePath)
             Else
@@ -203,37 +216,115 @@ Module SFTP
 
             Dim connectionInfo As New ConnectionInfo(My.Settings.SFTPServerUri, My.Settings.SFTPUsername, authMethods.ToArray())
 
+            Dim fileList As New List(Of SftpFile)
+            Dim basePath As String
+
             Using client As New SftpClient(connectionInfo)
                 client.Connect()
 
                 If client.IsConnected Then
-                    client.ChangeDirectory("Datenbank")
-                    Dim files = client.ListDirectory(Licenseplate)
+                    ' Absoluter Verzeichnispfad
+                    basePath = client.WorkingDirectory.TrimEnd("/"c) ' Hole den Basispfad
+                    Dim dataPath As String = basePath & "/Datenbank/" & Licenseplate & "/"
 
-                    Dim i As Integer = -1
-                    For Each file As SftpFile In files
-                        If Not file.Name.StartsWith(".") AndAlso Not file.Name.StartsWith("mycar") Then
-                            i += 1
-                            Autodatenbank.dgv2.Rows.Add()
-                            Autodatenbank.dgv2.Rows(i).Cells(0).Value = file.Name
-                            Autodatenbank.dgv2.Rows(i).Cells(1).Value = file.LastWriteTime
-                            Autodatenbank.dgv2.Rows(i).Cells(2).Value = My.Settings.SFTPServerUri + "/" + Licenseplate + "/" + file.Name
+                    ' Verzeichnis wechseln
+                    client.ChangeDirectory(dataPath)
+
+
+                    ' Dateien abrufen
+                    For Each file As SftpFile In client.ListDirectory(client.WorkingDirectory)
+                        If Not file.Name.StartsWith(".") AndAlso file.Name <> "mycar" AndAlso file.Name <> "Thumbnails" Then
+                            fileList.Add(file)
                         End If
                     Next
                 End If
+            End Using ' Nach dem `Using`-Block ist der `client` nicht mehr verfügbar
 
-                client.Disconnect()
-            End Using
-        Catch DirectionEx As SftpPathNotFoundException
-            Console.WriteLine(DirectionEx.Message)
+            ' Prüfen, ob Dateien vorhanden sind
+            If fileList.Count = 0 Then
+
+                Autodatenbank.PGB_FetchFTPData.Visible = False
+                Return
+            End If
+
+            ' Anzahl der Dateien für die ProgressBar
+            Dim totalFiles = fileList.Count
+            Dim currentFile = 0
+
+            ' Task-basierte Verarbeitung der Dateien
+            Dim rows As New List(Of DataGridViewRow)
+            For Each file As SftpFile In fileList
+                Dim dateiname = file.Name
+                Dim datum = file.LastWriteTime.ToString("dd.MM.yyyy")
+#Disable Warning BC42104 ' Die Variable wurde verwendet, bevor ihr ein Wert zugewiesen wurde.
+                Dim pfad = basePath & "/Datenbank/" & Licenseplate & "/" & dateiname
+#Enable Warning BC42104 ' Die Variable wurde verwendet, bevor ihr ein Wert zugewiesen wurde.
+                Dim thumbnailPath = basePath & "/Datenbank/" & Licenseplate & "/Thumbnails/" & dateiname
+
+                Dim thumbnailImage As Image = Nothing
+                Dim tagValue = "Placeholder"
+
+                ' Thumbnail herunterladen
+                Try
+                    Using client As New SftpClient(connectionInfo) ' Neuen Client erstellen für den Thumbnail-Download
+                        client.Connect()
+                        Using thumbnailStream As Stream = client.OpenRead(thumbnailPath)
+                            thumbnailImage = Image.FromStream(thumbnailStream)
+                            tagValue = "RealThumbnail"
+                        End Using
+                    End Using
+                Catch ex As Exception
+                    ' Kein Thumbnail gefunden
+                    thumbnailImage = My.Resources.Nothing_Found
+                End Try
+
+                ' Zeile erstellen
+                Dim row As New DataGridViewRow()
+                row.CreateCells(Autodatenbank.dgv2)
+                row.Cells(0).Value = thumbnailImage ' Thumbnail-Bild
+                row.Cells(1).Value = dateiname       ' Dateiname
+                row.Cells(2).Value = datum           ' Erstelldatum
+                row.Cells(3).Value = pfad            ' Dateipfad
+                row.Cells(0).Tag = tagValue          ' Tag-Wert
+
+                rows.Add(row)
+
+                ' Fortschritt aktualisieren
+                currentFile += 1
+                Autodatenbank.PGB_FetchFTPData.Value = CInt((currentFile / totalFiles) * 100)
+            Next
+
+            ' Zeilen hinzufügen
+            Autodatenbank.dgv2.Rows.AddRange(rows.ToArray())
+
+            ' Höhe der Zeilen anpassen
+            For Each row As DataGridViewRow In Autodatenbank.dgv2.Rows
+                If row.Cells(0).Tag IsNot Nothing AndAlso row.Cells(0).Tag.ToString() = "Placeholder" Then
+                    row.Height = 22 ' Standardhöhe
+                Else
+                    row.Height = 100 ' Höhe für echte Thumbnails
+                End If
+            Next
+
+            ' ProgressBar ausblenden
+            Autodatenbank.PGB_FetchFTPData.Visible = False
         Catch ex As Exception
-            MsgBox("Fehler bei der SFTP-Verbindung: " & ex.Message, MsgBoxStyle.Critical)
-            SavetoLogFile(ex.Message, "ListFilesFromFTP")
+            ' Fehler anzeigen
+            MsgBox("Fehler: " & ex.Message)
+            SavetoLogFile(ex.Message, "ListFilesFromSFTP")
+        Finally
+            ' ProgressBar ausblenden
+            Autodatenbank.PGB_FetchFTPData.Visible = False
         End Try
     End Sub
 
 
-    Public Sub UploadFileToSFTP(DataPath As String, Dataname As String)
+
+
+
+
+
+    Public Function UploadFileToSFTP(DataPath As String, Dataname As String) As Boolean
         Try
             ' Verbindung mit dem SFTP-Server herstellen
             Dim privateKeyFilePath As String = My.Settings.keyfile ' Dateipfad für den privaten Schlüssel
@@ -270,16 +361,63 @@ Module SFTP
                 client.Disconnect()
             End Using
 
-            MsgBox("Die Datei wurde erfolgreich über SFTP hochgeladen.")
+
             SFTP.ListFilesFromSFTPForDGV2(Autodatenbank.Licenseplate)
+            Return True
 
         Catch ex As Exception
             MsgBox("Fehler beim SFTP-Upload: " & ex.Message, MsgBoxStyle.Critical, "Fehler")
             SavetoLogFile(ex.Message, "UploadFileViaSFTP")
+            Return False
         End Try
-    End Sub
+    End Function
+
+    Public Function UploadThumbnailToSFTP(DataPath As String, Dataname As String) As Boolean
+        Try
+            ' Verbindung mit dem SFTP-Server herstellen
+            Dim privateKeyFilePath As String = My.Settings.keyfile ' Dateipfad für den privaten Schlüssel
+            Dim keyFile As PrivateKeyFile
+
+            ' Wenn eine Passphrase benötigt wird, diese laden, ansonsten ohne Passphrase
+            If String.IsNullOrEmpty(My.Settings.keyfilepass) Then
+                keyFile = New PrivateKeyFile(privateKeyFilePath)
+            Else
+                keyFile = New PrivateKeyFile(privateKeyFilePath, My.Settings.keyfilepass)
+            End If
+
+            ' Authentifizierungsmethode mit dem privaten Schlüssel
+            Dim keyFiles As New List(Of PrivateKeyFile) From {keyFile}
+            Dim authMethods As New List(Of AuthenticationMethod) From {
+            New PrivateKeyAuthenticationMethod(My.Settings.SFTPUsername, keyFile)
+        }
+
+            Dim connectionInfo As New ConnectionInfo(My.Settings.SFTPServerUri, My.Settings.SFTPUsername, authMethods.ToArray())
+
+            Using client As New SftpClient(connectionInfo)
+                client.Connect()
+
+                ' Prüfen, ob Verzeichnis existiert, und erstellen falls nötig
+                If Not client.Exists("Datenbank/" & Autodatenbank.Licenseplate & "/Thumbnails") Then
+                    client.CreateDirectory("Datenbank/" & Autodatenbank.Licenseplate & "/Thumbnails")
+                End If
+
+                ' Datei über SFTP hochladen
+                Using fileStream As New FileStream(DataPath, FileMode.Open)
+                    client.UploadFile(fileStream, "Datenbank/" & Autodatenbank.Licenseplate & "/Thumbnails/" & Dataname)
+                End Using
+
+                client.Disconnect()
+            End Using
 
 
+            SFTP.ListFilesFromSFTPForDGV2(Autodatenbank.Licenseplate)
+            Return True
+        Catch ex As Exception
+            MsgBox("Fehler beim SFTP-Upload: " & ex.Message, MsgBoxStyle.Critical, "Fehler")
+            SavetoLogFile(ex.Message, "UploadFileViaSFTP")
+            Return False
+        End Try
+    End Function
     Public Sub SearchInSFTPFolder(folderpath As String, searchterm As String, Optional depth As Integer = 0)
         Dim files As New List(Of String)
 

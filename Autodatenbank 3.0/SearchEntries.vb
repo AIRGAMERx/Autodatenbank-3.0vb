@@ -471,9 +471,7 @@ Public Class SearchEntries
                 Dim tempPath As String = Application.StartupPath & "\temp\"
 
                 ' Überprüfen, ob das temporäre Verzeichnis existiert
-                If Not System.IO.Directory.Exists(tempPath) Then
-                    System.IO.Directory.CreateDirectory(tempPath)
-                End If
+                CreateTempDirectory()
 
                 ' Setze den Cursor auf Wartezustand
                 Cursor.Current = Cursors.WaitCursor

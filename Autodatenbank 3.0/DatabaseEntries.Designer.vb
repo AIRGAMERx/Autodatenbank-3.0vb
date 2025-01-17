@@ -37,6 +37,7 @@ Partial Class DatabaseEntries
         Me.Label1 = New System.Windows.Forms.Label()
         Me.CBB_TypeOfEntry = New System.Windows.Forms.ComboBox()
         Me.BTN_Save = New System.Windows.Forms.Button()
+        Me.LL_Today = New System.Windows.Forms.LinkLabel()
         Me.SuspendLayout()
         '
         'Label9
@@ -160,11 +161,22 @@ Partial Class DatabaseEntries
         Me.BTN_Save.Text = "Eintrag speichern"
         Me.BTN_Save.UseVisualStyleBackColor = False
         '
+        'LL_Today
+        '
+        Me.LL_Today.AutoSize = True
+        Me.LL_Today.Location = New System.Drawing.Point(447, 162)
+        Me.LL_Today.Name = "LL_Today"
+        Me.LL_Today.Size = New System.Drawing.Size(83, 13)
+        Me.LL_Today.TabIndex = 37
+        Me.LL_Today.TabStop = True
+        Me.LL_Today.Text = "Heutiges Datum"
+        '
         'DatabaseEntries
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(549, 522)
+        Me.Controls.Add(Me.LL_Today)
         Me.Controls.Add(Me.BTN_Save)
         Me.Controls.Add(Me.CBB_TypeOfEntry)
         Me.Controls.Add(Me.Label1)
@@ -181,6 +193,7 @@ Partial Class DatabaseEntries
         Me.Controls.Add(Me.Label2)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.MaximizeBox = False
         Me.Name = "DatabaseEntries"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Datenbankeintrag neu erstellen"
@@ -204,4 +217,5 @@ Partial Class DatabaseEntries
     Friend WithEvents Label1 As Label
     Friend WithEvents CBB_TypeOfEntry As ComboBox
     Friend WithEvents BTN_Save As Button
+    Friend WithEvents LL_Today As LinkLabel
 End Class

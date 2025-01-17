@@ -162,11 +162,13 @@ Public Class Authent
         Dim passdate As DateTime
         Dim failedAttempts As Integer
         Dim lockoutUntil As DateTime?
+        Dim otpactive As Integer
+        Dim otpdate As DateTime
 
         Me.Cursor = Cursors.WaitCursor
 
         ' Aktualisierte SQL-Abfrage, um zusätzliche Felder zu erhalten
-        Dim query As String = "SELECT password, salt, id, Passdate, failed_attempts, lockout_until FROM users WHERE user_name = @Username"
+        Dim query As String = "SELECT password, salt, id, Passdate, failed_attempts, lockout_until, otp, otp_date FROM users WHERE user_name = @Username"
 
         Using connection As New MySqlConnection(My.Settings.connectionstring)
             Using command As New MySqlCommand(query, connection)
@@ -179,98 +181,120 @@ Public Class Authent
                             ' Benutzername existiert, zusätzliche Felder abrufen
                             savedPassword = reader("password").ToString()
                             savedSalt = reader("salt").ToString()
+
+
+                            otpactive = If(reader.IsDBNull(reader.GetOrdinal("otp")), 0, CType(reader("otp"), Integer))
+                            otpdate = If(reader.IsDBNull(reader.GetOrdinal("otp_date")), Nothing, CType(reader("otp_date"), DateTime))
+
                             Dim userId As String = reader("id").ToString()
-                            failedAttempts = Convert.ToInt32(reader("failed_attempts"))
-                            lockoutUntil = If(reader.IsDBNull(reader.GetOrdinal("lockout_until")), Nothing, CType(reader("lockout_until"), DateTime?))
+                                failedAttempts = Convert.ToInt32(reader("failed_attempts"))
+                                lockoutUntil = If(reader.IsDBNull(reader.GetOrdinal("lockout_until")), Nothing, CType(reader("lockout_until"), DateTime?))
 
-                            'Datum der Letzten Passwortänderung abrufen
-                            If Not reader.IsDBNull(reader.GetOrdinal("Passdate")) Then
-                                passdate = reader.GetDateTime("Passdate")
-                                GotDate = True
-                            End If
+                                'Datum der Letzten Passwortänderung abrufen
+                                If Not reader.IsDBNull(reader.GetOrdinal("Passdate")) Then
+                                    passdate = reader.GetDateTime("Passdate")
+                                    GotDate = True
+                                End If
 
-                            ' Überprüfen, ob der Benutzer gesperrt ist
-                            If lockoutUntil.HasValue AndAlso DateTime.Now < lockoutUntil.Value Then
-                                ' Benutzer ist gesperrt
-                                Me.Cursor = Cursors.Default
-                                MsgBox("Ihr Konto ist gesperrt. Bitte versuchen Sie es später erneut.", MsgBoxStyle.Critical)
-                                Return
-                            End If
+                                ' Überprüfen, ob der Benutzer gesperrt ist
+                                If lockoutUntil.HasValue AndAlso DateTime.Now < lockoutUntil.Value Then
+                                    ' Benutzer ist gesperrt
+                                    Me.Cursor = Cursors.Default
+                                    MsgBox("Ihr Konto ist gesperrt. Bitte versuchen Sie es später erneut.", MsgBoxStyle.Critical)
+                                    Return
+                                End If
 
-                            ' Hash des eingegebenen Passworts unter Verwendung des gespeicherten Salts berechnen
-                            Dim isPasswordCorrect As Boolean = PasswordHelper.VerifyPassword(TXB_Password.Text, savedPassword, savedSalt)
+                                ' Hash des eingegebenen Passworts unter Verwendung des gespeicherten Salts berechnen
+                                Dim isPasswordCorrect As Boolean = PasswordHelper.VerifyPassword(TXB_Password.Text, savedPassword, savedSalt)
 
-                            ' Vergleich mit dem gespeicherten Passwort
-                            If isPasswordCorrect Then
-                                ' Passwort korrekt, Benutzerdaten abrufen
-                                Me.Cursor = Cursors.Default
+                                ' Vergleich mit dem gespeicherten Passwort
+                                If isPasswordCorrect Then
+                                    ' Passwort korrekt, Benutzerdaten abrufen
+                                    Me.Cursor = Cursors.Default
 
-                                ' Reset fehlgeschlagene Versuche
-                                Dim resetCommand As New MySqlCommand("UPDATE users SET failed_attempts = 0, lockout_until = NULL WHERE user_name = @Username", connection)
-                                resetCommand.Parameters.AddWithValue("@Username", TXB_UserName.Text)
-                                reader.Close() ' Reader schließen, bevor eine neue Abfrage ausgeführt wird
-                                resetCommand.ExecuteNonQuery()
+                                    ' Reset fehlgeschlagene Versuche
+                                    Dim resetCommand As New MySqlCommand("UPDATE users SET failed_attempts = 0, lockout_until = NULL WHERE user_name = @Username", connection)
+                                    resetCommand.Parameters.AddWithValue("@Username", TXB_UserName.Text)
+                                    reader.Close() ' Reader schließen, bevor eine neue Abfrage ausgeführt wird
+                                    resetCommand.ExecuteNonQuery()
 
-                                ' Überprüfen, ob das Passwort älter als 6 Monate ist
-                                If GotDate AndAlso My.Settings.OldPassword = True AndAlso Now.Date > passdate.AddMonths(6) Then
-                                    ' Erstelle und zeige einen benutzerdefinierten Dialog
-                                    Dim result As DialogResult = MessageBox.Show("Passwort ist schon mindestens seit 6 Monaten nicht geändert worden", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                    If otpactive = 1 Then
+                                    If Now.Date <= otpdate.AddHours(1) Then
+                                        NewPassword.Show()
+                                        NewPassword.GetData(userId, TXB_UserName.Text)
+                                        Me.Close()
+                                        Exit Sub
 
-                                    ' Warten, bis der Benutzer den Dialog bestätigt
-                                    If result = DialogResult.OK Then
-                                        ' Schließt das Formular erst, nachdem der Benutzer den Dialog bestätigt hat
+                                    Else
+                                        MsgBox("Das OneTimePassword ist abgelaufen, bitte Administrator kontaktien")
+                                            Exit Sub
+                                        End If
+
+                                    End If
+
+
+                                    ' Überprüfen, ob das Passwort älter als 6 Monate ist
+                                    If GotDate AndAlso My.Settings.OldPassword = True AndAlso Now.Date > passdate.AddMonths(6) Then
+                                        ' Erstelle und zeige einen benutzerdefinierten Dialog
+                                        Dim result As DialogResult = MessageBox.Show("Passwort ist schon mindestens seit 6 Monaten nicht geändert worden", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+                                        ' Warten, bis der Benutzer den Dialog bestätigt
+                                        If result = DialogResult.OK Then
+
+                                            ' Schließt das Formular erst, nachdem der Benutzer den Dialog bestätigt hat
+                                            Autodatenbank.GetUserData(userId)
+                                            My.Settings.LastUserLog = userId
+                                            My.Settings.Save()
+                                            Autodatenbank.Show()
+                                            LoadOverallSettings()
+                                            LoadDGVSettings()
+                                            My.Settings.CloseToAuth = False
+                                            Notify(Autodatenbank.NI_Successful, "Anmeldung", "Herzlich Wilkommen zurück " & My.Settings.Username, 5000, ToolTipIcon.None)
+                                            Me.Close()
+                                        End If
+                                    Else
+                                        ' Schließt das Formular, wenn keine Nachricht angezeigt wird
+
                                         Autodatenbank.GetUserData(userId)
                                         My.Settings.LastUserLog = userId
                                         My.Settings.Save()
-                                        Autodatenbank.Show()
-                                        LoadOverallSettings()
                                         LoadDGVSettings()
-                                        My.Settings.CloseToAuth = False
+                                        LoadOverallSettings()
+                                        Autodatenbank.Show()
                                         Notify(Autodatenbank.NI_Successful, "Anmeldung", "Herzlich Wilkommen zurück " & My.Settings.Username, 5000, ToolTipIcon.None)
                                         Me.Close()
                                     End If
                                 Else
-                                    ' Schließt das Formular, wenn keine Nachricht angezeigt wird
-                                    Autodatenbank.GetUserData(userId)
-                                    My.Settings.LastUserLog = userId
-                                    My.Settings.Save()
-                                    LoadDGVSettings()
-                                    LoadOverallSettings()
-                                    Autodatenbank.Show()
-                                    Notify(Autodatenbank.NI_Successful, "Anmeldung", "Herzlich Wilkommen zurück " & My.Settings.Username, 5000, ToolTipIcon.None)
-                                    Me.Close()
+                                    ' Passwort ist nicht korrekt
+                                    failedAttempts += 1
+
+                                    If failedAttempts >= 5 Then
+                                        ' Konto sperren
+                                        Dim lockoutTime As DateTime = DateTime.Now.AddMinutes(15) ' Sperre für 15 Minuten
+                                        Dim lockCommand As New MySqlCommand("UPDATE users SET failed_attempts = @failedAttempts, lockout_until = @lockoutUntil WHERE user_name = @Username", connection)
+                                        lockCommand.Parameters.AddWithValue("@failedAttempts", failedAttempts)
+                                        lockCommand.Parameters.AddWithValue("@lockoutUntil", lockoutTime)
+                                        lockCommand.Parameters.AddWithValue("@Username", TXB_UserName.Text)
+                                        reader.Close() ' Reader schließen, bevor eine neue Abfrage ausgeführt wird
+                                        lockCommand.ExecuteNonQuery()
+
+                                        Me.Cursor = Cursors.Default
+                                        MsgBox("Zu viele fehlgeschlagene Anmeldeversuche. Ihr Konto ist für 15 Minuten gesperrt.", MsgBoxStyle.Critical)
+                                    Else
+                                        ' Anzahl der fehlgeschlagenen Versuche aktualisieren
+                                        Dim updateCommand As New MySqlCommand("UPDATE users SET failed_attempts = @failedAttempts WHERE user_name = @Username", connection)
+                                        updateCommand.Parameters.AddWithValue("@failedAttempts", failedAttempts)
+                                        updateCommand.Parameters.AddWithValue("@Username", TXB_UserName.Text)
+                                        reader.Close() ' Reader schließen, bevor eine neue Abfrage ausgeführt wird
+                                        updateCommand.ExecuteNonQuery()
+
+                                        Me.Cursor = Cursors.Default
+                                        Notify(Autodatenbank.NI_Error, "Login Daten", "Passwort oder Benutzer nicht korrekt", 10000, ToolTipIcon.Error)
+                                    End If
                                 End If
                             Else
-                                ' Passwort ist nicht korrekt
-                                failedAttempts += 1
-
-                                If failedAttempts >= 5 Then
-                                    ' Konto sperren
-                                    Dim lockoutTime As DateTime = DateTime.Now.AddMinutes(15) ' Sperre für 15 Minuten
-                                    Dim lockCommand As New MySqlCommand("UPDATE users SET failed_attempts = @failedAttempts, lockout_until = @lockoutUntil WHERE user_name = @Username", connection)
-                                    lockCommand.Parameters.AddWithValue("@failedAttempts", failedAttempts)
-                                    lockCommand.Parameters.AddWithValue("@lockoutUntil", lockoutTime)
-                                    lockCommand.Parameters.AddWithValue("@Username", TXB_UserName.Text)
-                                    reader.Close() ' Reader schließen, bevor eine neue Abfrage ausgeführt wird
-                                    lockCommand.ExecuteNonQuery()
-
-                                    Me.Cursor = Cursors.Default
-                                    MsgBox("Zu viele fehlgeschlagene Anmeldeversuche. Ihr Konto ist für 15 Minuten gesperrt.", MsgBoxStyle.Critical)
-                                Else
-                                    ' Anzahl der fehlgeschlagenen Versuche aktualisieren
-                                    Dim updateCommand As New MySqlCommand("UPDATE users SET failed_attempts = @failedAttempts WHERE user_name = @Username", connection)
-                                    updateCommand.Parameters.AddWithValue("@failedAttempts", failedAttempts)
-                                    updateCommand.Parameters.AddWithValue("@Username", TXB_UserName.Text)
-                                    reader.Close() ' Reader schließen, bevor eine neue Abfrage ausgeführt wird
-                                    updateCommand.ExecuteNonQuery()
-
-                                    Me.Cursor = Cursors.Default
-                                    Notify(Autodatenbank.NI_Error, "Login Daten", "Passwort oder Benutzer nicht korrekt", 10000, ToolTipIcon.Error)
-                                End If
-                            End If
-                        Else
-                            ' Benutzername wurde nicht gefunden
-                            Me.Cursor = Cursors.Default
+                                ' Benutzername wurde nicht gefunden
+                                Me.Cursor = Cursors.Default
                             Notify(Autodatenbank.NI_Error, "Login Daten", "Passwort oder Benutzer nicht korrekt", 10000, ToolTipIcon.Error)
                         End If
                     End Using

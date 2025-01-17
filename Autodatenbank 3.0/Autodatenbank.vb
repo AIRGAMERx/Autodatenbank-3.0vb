@@ -22,9 +22,13 @@ Public Class Autodatenbank
     Dim CurrentFTPLink As String = ""
     Private isF2Pressed As Boolean = False
     Private isLPressed As Boolean = False
+#Region "Load Close Init Create"
+    '##################### REGION Load Close Init Create ##########################
+    '### Everything with Form Load Unload Save Delete Create Controls #############
+
 
     Private Async Sub Autodatenbank_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Console.WriteLine(My.Settings.Regkey & "  5")
+
 
 
 
@@ -72,13 +76,13 @@ Public Class Autodatenbank
 
         ' Form sichtbar machen
         Me.Visible = True
+        GetCache()
 
     End Sub
 
     Public Async Function Initialisation() As Task
         ' Lizensdaten Laden
         Try
-            Console.WriteLine(My.Settings.Regkey & "  8")
             Dim userdata = Await GetUserDataAsync(My.Settings.Regkey)
             My.Settings.LicenseName = userdata.Name
         Catch ex As Exception
@@ -113,6 +117,7 @@ Public Class Autodatenbank
         LoadCompanyData()
         CreateShortCutInStartMenu()
     End Function
+
     Public Sub CreateShortCutInStartMenu()
         Dim exePath As String = Application.StartupPath & "/Autodatenbank 3.0.exe"
         Dim startMenuPath As String = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs", "Autodatenbank")
@@ -177,10 +182,10 @@ Public Class Autodatenbank
         ' Admin
         If GetPermission(p, 7) = False Then
             TSMI_Admin.Visible = False
-            TSMI_LogFile_Oeffnen.Visible = False
             TSMI_Server_Verbindungen.Visible = False
             TSB_Issue.Visible = False
             BTN_DeleteCarData.Visible = False ' Auto Löschen nur für Admin
+            TSMI_CacheRemove.Visible = False
         End If
 
         ' Dateien
@@ -232,6 +237,101 @@ Public Class Autodatenbank
 
     End Sub
 
+    Private Sub GetCache()
+        Dim totalSize As Long = 0
+
+        ' Größe der Thumbnails berechnen
+        If Directory.Exists(Application.StartupPath & "\Thumbnails\") Then
+            totalSize += GetTotalFolderSize(Application.StartupPath & "\Thumbnails\")
+        End If
+
+        ' Größe der Temp-Dateien berechnen
+        If Directory.Exists(Application.StartupPath & "\Temp\") Then
+            totalSize += GetTotalFolderSize(Application.StartupPath & "\Temp\")
+        End If
+
+        ' Größe dynamisch anzeigen
+        If totalSize < (1024 * 1024) Then
+            ' Wenn weniger als 1 MB, in KB anzeigen
+            TSMI_CacheRemove.Text = $"{totalSize / 1024:N2} KB an Cache leeren"
+        Else
+            ' Andernfalls in MB anzeigen
+            TSMI_CacheRemove.Text = $"{totalSize / (1024 * 1024):N2} MB an Cache leeren"
+        End If
+    End Sub
+
+
+    Private Sub CreateDGV()
+        ' Die DataGridViews komplett leeren: alle Zeilen und Spalten entfernen
+        dgv.Rows.Clear()
+        dgv.Columns.Clear()
+        dgv2.Rows.Clear()
+        dgv2.Columns.Clear()
+
+        If CreateReport = True Then
+            Dim chkColumn As New DataGridViewCheckBoxColumn With {
+            .Name = "InBerichtAufnehmen",
+            .HeaderText = "In Bericht aufnehmen",
+            .Width = 150 ' Sie können die Breite nach Bedarf anpassen
+        }
+            dgv.Columns.Insert(0, chkColumn) ' Die CheckBox-Spalte an der ersten Position hinzufügen
+        End If
+
+        ' Die restlichen Spalten hinzufügen
+        dgv.Columns.Add("ID", "ID")
+        dgv.Columns.Add("Tabellenname", "Tabellenname")
+        dgv.Columns.Add("ID_Kennzeichen", "Kennzeichen")
+        dgv.Columns.Add("Bezeichnung", "Bezeichnung")
+        dgv.Columns.Add("Kilometer", "Kilometer")
+        dgv.Columns.Add("Datum", "Datum")
+        dgv.Columns.Add("Preis in €", "Preis in €")
+        dgv.Columns.Add("Kommentar", "Kommentar")
+        dgv.Columns.Add("Art", "Art")
+        dgv.Columns.Add("Bearbeiter", "Bearbeiter")
+
+        If CreateReport = True Then
+            dgv.Columns(1).Visible = False
+            dgv.Columns(2).Visible = False
+        Else
+            dgv.Columns(0).Visible = False
+            dgv.Columns(1).Visible = False
+        End If
+
+        ' Setze alle Spalten auf ReadOnly, außer der CheckBox-Spalte
+        For Each col As DataGridViewColumn In dgv.Columns
+            If col.Name <> "InBerichtAufnehmen" Then
+                col.ReadOnly = True
+            End If
+        Next
+        dgv.RowHeadersVisible = False
+
+        ' Spalten für dgv2 hinzufügen
+        dgv2.Columns.Add(New DataGridViewImageColumn() With {
+             .Name = "Thumbnail",
+             .HeaderText = "Thumbnail",
+             .ImageLayout = DataGridViewImageCellLayout.Zoom
+        })
+        dgv2.Columns.Add("Dateiname", "Dateiname")
+        dgv2.Columns.Add("Erstelldatum", "Erstelldatum")
+        dgv2.Columns.Add("Dateipfad", "Dateipfad")
+
+        dgv2.Columns("Thumbnail").Width = 100
+        dgv2.Columns("Dateiname").Width = 300
+        dgv2.Columns("Erstelldatum").Width = 150
+        dgv2.Columns("Dateipfad").Width = 600
+
+        dgv2.RowHeadersVisible = False
+    End Sub
+#End Region
+
+#Region "Cars"
+
+
+    '##################### REGION CARS ##########################
+    '### Everything with cars Load Unload Save Delete ###########
+
+
+
     Public Sub LoadCars()
         Using connection As New MySqlConnection(My.Settings.connectionstring)
             Try
@@ -256,15 +356,6 @@ Public Class Autodatenbank
                 SavetoLogFile(ex.Message, "LoadCars")
             End Try
         End Using
-    End Sub
-
-    Private Sub ToolStripLabel2_Click(sender As Object, e As EventArgs) Handles LBL_NewEntry.Click
-
-        If GetPermission(My.Settings.PermissionKey, 4) Then
-            DatabaseEntries.Show()
-        Else
-            MsgBox("Keine Berechtigung um neue Einträge zu erstellen")
-        End If
     End Sub
 
     Private Sub CBB_SavedCars_SelectedIndexChanged(sender As Object, e As EventArgs) Handles CBB_SavedCars.SelectedIndexChanged
@@ -428,60 +519,6 @@ Public Class Autodatenbank
         End Try
     End Sub
 
-    Private Sub CreateDGV()
-        ' Die DataGridViews komplett leeren: alle Zeilen und Spalten entfernen
-        dgv.Rows.Clear()
-        dgv.Columns.Clear()
-        dgv2.Rows.Clear()
-        dgv2.Columns.Clear()
-
-        If CreateReport = True Then
-            Dim chkColumn As New DataGridViewCheckBoxColumn With {
-            .Name = "InBerichtAufnehmen",
-            .HeaderText = "In Bericht aufnehmen",
-            .Width = 150 ' Sie können die Breite nach Bedarf anpassen
-        }
-            dgv.Columns.Insert(0, chkColumn) ' Die CheckBox-Spalte an der ersten Position hinzufügen
-        End If
-
-        ' Die restlichen Spalten hinzufügen
-        dgv.Columns.Add("ID", "ID")
-        dgv.Columns.Add("Tabellenname", "Tabellenname")
-        dgv.Columns.Add("ID_Kennzeichen", "Kennzeichen")
-        dgv.Columns.Add("Bezeichnung", "Bezeichnung")
-        dgv.Columns.Add("Kilometer", "Kilometer")
-        dgv.Columns.Add("Datum", "Datum")
-        dgv.Columns.Add("Preis in €", "Preis in €")
-        dgv.Columns.Add("Kommentar", "Kommentar")
-        dgv.Columns.Add("Art", "Art")
-        dgv.Columns.Add("Bearbeiter", "Bearbeiter")
-
-        If CreateReport = True Then
-            dgv.Columns(1).Visible = False
-            dgv.Columns(2).Visible = False
-        Else
-            dgv.Columns(0).Visible = False
-            dgv.Columns(1).Visible = False
-        End If
-
-        ' Setze alle Spalten auf ReadOnly, außer der CheckBox-Spalte
-        For Each col As DataGridViewColumn In dgv.Columns
-            If col.Name <> "InBerichtAufnehmen" Then
-                col.ReadOnly = True
-            End If
-        Next
-        dgv.RowHeadersVisible = False
-
-        ' Spalten für dgv2 hinzufügen
-        dgv2.Columns.Add("Dateiname", "Dateiname")
-        dgv2.Columns.Add("Erstelldatum", "Erstelldatum")
-        dgv2.Columns.Add("Dateipfad", "Dateipfad")
-        dgv2.Columns("Dateiname").Width = 300
-        dgv2.Columns("Erstelldatum").Width = 150
-        dgv2.Columns("Dateipfad").Width = 600
-
-        dgv2.RowHeadersVisible = False
-    End Sub
 
     Public Sub FillDGV()
         Dim i As Integer = -1
@@ -557,29 +594,12 @@ Public Class Autodatenbank
         End Try
     End Sub
 
-    Private Sub SetUserName(ByVal userId As String, ByVal rowIndex As Integer, ByVal cellIndex As Integer)
-        Dim connection As New MySqlConnection(My.Settings.connectionstring)
-        Try
-            connection.Open()
-            Dim query As String = "SELECT user_name FROM users WHERE id = @UID"
-            Using cmd As New MySqlCommand(query, connection)
-                cmd.Parameters.AddWithValue("@UID", userId)
-                Dim userReader As MySqlDataReader = cmd.ExecuteReader()
-                If userReader.Read() Then
-                    dgv.Rows(rowIndex).Cells(cellIndex).Value = userReader.GetString("user_name")
-                Else
-                    dgv.Rows(rowIndex).Cells(cellIndex).Value = "Bearbeiter nicht gefunden"
-                End If
-            End Using
-        Catch ex As Exception
-            MessageBox.Show("Fehler beim Abrufen des Benutzernamens: " & ex.Message)
-            SavetoLogFile(ex.Message, "SetUsername")
-        Finally
-            If connection.State = ConnectionState.Open Then
-                connection.Close()
-            End If
-        End Try
-    End Sub
+
+#End Region
+
+#Region "Permission User and Edit"
+    '##################### REGION Permission User and Edit ##########################
+    '### Everything with Permission User and Edit ###################################
 
     Private Sub BearbeitenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TSMI_Eintrag_Bearbeiten.Click
         If GetPermission(My.Settings.PermissionKey, 5) Or LoginSetting = False Then
@@ -606,6 +626,39 @@ Public Class Autodatenbank
         End If
     End Sub
 
+    Private Sub ToolStripLabel2_Click(sender As Object, e As EventArgs) Handles LBL_NewEntry.Click
+
+        If GetPermission(My.Settings.PermissionKey, 4) Then
+            DatabaseEntries.Show()
+        Else
+            MsgBox("Keine Berechtigung um neue Einträge zu erstellen")
+        End If
+    End Sub
+
+    Private Sub SetUserName(ByVal userId As String, ByVal rowIndex As Integer, ByVal cellIndex As Integer)
+        Dim connection As New MySqlConnection(My.Settings.connectionstring)
+        Try
+            connection.Open()
+            Dim query As String = "SELECT user_name FROM users WHERE id = @UID"
+            Using cmd As New MySqlCommand(query, connection)
+                cmd.Parameters.AddWithValue("@UID", userId)
+                Dim userReader As MySqlDataReader = cmd.ExecuteReader()
+                If userReader.Read() Then
+                    dgv.Rows(rowIndex).Cells(cellIndex).Value = userReader.GetString("user_name")
+                Else
+                    dgv.Rows(rowIndex).Cells(cellIndex).Value = "Bearbeiter nicht gefunden"
+                End If
+            End Using
+        Catch ex As Exception
+            MessageBox.Show("Fehler beim Abrufen des Benutzernamens: " & ex.Message)
+            SavetoLogFile(ex.Message, "SetUsername")
+        Finally
+            If connection.State = ConnectionState.Open Then
+                connection.Close()
+            End If
+        End Try
+    End Sub
+
     Private Sub LöschenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TSMI_Eintrag_Loeschen.Click
         Dim SelectedEntry As String = If(CreateReport = True, dgv.CurrentRow.Cells(4).Value.ToString, dgv.CurrentRow.Cells(3).Value.ToString)
 
@@ -621,6 +674,29 @@ Public Class Autodatenbank
         End If
 
     End Sub
+
+#End Region
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     Private Sub Dgv_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgv.CellContentClick
         If e.RowIndex >= 0 Then
@@ -689,16 +765,14 @@ Public Class Autodatenbank
             If dgv2.Rows.Count > 0 Then
                 Dim tempPath As String = Application.StartupPath & "\temp\"
 
-                If Not System.IO.Directory.Exists(tempPath) Then
-                    System.IO.Directory.CreateDirectory(tempPath)
-                End If
+                CreateTempDirectory()
 
                 Cursor.Current = Cursors.WaitCursor
 
                 If My.Settings.sftp Then
-                    SFTP.DownloadandOpenFileSFTP(tempPath & dgv2.CurrentRow.Cells(0).Value.ToString, Path.GetFileName(dgv2.CurrentRow.Cells(2).Value.ToString), Licenseplate)
+                    SFTP.DownloadandOpenFileSFTP(tempPath & dgv2.CurrentRow.Cells(1).Value.ToString, Path.GetFileName(dgv2.CurrentRow.Cells(3).Value.ToString), Licenseplate)
                 Else
-                    FTP.DownloadandOpenFileFTP(tempPath & dgv2.CurrentRow.Cells(0).Value.ToString, dgv2.CurrentRow.Cells(2).Value.ToString)
+                    FTP.DownloadandOpenFileFTP(tempPath & dgv2.CurrentRow.Cells(1).Value.ToString, dgv2.CurrentRow.Cells(3).Value.ToString)
                 End If
             End If
         Else
@@ -706,12 +780,12 @@ Public Class Autodatenbank
         End If
     End Sub
 
-    Private Sub LöschenToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles TSMI_Datei_Loeschen.Click
+    Private Sub TSMI_Datei_Loeschen_Click(sender As Object, e As EventArgs) Handles TSMI_Datei_Loeschen.Click
         If GetPermission(My.Settings.PermissionKey, 10) = True Or LoginSetting = False Then
             If dgv2.Rows.Count > 0 Then
                 Select Case MessageBox.Show("Wirklich Löschen?", "Datei unwiderruflich Löschen?", MessageBoxButtons.YesNo)
                     Case Windows.Forms.DialogResult.Yes
-                        DeleteFileFromServer(dgv2.CurrentRow.Cells(2).Value.ToString)
+                        DeleteFileFromServer(dgv2.CurrentRow.Cells(3).Value.ToString)
                     Case Windows.Forms.DialogResult.No
 
                 End Select
@@ -1069,14 +1143,15 @@ Public Class Autodatenbank
             dgv.Size = New Size(CInt(Me.Width - 361), CInt(Me.Height * 0.51171875))
 
             dgv2.Location = New Point(333, dgv.Location.Y + dgv.Height + 60)
-            dgv2.Size = New Size(CInt(Me.Width - 361), CInt(Me.Height * 0.29980469))
+            dgv2.Size = New Size(CInt(Me.Width - 361), CInt(Me.Height * 0.35))
 
             Label15.Location = New Point(333, dgv2.Location.Y - 21)
 
             lbl_CreateReport.Location = New Point((Me.Width - lbl_CreateReport.Size.Width) - 28, dgv.Location.Y + dgv.Size.Height + 7)
             BTN_CreateReport.Location = New Point((Me.Width - BTN_CreateReport.Width) - 28, lbl_CreateReport.Location.Y + 19)
-            dgv.Columns("Kommentar").Width = dgv.Size.Width - 7 * 100 - 50
-
+            dgv.Columns("Kommentar").Width = dgv.Size.Width - 7 * 100 - 10
+            PGB_FetchFTPData.Location = New Point(333, dgv2.Location.Y + dgv2.Height + 6)
+            PGB_FetchFTPData.Width = dgv2.Width
 
         End If
 
@@ -1089,7 +1164,10 @@ Public Class Autodatenbank
             Label15.Location = New Point(333, 625)
             lbl_CreateReport.Location = New Point((Me.Width - lbl_CreateReport.Size.Width) - 28, 593)
             BTN_CreateReport.Location = New Point((Me.Width - BTN_CreateReport.Width) - 28, 612)
-            dgv.Columns("Kommentar").Width = dgv.Size.Width - 7 * 100 - 50
+            dgv.Columns("Kommentar").Width = dgv.Size.Width - 7 * 100 - 10
+            PGB_FetchFTPData.Location = New Point(333, 959)
+            PGB_FetchFTPData.Width = dgv2.Width
+
 
         End If
 
@@ -1106,15 +1184,25 @@ Public Class Autodatenbank
                 dgv.Size = New Size(CInt(Me.Width - 361), CInt(Me.Height * 0.51171875))
 
                 dgv2.Location = New Point(333, dgv.Location.Y + dgv.Height + 60)
-                dgv2.Size = New Size(CInt(Me.Width - 361), CInt(Me.Height * 0.3))
+                dgv2.Size = New Size(CInt(Me.Width - 361), CInt(Me.Height * 0.4))
 
                 Label15.Location = New Point(333, dgv2.Location.Y - 21)
 
                 lbl_CreateReport.Location = New Point((Me.Width - lbl_CreateReport.Size.Width) - 28, dgv.Location.Y + dgv.Size.Height + 7)
                 BTN_CreateReport.Location = New Point((Me.Width - BTN_CreateReport.Width) - 28, lbl_CreateReport.Location.Y + 19)
                 If dgv.Columns.Contains("Kommentar") Then
-                    dgv.Columns("Kommentar").Width = dgv.Size.Width - 7 * 100 - 50
+                    dgv.Columns("Kommentar").Width = dgv.Size.Width - 7 * 100 - 10
                 End If
+                Dim newFLPHeight As Integer = FLP_Main.Height
+
+                If newFLPHeight > 1025 Then
+                    Dim FLPGrownHeight As Integer = newFLPHeight - 1025
+                    RTB_Infos.Height = FLPGrownHeight + 93
+                End If
+
+                PGB_FetchFTPData.Location = New Point(333, dgv2.Location.Y + dgv2.Height + 6)
+                PGB_FetchFTPData.Width = dgv2.Width
+
 
             End If
 
@@ -1128,9 +1216,18 @@ Public Class Autodatenbank
                 lbl_CreateReport.Location = New Point((Me.Width - lbl_CreateReport.Size.Width) - 28, 593)
                 BTN_CreateReport.Location = New Point((Me.Width - BTN_CreateReport.Width) - 28, 612)
                 If dgv.Columns.Contains("Kommentar") Then
-                    dgv.Columns("Kommentar").Width = dgv.Size.Width - 7 * 100 - 50
+                    dgv.Columns("Kommentar").Width = dgv.Size.Width - 7 * 100 - 10
                 End If
 
+                PGB_FetchFTPData.Location = New Point(333, 959)
+                PGB_FetchFTPData.Width = dgv2.Width
+
+            End If
+
+
+
+            If Me.Size.Height <= 1024 Then
+                RTB_Infos.Height = 93
             End If
         Catch ex As Exception
 
@@ -1138,7 +1235,7 @@ Public Class Autodatenbank
         'End If
     End Sub
 
-    Private Sub AnmeldungToolStripMenuItem1_Click_1(sender As Object, e As EventArgs) Handles TSMI_Admin.Click
+    Private Sub EinstellungenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EinstellungenToolStripMenuItem.Click
         If LoginSetting = True Then
             If GetPermission(My.Settings.PermissionKey, 1) OrElse GetPermission(My.Settings.PermissionKey, 2) OrElse GetPermission(My.Settings.PermissionKey, 3) Then
                 AdminSettings.Show()
@@ -1156,6 +1253,8 @@ Public Class Autodatenbank
             EditData = True
         End If
     End Sub
+
+
 
     Private Sub AnsichtToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles AnsichtToolStripMenuItem1.Click
         ViewSettings.Show()
@@ -1188,8 +1287,8 @@ Public Class Autodatenbank
             TSMI_Repair.DropDownItems.Clear()
             TSMI_Other.DropDownItems.Clear()
             If dgv2.Rows.Count > 0 Then
-                If dgv2.CurrentRow.Cells(2).Value IsNot Nothing AndAlso dgv2.CurrentRow.Cells(2).Value IsNot DBNull.Value Then
-                    CurrentFTPLink = dgv2.CurrentRow.Cells(2).Value.ToString
+                If dgv2.CurrentRow.Cells(3).Value IsNot Nothing AndAlso dgv2.CurrentRow.Cells(3).Value IsNot DBNull.Value Then
+                    CurrentFTPLink = dgv2.CurrentRow.Cells(3).Value.ToString
                 End If
             End If
             ' Iteriere über die DataGridView-Zeilen
@@ -1348,12 +1447,11 @@ Public Class Autodatenbank
         End If
     End Sub
 
-    Private Sub ToolStripDropDownButton1_DropDownOpening(sender As Object, e As CancelEventArgs)
-        ' Verhindert das Öffnen des Dropdown-Menüs
 
-    End Sub
 
-    Private Sub LogFileÖffnenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TSMI_LogFile_Oeffnen.Click
+
+
+    Private Sub LogfileÖffnenToolStripMenuItem_Click_1(sender As Object, e As EventArgs) Handles LogfileÖffnenToolStripMenuItem.Click
         If LoginSetting = True Then
             If GetPermission(My.Settings.PermissionKey, 7) Then
                 OpenLogFile()
@@ -1371,8 +1469,6 @@ Public Class Autodatenbank
 
         End If
     End Sub
-
-
 
     Private Sub ErstellenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TSM_Benutzer_Erstellen.Click
         NewUser.Show()
@@ -1425,6 +1521,73 @@ Public Class Autodatenbank
 
         End Try
 
+    End Sub
+
+    Private Sub TSMI_CacheRemove_Click(sender As Object, e As EventArgs) Handles TSMI_CacheRemove.Click
+
+
+        Try
+            ' Alle Dateien im Ordner und Unterordnern abrufen
+            Dim d As String() = Directory.GetFiles(Application.StartupPath & "\Temp\", "*.*", SearchOption.AllDirectories)
+
+            For Each datei As String In d
+                Try
+                    ' Datei löschen
+                    System.IO.File.Delete(datei)
+                Catch ex As Exception
+                    ' Fehler bei der Dateilöschung ignorieren
+                End Try
+            Next
+
+            ' Alle leeren Unterordner löschen
+            Dim directories As String() = Directory.GetDirectories(Application.StartupPath & "\Temmp\", "*", SearchOption.AllDirectories)
+            For Each dir As String In directories
+                Try
+                    Directory.Delete(dir, True)
+                Catch ex As Exception
+                    ' Fehler beim Löschen von Ordnern ignorieren
+                End Try
+            Next
+        Catch ex As Exception
+            ' Fehler beim Zugriff auf das Verzeichnis ignorieren
+        End Try
+
+
+        Try
+            ' Alle Dateien im Ordner und Unterordnern abrufen
+            Dim d As String() = Directory.GetFiles(Application.StartupPath & "\Thumbnails\", "*.*", SearchOption.AllDirectories)
+
+            For Each datei As String In d
+                Try
+                    ' Datei löschen
+                    System.IO.File.Delete(datei)
+                Catch ex As Exception
+                    ' Fehler bei der Dateilöschung ignorieren
+                End Try
+            Next
+
+            ' Alle leeren Unterordner löschen
+            Dim directories As String() = Directory.GetDirectories(Application.StartupPath & "\Thumbnails\", "*", SearchOption.AllDirectories)
+            For Each dir As String In directories
+                Try
+                    Directory.Delete(dir, True)
+                Catch ex As Exception
+                    ' Fehler beim Löschen von Ordnern ignorieren
+                End Try
+            Next
+        Catch ex As Exception
+            ' Fehler beim Zugriff auf das Verzeichnis ignorieren
+        End Try
+
+
+        MsgBox("Cache erfolgreich gelöscht")
+        GetCache()
+
+
+    End Sub
+
+    Private Sub EmailEinstellungenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EmailEinstellungenToolStripMenuItem.Click
+        Email.Show()
     End Sub
 End Class
 

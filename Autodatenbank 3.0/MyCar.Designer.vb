@@ -41,7 +41,7 @@ Partial Class MyCar
         Me.priceChart.ChartAreas.Add(ChartArea1)
         Legend1.Name = "Legend1"
         Me.priceChart.Legends.Add(Legend1)
-        Me.priceChart.Location = New System.Drawing.Point(390, 300)
+        Me.priceChart.Location = New System.Drawing.Point(472, 300)
         Me.priceChart.Name = "priceChart"
         Series1.ChartArea = "ChartArea1"
         Series1.Legend = "Legend1"
@@ -56,7 +56,7 @@ Partial Class MyCar
         Me.FLP_Refill.AutoScroll = True
         Me.FLP_Refill.Location = New System.Drawing.Point(12, 300)
         Me.FLP_Refill.Name = "FLP_Refill"
-        Me.FLP_Refill.Size = New System.Drawing.Size(372, 642)
+        Me.FLP_Refill.Size = New System.Drawing.Size(454, 642)
         Me.FLP_Refill.TabIndex = 3
         Me.FLP_Refill.WrapContents = False
         '

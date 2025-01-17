@@ -91,7 +91,7 @@ Partial Class AdminSettings
         '
         'BTN_OpenSmartphoneVerification
         '
-        Me.BTN_OpenSmartphoneVerification.Location = New System.Drawing.Point(198, 42)
+        Me.BTN_OpenSmartphoneVerification.Location = New System.Drawing.Point(207, 40)
         Me.BTN_OpenSmartphoneVerification.Name = "BTN_OpenSmartphoneVerification"
         Me.BTN_OpenSmartphoneVerification.Size = New System.Drawing.Size(146, 23)
         Me.BTN_OpenSmartphoneVerification.TabIndex = 5
