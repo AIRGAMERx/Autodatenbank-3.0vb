@@ -72,9 +72,10 @@ Partial Class Autodatenbank
         Me.NachUpdateToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TSMI_Server_Verbindungen = New System.Windows.Forms.ToolStripMenuItem()
         Me.TSMI_Admin = New System.Windows.Forms.ToolStripMenuItem()
-        Me.LogfileÖffnenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EinstellungenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.EmailEinstellungenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TSMI_CacheRemove = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LogfileÖffnenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
         Me.TSB_Issue = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
@@ -128,7 +129,6 @@ Partial Class Autodatenbank
         Me.CB_Other = New System.Windows.Forms.CheckBox()
         Me.Label18 = New System.Windows.Forms.Label()
         Me.PGB_FetchFTPData = New System.Windows.Forms.ProgressBar()
-        Me.EmailEinstellungenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.dgv, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.DatabaseMenuStrip.SuspendLayout()
         CType(Me.dgv2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -470,23 +470,29 @@ Partial Class Autodatenbank
         Me.TSMI_Admin.Size = New System.Drawing.Size(225, 22)
         Me.TSMI_Admin.Text = "Administrative Einstellungen"
         '
-        'LogfileÖffnenToolStripMenuItem
-        '
-        Me.LogfileÖffnenToolStripMenuItem.Name = "LogfileÖffnenToolStripMenuItem"
-        Me.LogfileÖffnenToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
-        Me.LogfileÖffnenToolStripMenuItem.Text = "Logfile öffnen"
-        '
         'EinstellungenToolStripMenuItem
         '
         Me.EinstellungenToolStripMenuItem.Name = "EinstellungenToolStripMenuItem"
-        Me.EinstellungenToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.EinstellungenToolStripMenuItem.Size = New System.Drawing.Size(177, 22)
         Me.EinstellungenToolStripMenuItem.Text = "Einstellungen"
+        '
+        'EmailEinstellungenToolStripMenuItem
+        '
+        Me.EmailEinstellungenToolStripMenuItem.Name = "EmailEinstellungenToolStripMenuItem"
+        Me.EmailEinstellungenToolStripMenuItem.Size = New System.Drawing.Size(177, 22)
+        Me.EmailEinstellungenToolStripMenuItem.Text = "Email Einstellungen"
         '
         'TSMI_CacheRemove
         '
         Me.TSMI_CacheRemove.Name = "TSMI_CacheRemove"
-        Me.TSMI_CacheRemove.Size = New System.Drawing.Size(180, 22)
+        Me.TSMI_CacheRemove.Size = New System.Drawing.Size(177, 22)
         Me.TSMI_CacheRemove.Text = "Cache leeren"
+        '
+        'LogfileÖffnenToolStripMenuItem
+        '
+        Me.LogfileÖffnenToolStripMenuItem.Name = "LogfileÖffnenToolStripMenuItem"
+        Me.LogfileÖffnenToolStripMenuItem.Size = New System.Drawing.Size(177, 22)
+        Me.LogfileÖffnenToolStripMenuItem.Text = "Logfile öffnen"
         '
         'ToolStripSeparator7
         '
@@ -1011,12 +1017,6 @@ Partial Class Autodatenbank
         Me.PGB_FetchFTPData.Size = New System.Drawing.Size(1239, 23)
         Me.PGB_FetchFTPData.TabIndex = 18
         Me.PGB_FetchFTPData.Visible = False
-        '
-        'EmailEinstellungenToolStripMenuItem
-        '
-        Me.EmailEinstellungenToolStripMenuItem.Name = "EmailEinstellungenToolStripMenuItem"
-        Me.EmailEinstellungenToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
-        Me.EmailEinstellungenToolStripMenuItem.Text = "Email Einstellungen"
         '
         'Autodatenbank
         '

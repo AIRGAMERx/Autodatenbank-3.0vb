@@ -22,6 +22,7 @@ Public Class Autodatenbank
     Dim CurrentFTPLink As String = ""
     Private isF2Pressed As Boolean = False
     Private isLPressed As Boolean = False
+
 #Region "Load Close Init Create"
     '##################### REGION Load Close Init Create ##########################
     '### Everything with Form Load Unload Save Delete Create Controls #############
@@ -356,6 +357,8 @@ Public Class Autodatenbank
                 SavetoLogFile(ex.Message, "LoadCars")
             End Try
         End Using
+
+
     End Sub
 
     Private Sub CBB_SavedCars_SelectedIndexChanged(sender As Object, e As EventArgs) Handles CBB_SavedCars.SelectedIndexChanged
@@ -1397,9 +1400,9 @@ Public Class Autodatenbank
             End If
         Next
 
-        ' Prüfen, ob eine Zeile ausgewählt ist und i einen gültigen Wert hat
+
         If dgv.CurrentRow IsNot Nothing AndAlso dgv.CurrentRow.Index > -1 AndAlso i > -1 Then
-            ' Erstelle ein neues MySQLEntryInfo-Objekt mit den Werten der ausgewählten Zeile
+
             Dim item As New MySQLEntryInfo With {
                 .ID = CInt(dgv.CurrentRow.Cells(0).Value),
                 .IDTabelle = dgv.CurrentRow.Cells(1).Value.ToString,
@@ -1527,56 +1530,54 @@ Public Class Autodatenbank
 
 
         Try
-            ' Alle Dateien im Ordner und Unterordnern abrufen
             Dim d As String() = Directory.GetFiles(Application.StartupPath & "\Temp\", "*.*", SearchOption.AllDirectories)
 
             For Each datei As String In d
                 Try
-                    ' Datei löschen
                     System.IO.File.Delete(datei)
                 Catch ex As Exception
-                    ' Fehler bei der Dateilöschung ignorieren
+
                 End Try
             Next
 
-            ' Alle leeren Unterordner löschen
+
             Dim directories As String() = Directory.GetDirectories(Application.StartupPath & "\Temmp\", "*", SearchOption.AllDirectories)
             For Each dir As String In directories
                 Try
                     Directory.Delete(dir, True)
                 Catch ex As Exception
-                    ' Fehler beim Löschen von Ordnern ignorieren
+
                 End Try
             Next
         Catch ex As Exception
-            ' Fehler beim Zugriff auf das Verzeichnis ignorieren
+
         End Try
 
 
         Try
-            ' Alle Dateien im Ordner und Unterordnern abrufen
+
             Dim d As String() = Directory.GetFiles(Application.StartupPath & "\Thumbnails\", "*.*", SearchOption.AllDirectories)
 
             For Each datei As String In d
                 Try
-                    ' Datei löschen
+
                     System.IO.File.Delete(datei)
                 Catch ex As Exception
-                    ' Fehler bei der Dateilöschung ignorieren
+
                 End Try
             Next
 
-            ' Alle leeren Unterordner löschen
+
             Dim directories As String() = Directory.GetDirectories(Application.StartupPath & "\Thumbnails\", "*", SearchOption.AllDirectories)
             For Each dir As String In directories
                 Try
                     Directory.Delete(dir, True)
                 Catch ex As Exception
-                    ' Fehler beim Löschen von Ordnern ignorieren
+
                 End Try
             Next
         Catch ex As Exception
-            ' Fehler beim Zugriff auf das Verzeichnis ignorieren
+
         End Try
 
 
@@ -1589,6 +1590,13 @@ Public Class Autodatenbank
     Private Sub EmailEinstellungenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EmailEinstellungenToolStripMenuItem.Click
         Email.Show()
     End Sub
+
+
+
+
+
+
+
 End Class
 
 Public Class CarInfo

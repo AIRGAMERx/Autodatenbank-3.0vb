@@ -282,6 +282,9 @@ Module FTP
     End Function
 
 
+
+
+
     Public Function UploadThumbnailToFTP(DataPath As String, Dataname As String) As Boolean
         Try
             ' FTP-URI festlegen
@@ -320,7 +323,6 @@ End Module
 Public Class FTPHelper
 
     Public Shared Sub CreateDirectory(folderUri As String, username As String, password As String)
-        MsgBox("Hier")
         Try
             Dim request As FtpWebRequest = CType(WebRequest.Create(folderUri), FtpWebRequest)
             request.Method = WebRequestMethods.Ftp.MakeDirectory

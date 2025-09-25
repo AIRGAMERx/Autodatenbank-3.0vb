@@ -65,6 +65,10 @@ Partial Class ViewSettings
         Me.Dates = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.TestText = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.BTN_SaveDGVSettings = New System.Windows.Forms.Button()
+        Me.Vehicle = New System.Windows.Forms.TabPage()
+        Me.Button1 = New System.Windows.Forms.Button()
+        Me.GB_VehicleSort = New System.Windows.Forms.GroupBox()
+        Me.CB_ShowArchivedCar = New System.Windows.Forms.CheckBox()
         Me.TC_Settings.SuspendLayout()
         Me.Overall.SuspendLayout()
         Me.GB_OverallSettingsLabel.SuspendLayout()
@@ -75,12 +79,15 @@ Partial Class ViewSettings
         Me.GB_DGVSettingsData.SuspendLayout()
         Me.GB_DGVSettingsVisual.SuspendLayout()
         CType(Me.DGV_TestSettingDGV, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.Vehicle.SuspendLayout()
+        Me.GB_VehicleSort.SuspendLayout()
         Me.SuspendLayout()
         '
         'TC_Settings
         '
         Me.TC_Settings.Controls.Add(Me.Overall)
         Me.TC_Settings.Controls.Add(Me.Datagridview)
+        Me.TC_Settings.Controls.Add(Me.Vehicle)
         Me.TC_Settings.Location = New System.Drawing.Point(0, 2)
         Me.TC_Settings.Name = "TC_Settings"
         Me.TC_Settings.SelectedIndex = 0
@@ -491,6 +498,47 @@ Partial Class ViewSettings
         Me.BTN_SaveDGVSettings.Text = "Einstellungen speichern"
         Me.BTN_SaveDGVSettings.UseVisualStyleBackColor = True
         '
+        'Vehicle
+        '
+        Me.Vehicle.Controls.Add(Me.GB_VehicleSort)
+        Me.Vehicle.Controls.Add(Me.Button1)
+        Me.Vehicle.Location = New System.Drawing.Point(4, 22)
+        Me.Vehicle.Name = "Vehicle"
+        Me.Vehicle.Size = New System.Drawing.Size(456, 507)
+        Me.Vehicle.TabIndex = 2
+        Me.Vehicle.Text = "Fahrzeuge"
+        Me.Vehicle.UseVisualStyleBackColor = True
+        '
+        'Button1
+        '
+        Me.Button1.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Button1.Location = New System.Drawing.Point(8, 459)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(431, 43)
+        Me.Button1.TabIndex = 15
+        Me.Button1.Text = "Einstellungen speichern"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
+        'GB_VehicleSort
+        '
+        Me.GB_VehicleSort.Controls.Add(Me.CB_ShowArchivedCar)
+        Me.GB_VehicleSort.Location = New System.Drawing.Point(9, 4)
+        Me.GB_VehicleSort.Name = "GB_VehicleSort"
+        Me.GB_VehicleSort.Size = New System.Drawing.Size(430, 130)
+        Me.GB_VehicleSort.TabIndex = 16
+        Me.GB_VehicleSort.TabStop = False
+        Me.GB_VehicleSort.Text = "Fahrzeugauflistung"
+        '
+        'CB_ShowArchivedCar
+        '
+        Me.CB_ShowArchivedCar.AutoSize = True
+        Me.CB_ShowArchivedCar.Location = New System.Drawing.Point(7, 20)
+        Me.CB_ShowArchivedCar.Name = "CB_ShowArchivedCar"
+        Me.CB_ShowArchivedCar.Size = New System.Drawing.Size(152, 17)
+        Me.CB_ShowArchivedCar.TabIndex = 0
+        Me.CB_ShowArchivedCar.Text = "Archivierte Autos anzeigen"
+        Me.CB_ShowArchivedCar.UseVisualStyleBackColor = True
+        '
         'ViewSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -517,6 +565,9 @@ Partial Class ViewSettings
         Me.GB_DGVSettingsVisual.ResumeLayout(False)
         Me.GB_DGVSettingsVisual.PerformLayout()
         CType(Me.DGV_TestSettingDGV, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.Vehicle.ResumeLayout(False)
+        Me.GB_VehicleSort.ResumeLayout(False)
+        Me.GB_VehicleSort.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -563,4 +614,8 @@ Partial Class ViewSettings
     Friend WithEvents CBB_OverallSettingsFontFamily As ComboBox
     Friend WithEvents LBL_LabelTest As Label
     Friend WithEvents BTN_SaveOverallSettings As Button
+    Friend WithEvents Vehicle As TabPage
+    Friend WithEvents GB_VehicleSort As GroupBox
+    Friend WithEvents CB_ShowArchivedCar As CheckBox
+    Friend WithEvents Button1 As Button
 End Class

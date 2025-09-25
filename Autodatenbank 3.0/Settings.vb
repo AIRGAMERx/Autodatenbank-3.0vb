@@ -954,3 +954,12 @@ Public Class CompanyData
 
 End Class
 
+
+Public Class VehicleData
+    Public Property ShowArchivedCars As Boolean
+
+
+
+
+End Class
+

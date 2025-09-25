@@ -57,6 +57,8 @@ Partial Class AdminSettings
         Me.BTN_BackupSQL = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.BTN_DearchivCar = New System.Windows.Forms.Button()
+        Me.CBB_ArchivedCars = New System.Windows.Forms.ComboBox()
         Me.BTN_CarArchive = New System.Windows.Forms.Button()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.CBB_SavedCars = New System.Windows.Forms.ComboBox()
@@ -182,7 +184,7 @@ Partial Class AdminSettings
         Me.GB_Permission.Controls.Add(Me.FlowLayoutPanel1)
         Me.GB_Permission.Location = New System.Drawing.Point(411, 12)
         Me.GB_Permission.Name = "GB_Permission"
-        Me.GB_Permission.Size = New System.Drawing.Size(542, 468)
+        Me.GB_Permission.Size = New System.Drawing.Size(542, 534)
         Me.GB_Permission.TabIndex = 38
         Me.GB_Permission.TabStop = False
         Me.GB_Permission.Text = "Berechtigungsstufen bearbeiten"
@@ -192,9 +194,9 @@ Partial Class AdminSettings
         Me.BTN_SaveEditRole.BackColor = System.Drawing.Color.LightGray
         Me.BTN_SaveEditRole.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!)
         Me.BTN_SaveEditRole.ForeColor = System.Drawing.Color.FromArgb(CType(CType(138, Byte), Integer), CType(CType(157, Byte), Integer), CType(CType(193, Byte), Integer))
-        Me.BTN_SaveEditRole.Location = New System.Drawing.Point(6, 418)
+        Me.BTN_SaveEditRole.Location = New System.Drawing.Point(6, 486)
         Me.BTN_SaveEditRole.Name = "BTN_SaveEditRole"
-        Me.BTN_SaveEditRole.Size = New System.Drawing.Size(504, 38)
+        Me.BTN_SaveEditRole.Size = New System.Drawing.Size(530, 38)
         Me.BTN_SaveEditRole.TabIndex = 37
         Me.BTN_SaveEditRole.Text = "Änderung Speichern"
         Me.BTN_SaveEditRole.UseVisualStyleBackColor = False
@@ -377,7 +379,7 @@ Partial Class AdminSettings
         Me.FlowLayoutPanel1.BackColor = System.Drawing.Color.White
         Me.FlowLayoutPanel1.Location = New System.Drawing.Point(6, 19)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(225, 393)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(225, 461)
         Me.FlowLayoutPanel1.TabIndex = 0
         '
         'GB_DatabaseBackup
@@ -424,26 +426,48 @@ Partial Class AdminSettings
         '
         'GroupBox1
         '
+        Me.GroupBox1.Controls.Add(Me.BTN_DearchivCar)
+        Me.GroupBox1.Controls.Add(Me.CBB_ArchivedCars)
         Me.GroupBox1.Controls.Add(Me.BTN_CarArchive)
         Me.GroupBox1.Controls.Add(Me.Label3)
         Me.GroupBox1.Controls.Add(Me.CBB_SavedCars)
         Me.GroupBox1.Location = New System.Drawing.Point(18, 362)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(381, 118)
+        Me.GroupBox1.Size = New System.Drawing.Size(381, 184)
         Me.GroupBox1.TabIndex = 40
         Me.GroupBox1.TabStop = False
-        Me.GroupBox1.Text = "Auto Archivieren"
+        Me.GroupBox1.Text = "Auto Archivieren / Wiederherstellen"
+        '
+        'BTN_DearchivCar
+        '
+        Me.BTN_DearchivCar.BackColor = System.Drawing.Color.LightGray
+        Me.BTN_DearchivCar.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!)
+        Me.BTN_DearchivCar.ForeColor = System.Drawing.Color.FromArgb(CType(CType(138, Byte), Integer), CType(CType(157, Byte), Integer), CType(CType(193, Byte), Integer))
+        Me.BTN_DearchivCar.Location = New System.Drawing.Point(6, 136)
+        Me.BTN_DearchivCar.Name = "BTN_DearchivCar"
+        Me.BTN_DearchivCar.Size = New System.Drawing.Size(355, 38)
+        Me.BTN_DearchivCar.TabIndex = 43
+        Me.BTN_DearchivCar.Text = "Auto Wiederherstellen"
+        Me.BTN_DearchivCar.UseVisualStyleBackColor = False
+        '
+        'CBB_ArchivedCars
+        '
+        Me.CBB_ArchivedCars.FormattingEnabled = True
+        Me.CBB_ArchivedCars.Location = New System.Drawing.Point(6, 109)
+        Me.CBB_ArchivedCars.Name = "CBB_ArchivedCars"
+        Me.CBB_ArchivedCars.Size = New System.Drawing.Size(355, 21)
+        Me.CBB_ArchivedCars.TabIndex = 42
         '
         'BTN_CarArchive
         '
         Me.BTN_CarArchive.BackColor = System.Drawing.Color.LightGray
         Me.BTN_CarArchive.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.75!)
         Me.BTN_CarArchive.ForeColor = System.Drawing.Color.FromArgb(CType(CType(138, Byte), Integer), CType(CType(157, Byte), Integer), CType(CType(193, Byte), Integer))
-        Me.BTN_CarArchive.Location = New System.Drawing.Point(3, 68)
+        Me.BTN_CarArchive.Location = New System.Drawing.Point(6, 65)
         Me.BTN_CarArchive.Name = "BTN_CarArchive"
-        Me.BTN_CarArchive.Size = New System.Drawing.Size(365, 38)
+        Me.BTN_CarArchive.Size = New System.Drawing.Size(355, 38)
         Me.BTN_CarArchive.TabIndex = 41
-        Me.BTN_CarArchive.Text = "Ausgewähltes Auto Achivieren"
+        Me.BTN_CarArchive.Text = "Auto Achivieren"
         Me.BTN_CarArchive.UseVisualStyleBackColor = False
         '
         'Label3
@@ -467,7 +491,7 @@ Partial Class AdminSettings
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(965, 490)
+        Me.ClientSize = New System.Drawing.Size(965, 556)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.GB_DatabaseBackup)
         Me.Controls.Add(Me.GB_Permission)
@@ -528,4 +552,6 @@ Partial Class AdminSettings
     Friend WithEvents Label3 As Label
     Friend WithEvents CBB_SavedCars As ComboBox
     Friend WithEvents BTN_CarArchive As Button
+    Friend WithEvents BTN_DearchivCar As Button
+    Friend WithEvents CBB_ArchivedCars As ComboBox
 End Class

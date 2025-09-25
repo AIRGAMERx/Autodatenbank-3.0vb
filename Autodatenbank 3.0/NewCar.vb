@@ -31,47 +31,63 @@ Public Class NewCar
                 Dim hsn As String = GetHSN(TXB_KeyNumber.Text)
                 Dim tsn As String = GetTSN(TXB_KeyNumber.Text)
                 Dim client As New HttpClient()
+                Dim url As String = ""
 
-                Dim url As String = "https://lfdev.de/php/get_keynumbers.php?hsn=" & TXB_KeyNumber.Text
+                If TXB_KeyNumber.Text.Contains("/") Then
+                    url = "https://lfdev.de/php/get_keynumbers.php?hsn=" & TXB_KeyNumber.Text
+                Else
+                    url = "https://lfdev.de/php/get_keynumbers.php?hsn=" & hsn & "/" & tsn
+                End If
+
+
 
                 Dim response As HttpResponseMessage = Await client.GetAsync(url)
+                Try
 
-                If response.IsSuccessStatusCode Then
-                    Dim jsonResponse As String = Await response.Content.ReadAsStringAsync
 
-                    ' Verwende JArray und konvertiere das erste Element explizit in JObject
-                    Dim cardataArray As JArray = JArray.Parse(jsonResponse)
 
-                    ' Überprüfe, ob das Array nicht leer ist
-                    If cardataArray.Count > 0 Then
-                        Dim cardata As JObject = DirectCast(cardataArray(0), JObject) ' Explizite Konvertierung
 
-                        If cardata("Modelbezeichnung") IsNot Nothing Then
-                            Dim modelbezeichnung As String = cardata("Modelbezeichnung").ToString()
+                    If response.StatusCode = 200 Then
+                        Dim jsonResponse As String = Await response.Content.ReadAsStringAsync
 
-                            ' Annahme: Der Hersteller ist das erste Wort und die Typbezeichnung ist der Rest
-                            Dim parts As String() = modelbezeichnung.Split(New Char() {" "c}, 2) ' Trennzeichen als Char-Array definieren
+                        ' Verwende JArray und konvertiere das erste Element explizit in JObject
+                        Dim cardataArray As JArray = JArray.Parse(jsonResponse)
 
-                            Dim hersteller As String = parts(0) ' Der Hersteller ist das erste Wort
-                            Dim typbezeichnung As String = If(parts.Length > 1, parts(1), "") ' Der Rest als Typbezeichnung
+                        ' Überprüfe, ob das Array nicht leer ist
+                        If cardataArray.Count > 0 Then
+                            Dim cardata As JObject = DirectCast(cardataArray(0), JObject) ' Explizite Konvertierung
 
-                            TXB_Brand.Text = hersteller
-                            TXB_Model.Text = typbezeichnung ' Typbezeichnung in ein entsprechendes Label setzen
+                            If cardata("Modelbezeichnung") IsNot Nothing Then
+                                Dim modelbezeichnung As String = cardata("Modelbezeichnung").ToString()
 
-                            Dim leistung As String = cardata("Leistung").ToString()
-                            Dim hubraum As String = cardata("Hubraum").ToString()
-                            Dim kraftstoff As String = cardata("Energie").ToString()
+                                ' Annahme: Der Hersteller ist das erste Wort und die Typbezeichnung ist der Rest
+                                Dim parts As String() = modelbezeichnung.Split(New Char() {" "c}, 2) ' Trennzeichen als Char-Array definieren
 
-                            TXB_Power.Text = leistung
-                            TXB_Displacement.Text = hubraum
+                                Dim hersteller As String = parts(0) ' Der Hersteller ist das erste Wort
+                                Dim typbezeichnung As String = If(parts.Length > 1, parts(1), "") ' Der Rest als Typbezeichnung
+
+                                TXB_Brand.Text = hersteller
+                                TXB_Model.Text = typbezeichnung ' Typbezeichnung in ein entsprechendes Label setzen
+
+                                Dim leistung As String = cardata("Leistung").ToString()
+                                Dim hubraum As String = cardata("Hubraum").ToString()
+                                Dim kraftstoff As String = cardata("Energie").ToString()
+
+                                TXB_Power.Text = leistung
+                                TXB_Displacement.Text = hubraum
+                            End If
+
+                        Else
+                            MsgBox("Keine Daten gefunden", MsgBoxStyle.Information, Title:="Info")
                         End If
-
+                    ElseIf response.StatusCode = 404 Then
+                        MsgBox("Zu dieser Schlüsselnummer wurden keine Ergebnisse gefunden", MsgBoxStyle.Information, Title:="Info")
                     Else
-                        MsgBox("Keine Daten gefunden", MsgBoxStyle.Information, Title:="Info")
+                        MsgBox("Fehler beim Abrufen der Daten", MsgBoxStyle.Critical, Title:="Fehler")
                     End If
-                Else
-                    MsgBox("Fehler beim Abrufen der Daten", MsgBoxStyle.Critical, Title:="Fehler")
-                End If
+                Catch ex As Exception
+                    MessageBox.Show("Fehler beim Verarbeiten der Daten: " & ex.Message)
+                End Try
             Else
                 MsgBox("Bitte HSN/TSN mit mindestens 7 Zeichen eintragen", MsgBoxStyle.Information, Title:="Info")
             End If
@@ -93,6 +109,8 @@ Public Class NewCar
     Private Function GetTSN(input As String) As String
         If input.Length >= 8 Then
             Return input.Substring(5, 3)
+        ElseIf input.Length = 7 Then
+            Return input.Substring(4, 3)
         Else
             Return input
         End If
@@ -142,7 +160,7 @@ Public Class NewCar
                         command.Parameters.AddWithValue("@Data9", TXB_BuyDate.Text)
                         command.Parameters.AddWithValue("@Data10", TXB_Price.Text)
                         command.Parameters.AddWithValue("@Data11", TXB_ConstructionYear.Text)
-                        command.Parameters.AddWithValue("@Data12", BTN_SearchForKeyNumber.Text)
+                        command.Parameters.AddWithValue("@Data12", TXB_KeyNumber.Text)
                         command.Parameters.AddWithValue("@Data13", userID)
 
                         ' Stelle sicher, dass die ausgewählten Werte vorhanden und korrekt konvertiert sind
@@ -170,6 +188,36 @@ Public Class NewCar
 
     Private Sub NewCar_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         LoadOverallSettings()
+        LoadSavedCustomers()
+
+    End Sub
+
+    Private Function SetNextInspection(month As String, year As String) As String
+        Dim monthInt As Integer
+        Dim yearInt As Integer
+
+        ' Konvertiere den Monat und das Jahr in Integer
+        If Integer.TryParse(month, monthInt) AndAlso Integer.TryParse(year, yearInt) Then
+            Return New DateTime(yearInt, monthInt, 1).ToString("yyyy-MM-dd")
+        Else
+            Throw New ArgumentException("Ungültige Werte für Monat oder Jahr")
+        End If
+    End Function
+
+    Private Sub BNT_OCR_Click(sender As Object, e As EventArgs) Handles BNT_OCR.Click
+        'ocr.Show()
+
+        MsgBox("Diese Funktion ist nicht verfügbar.", MsgBoxStyle.Information, Title:="Info")
+    End Sub
+
+    Private Sub BTN_RefreshSavedCustomers_Click(sender As Object, e As EventArgs) Handles BTN_RefreshSavedCustomers.Click
+        LoadSavedCustomers()
+    End Sub
+
+
+
+    Private Sub LoadSavedCustomers()
+
         CBB_Customer.Items.Clear()
         For year As Integer = 2023 To Now.Year + 5
             CBB_NextInspectionYear.Items.Add(year.ToString())
@@ -212,19 +260,10 @@ Public Class NewCar
                 End Try
             End Using
         End Using
+
     End Sub
 
-    Private Function SetNextInspection(month As String, year As String) As String
-        Dim monthInt As Integer
-        Dim yearInt As Integer
-
-        ' Konvertiere den Monat und das Jahr in Integer
-        If Integer.TryParse(month, monthInt) AndAlso Integer.TryParse(year, yearInt) Then
-            Return New DateTime(yearInt, monthInt, 1).ToString("yyyy-MM-dd")
-        Else
-            Throw New ArgumentException("Ungültige Werte für Monat oder Jahr")
-        End If
-    End Function
-
-
+    Private Sub BTN_AddNewCustomer_Click(sender As Object, e As EventArgs) Handles BTN_AddNewCustomer.Click
+        NewCustomer.ShowDialog()
+    End Sub
 End Class

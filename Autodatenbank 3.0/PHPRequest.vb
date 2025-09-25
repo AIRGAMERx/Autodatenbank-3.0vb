@@ -1,4 +1,8 @@
-﻿Imports System.Net.Http
+﻿Imports System.IO
+Imports System.Net
+Imports System.Net.Http
+Imports System.Net.Http.Headers
+Imports System.Text
 Imports Newtonsoft.Json.Linq
 
 Module PHPRequest
@@ -175,5 +179,93 @@ Module PHPRequest
             Return New List(Of String)()
         End Try
     End Function
+
+
+    Public Async Function GetForeignAPIKEY(apiname As String) As Task(Of String)
+        Dim url As String = "https://lfdev.de/php/get_foreignapi.php"
+        Dim regkey As String = My.Settings.Regkey
+
+        Using client As New HttpClient()
+            Dim content = New StringContent($"regkey={regkey}&apiname={apiname}", Encoding.UTF8, "application/x-www-form-urlencoded")
+
+            Try
+                Dim response = Await client.PostAsync(url, content)
+                Dim result = Await response.Content.ReadAsStringAsync()
+
+
+                Dim json = JObject.Parse(result)
+
+                If json.ContainsKey("api_key") Then
+                    Return json("api_key").ToString()
+                ElseIf json.ContainsKey("error") Then
+                    MessageBox.Show("Fehler: " & json("error").ToString())
+                Else
+                    MessageBox.Show("Unbekannte Antwort vom Server")
+                End If
+
+            Catch ex As Exception
+                MessageBox.Show("Verbindungsfehler: " & ex.Message)
+            End Try
+        End Using
+
+        Return ""
+    End Function
+
+    Public Async Function UploadAndOCR(imagePath As String, regkey As String, apiname As String, ocrApiKey As String) As Task(Of String)
+
+        Dim fileInfo As New IO.FileInfo(imagePath)
+        If fileInfo.Length > 1048576 Then
+            Return "Bild ist zu groß (" & Math.Round(fileInfo.Length / 1024, 2) & " KB). Maximal erlaubt: 1 MB"
+        End If
+
+
+        Dim uploadUrl = "https://lfdev.de/php/uploadForOCR.php"
+        Dim ocrUrl = "https://api.ocr.space/parse/image"
+
+        Using httpClient As New HttpClient()
+
+            Using formData As New MultipartFormDataContent()
+                formData.Add(New StringContent(regkey), "regkey")
+                formData.Add(New StringContent(apiname), "apiname")
+
+                Dim fileContent = New ByteArrayContent(IO.File.ReadAllBytes(imagePath))
+                fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/jpeg")
+                formData.Add(fileContent, "image", IO.Path.GetFileName(imagePath))
+
+                Dim uploadResponse = Await httpClient.PostAsync(uploadUrl, formData)
+                Dim uploadResult = Await uploadResponse.Content.ReadAsStringAsync()
+                Dim uploadJson = JObject.Parse(uploadResult)
+
+                If Not uploadJson.ContainsKey("url") Then
+                    Return "Fehler beim Upload: " & uploadJson("error")?.ToString()
+                End If
+
+                Dim imageUrl As String = uploadJson("url").ToString()
+
+
+                Dim ocrContent = New FormUrlEncodedContent(New Dictionary(Of String, String) From {
+                {"apikey", ocrApiKey},
+                {"language", "ger"},
+                {"url", imageUrl},
+                {"isOverlayRequired", "false"}
+            })
+
+                Dim ocrResponse = Await httpClient.PostAsync(ocrUrl, ocrContent)
+                Dim ocrResult = Await ocrResponse.Content.ReadAsStringAsync()
+                Dim ocrJson = JObject.Parse(ocrResult)
+                MessageBox.Show(ocrJson.ToString(), "Rohdaten von OCR.space")
+
+                If ocrJson.ContainsKey("ParsedResults") Then
+                    Return ocrJson("ParsedResults")(0)("ParsedText").ToString()
+                ElseIf ocrJson.ContainsKey("ErrorMessage") Then
+                    Return "OCR-Fehler: " & String.Join(", ", ocrJson("ErrorMessage").Select(Function(e) e.ToString()))
+                Else
+                    Return "Unerwartete OCR-Antwort"
+                End If
+            End Using
+        End Using
+    End Function
+
+
 
 End Module

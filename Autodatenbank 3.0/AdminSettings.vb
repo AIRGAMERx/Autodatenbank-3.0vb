@@ -1,6 +1,7 @@
 ﻿Imports System.ComponentModel
 Imports System.Data.SqlClient
 Imports System.IO
+Imports System.Text.RegularExpressions
 Imports MySqlConnector
 
 
@@ -27,6 +28,7 @@ Public Class AdminSettings
     Private Shared acr122u As New Sydesoft.NfcDevice.ACR122U
     ReadOnly BackupDirPath As String = Application.StartupPath & "\SQLBackups"
     Dim selectedCarInfoAdmin As CarInfo
+    Dim selectedCarDearchiv As CarInfo
 
     Private Sub SignInSettings_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         LoadOverallSettings()
@@ -80,14 +82,20 @@ Public Class AdminSettings
                     Dim dataTable As New DataTable()
                     Adapter.Fill(dataTable)
 
-                    CBB_SavedCars.Items.Clear() ' Vorherige Items löschen, um Doppelungen zu vermeiden
+                    CBB_SavedCars.Items.Clear()
+                    CBB_ArchivedCars.Items.Clear()
 
                     For Each row As DataRow In dataTable.Rows
-                        ' Initialisiere die CarInfo-Klasse mit Kennzeichen, KundenId und KundenName
+
                         Dim carInfo As New CarInfo(row("Kennzeichen").ToString(), Convert.ToInt32(row("kunden_id")), row("kunden_name").ToString())
                         If Not carInfo.Kennzeichen.Contains("(archiviert") Then
                             CBB_SavedCars.Items.Add(carInfo)
                         End If
+
+                        If carInfo.Kennzeichen.Contains("(archiviert)") Then
+                            CBB_ArchivedCars.Items.Add(carInfo)
+                        End If
+
 
                     Next
                 End Using
@@ -538,12 +546,27 @@ Public Class AdminSettings
         End Select
     End Sub
 
+    Private Sub BTN_DearchivCar_Click(sender As Object, e As EventArgs) Handles BTN_DearchivCar.Click
+        Select Case MessageBox.Show("Auto " & selectedCarDearchiv.Kennzeichen & " wiederherstellen ?", "Ausgewähltes Auto wiederherstellen ?", MessageBoxButtons.YesNo)
+            Case Windows.Forms.DialogResult.Yes
+                DearchiveCar(selectedCarDearchiv.Kennzeichen)
+            Case Windows.Forms.DialogResult.No
+                Exit Sub
+        End Select
+    End Sub
+
     Public Sub CBB_SavedCars_SelectedIndexChanged(sender As Object, e As EventArgs) Handles CBB_SavedCars.SelectedIndexChanged
 
         If CBB_SavedCars.SelectedIndex > -1 Then
             selectedCarInfoAdmin = CType(CBB_SavedCars.SelectedItem, CarInfo)
         End If
 
+    End Sub
+
+    Private Sub CBB_ArchivedCars_SelectedIndexChanged(sender As Object, e As EventArgs) Handles CBB_ArchivedCars.SelectedIndexChanged
+        If CBB_ArchivedCars.SelectedIndex > -1 Then
+            selectedCarDearchiv = CType(CBB_ArchivedCars.SelectedItem, CarInfo)
+        End If
     End Sub
 
 
@@ -585,6 +608,50 @@ Public Class AdminSettings
             End Using
         End Using
     End Sub
+
+
+    Private Sub DearchiveCar(Kennzeichen As String)
+        Dim kennzeichenneu As String = Regex.Replace(Kennzeichen, "\s?\(archiviert\)", "", RegexOptions.IgnoreCase)
+
+        Dim queries As List(Of String) = New List(Of String) From {
+        "UPDATE Autos SET Kennzeichen = @Kennzeichenneu WHERE Kennzeichen = @Kennzeichenalt",
+        "UPDATE Reparatur SET ID_Kennzeichen = @Kennzeichenneu WHERE ID_Kennzeichen = @Kennzeichenalt",
+        "UPDATE Service SET ID_Kennzeichen = @Kennzeichenneu WHERE ID_Kennzeichen = @Kennzeichenalt",
+        "UPDATE Sonstiges SET ID_Kennzeichen = @Kennzeichenneu WHERE ID_Kennzeichen = @Kennzeichenalt",
+        "UPDATE users SET mycar = @Kennzeichenneu WHERE mycar = @Kennzeichenalt",
+        "UPDATE Verbrauch SET Kennzeichen = @Kennzeichenneu WHERE Kennzeichen = @Kennzeichenalt"
+    }
+
+        Using con As New MySqlConnection(My.Settings.connectionstring)
+            con.Open()
+
+            ' Transaktion starten
+            Using transaction As MySqlTransaction = con.BeginTransaction()
+                Try
+                    ' Alle Queries ausführen
+                    For Each query As String In queries
+                        Using cmd As New MySqlCommand(query, con, transaction)
+                            cmd.Parameters.AddWithValue("@Kennzeichenneu", kennzeichenneu)
+                            cmd.Parameters.AddWithValue("@Kennzeichenalt", Kennzeichen)
+                            cmd.ExecuteNonQuery()
+                        End Using
+                    Next
+
+                    ' Transaktion abschließen
+                    transaction.Commit()
+                    MsgBox("Auto erfolgreich **wiederhergestellt**")
+                Catch ex As Exception
+                    ' Transaktion zurücksetzen, falls ein Fehler auftritt
+                    transaction.Rollback()
+                    Console.WriteLine($"Fehler: {ex.Message}")
+                End Try
+            End Using
+        End Using
+
+
+    End Sub
+
+
 End Class
 
 

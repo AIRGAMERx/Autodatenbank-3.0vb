@@ -22,6 +22,7 @@ Partial Class NewCar
     'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(NewCar))
         Me.GB_CarInfo = New System.Windows.Forms.GroupBox()
         Me.CBB_NextInspectionYear = New System.Windows.Forms.ComboBox()
@@ -47,6 +48,7 @@ Partial Class NewCar
         Me.TXB_Brand = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.BNT_OCR = New System.Windows.Forms.Button()
         Me.CBB_Customer = New System.Windows.Forms.ComboBox()
         Me.BTN_SearchForKeyNumber = New System.Windows.Forms.Button()
         Me.BTN_SaveCar = New System.Windows.Forms.Button()
@@ -55,6 +57,10 @@ Partial Class NewCar
         Me.Label13 = New System.Windows.Forms.Label()
         Me.TXB_BuyDate = New System.Windows.Forms.TextBox()
         Me.Label12 = New System.Windows.Forms.Label()
+        Me.BTN_RefreshSavedCustomers = New System.Windows.Forms.Button()
+        Me.BTN_AddNewCustomer = New System.Windows.Forms.Button()
+        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
+        Me.ToolTip2 = New System.Windows.Forms.ToolTip(Me.components)
         Me.GB_CarInfo.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
@@ -274,6 +280,9 @@ Partial Class NewCar
         '
         'GroupBox1
         '
+        Me.GroupBox1.Controls.Add(Me.BTN_AddNewCustomer)
+        Me.GroupBox1.Controls.Add(Me.BTN_RefreshSavedCustomers)
+        Me.GroupBox1.Controls.Add(Me.BNT_OCR)
         Me.GroupBox1.Controls.Add(Me.CBB_Customer)
         Me.GroupBox1.Controls.Add(Me.BTN_SearchForKeyNumber)
         Me.GroupBox1.Controls.Add(Me.BTN_SaveCar)
@@ -288,6 +297,15 @@ Partial Class NewCar
         Me.GroupBox1.TabIndex = 1
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Zusätzliche Informationen"
+        '
+        'BNT_OCR
+        '
+        Me.BNT_OCR.Location = New System.Drawing.Point(6, 237)
+        Me.BNT_OCR.Name = "BNT_OCR"
+        Me.BNT_OCR.Size = New System.Drawing.Size(249, 23)
+        Me.BNT_OCR.TabIndex = 28
+        Me.BNT_OCR.Text = "Fahrzeugschein Hochladen "
+        Me.BNT_OCR.UseVisualStyleBackColor = True
         '
         'CBB_Customer
         '
@@ -308,7 +326,7 @@ Partial Class NewCar
         '
         'BTN_SaveCar
         '
-        Me.BTN_SaveCar.Location = New System.Drawing.Point(6, 237)
+        Me.BTN_SaveCar.Location = New System.Drawing.Point(6, 266)
         Me.BTN_SaveCar.Name = "BTN_SaveCar"
         Me.BTN_SaveCar.Size = New System.Drawing.Size(249, 23)
         Me.BTN_SaveCar.TabIndex = 25
@@ -355,6 +373,28 @@ Partial Class NewCar
         Me.Label12.Size = New System.Drawing.Size(62, 13)
         Me.Label12.TabIndex = 21
         Me.Label12.Text = "Gekauft am"
+        '
+        'BTN_RefreshSavedCustomers
+        '
+        Me.BTN_RefreshSavedCustomers.BackgroundImage = CType(resources.GetObject("BTN_RefreshSavedCustomers.BackgroundImage"), System.Drawing.Image)
+        Me.BTN_RefreshSavedCustomers.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.BTN_RefreshSavedCustomers.Location = New System.Drawing.Point(233, 72)
+        Me.BTN_RefreshSavedCustomers.Name = "BTN_RefreshSavedCustomers"
+        Me.BTN_RefreshSavedCustomers.Size = New System.Drawing.Size(22, 22)
+        Me.BTN_RefreshSavedCustomers.TabIndex = 29
+        Me.ToolTip1.SetToolTip(Me.BTN_RefreshSavedCustomers, "Besitzer erneut laden")
+        Me.BTN_RefreshSavedCustomers.UseVisualStyleBackColor = True
+        '
+        'BTN_AddNewCustomer
+        '
+        Me.BTN_AddNewCustomer.BackgroundImage = Global.Autodatenbank_3._0.My.Resources.Resources.adressbook
+        Me.BTN_AddNewCustomer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.BTN_AddNewCustomer.Location = New System.Drawing.Point(205, 72)
+        Me.BTN_AddNewCustomer.Name = "BTN_AddNewCustomer"
+        Me.BTN_AddNewCustomer.Size = New System.Drawing.Size(22, 22)
+        Me.BTN_AddNewCustomer.TabIndex = 30
+        Me.ToolTip1.SetToolTip(Me.BTN_AddNewCustomer, "Neuen Besitzer hinzufügen")
+        Me.BTN_AddNewCustomer.UseVisualStyleBackColor = True
         '
         'NewCar
         '
@@ -408,4 +448,9 @@ Partial Class NewCar
     Friend WithEvents Label14 As Label
     Friend WithEvents CBB_NextInspectionYear As ComboBox
     Friend WithEvents CBB_NextInspectionMonth As ComboBox
+    Friend WithEvents BNT_OCR As Button
+    Friend WithEvents BTN_RefreshSavedCustomers As Button
+    Friend WithEvents BTN_AddNewCustomer As Button
+    Friend WithEvents ToolTip1 As ToolTip
+    Friend WithEvents ToolTip2 As ToolTip
 End Class
